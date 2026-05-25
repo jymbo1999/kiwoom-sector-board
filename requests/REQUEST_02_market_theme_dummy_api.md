@@ -1,5 +1,55 @@
 # REQUEST_02: 주도테마 정보판 — 더미 데이터 서비스와 점수 계산 구현
 
+## 사용자 요청
+
+Streamlit 대시보드에서 다음 단계 UI가 안정적으로 소비할 수 있는 더미-safe 시장/테마 view-model 계층을 구현한다.
+실제 Kiwoom API를 더미 모드에서 호출하지 않고, 기존 데이터 흐름을 재사용한다.
+
+## 작업 범위
+
+- `get_market_summary()` 추가
+- `get_theme_heatmap()` 추가
+- `get_theme_leaders(theme_id)` 추가
+- `get_theme_timeline(days=5)` 추가
+- 기존 `load_settings() -> load_theme_map() -> load_market_prices() -> rank_sectors()` 흐름 재사용
+- 현재 `app.py` UI는 변경하지 않음
+- 새 view-model 함수 테스트 추가
+
+## 관련 파일 후보
+
+- `src/market_data.py`
+- `src/sector_ranker.py`
+- `src/dummy_data.py`
+- `src/theme_loader.py`
+- `tests/test_market_data_view_models.py`
+
+## 리스크
+
+- 더미 모드에서 실제 Kiwoom API가 호출되면 안 된다.
+- 현 단계에서 실제 과거 시계열 데이터가 있는 것처럼 표현하면 안 된다.
+- Flask route/template/static JS/CSS, DB, Plotly 의존성은 추가하지 않는다.
+
+## 검증 계획
+
+```bash
+python -m py_compile app.py src/*.py
+python -m pytest -q
+git diff --check
+git status --short
+git diff --stat
+```
+
+## 완료 기준
+
+- 네 view-model 함수가 안정적인 key/column 스키마를 반환한다.
+- mock 모드 heatmap 데이터가 비어 있지 않다.
+- 유효 theme_id 대장주는 최대 5개만 반환한다.
+- 알 수 없는 theme_id는 안정적인 빈 DataFrame을 반환한다.
+- timeline은 빈 DataFrame이거나 `is_dummy_timeline=True`로 명시된 더미 행만 반환한다.
+- 검증 명령이 통과하고 관련 파일만 커밋한다.
+
+---
+
 ## 전제
 
 REQUEST_01 분석 결과를 먼저 읽고 따른다.
