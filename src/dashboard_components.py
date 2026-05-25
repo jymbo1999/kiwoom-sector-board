@@ -184,7 +184,7 @@ def inject_board_styles() -> None:
     )
 
 
-def render_header(reference_time: datetime, use_mock: bool) -> None:
+def render_header(reference_time: datetime, use_mock: bool | None = None) -> None:
     inject_board_styles()
     _html(
         """
@@ -201,7 +201,7 @@ def render_header(reference_time: datetime, use_mock: bool) -> None:
         f"""
         <div class="board-meta">
             <div class="board-meta-item">기준시각<br>{escape(reference_time.strftime("%Y-%m-%d %H:%M:%S"))}</div>
-            <div class="board-meta-item">데이터 모드<br>{'Mock' if use_mock else 'Kiwoom REST'}</div>
+            <div class="board-meta-item">데이터 모드<br>{'확인 중' if use_mock is None else ('Mock' if use_mock else 'Kiwoom REST')}</div>
             <div class="board-meta-item">화면 기준<br>09:03 / 09:15 / 10:00</div>
         </div>
         """
@@ -296,3 +296,167 @@ def render_summary_table(sectors: pd.DataFrame, leaders: pd.DataFrame, limit: in
         </table>
         """
     )
+
+
+
+def format_pct(value: float | int | None) -> str:
+    if value is None or pd.isna(value):
+        return "0.00%"
+    return f"{float(value):+.2f}%"
+
+
+def _require_columns(frame: pd.DataFrame, columns: list[str]) -> list[str]:
+    return [column for column in columns if column not in frame.columns]
+
+
+def render_market_summary(summary: dict) -> None:
+    """Render top-level market/theme metrics from the stable view-model dict."""
+
+    timestamp = str(summary.get("timestamp") or "-").replace("T", " ")
+    market_phase = str(summary.get("market_phase") or "unknown")
+    data_mode = str(summary.get("data_mode") or "unknown")
+
+    st.caption(f"데이터 기준 시각: {timestamp} · market_phase: {market_phase} · data_mode: {data_mode}")
+
+    metric_cols = st.columns(5)
+    metric_cols[0].metric("테마 수", f"{int(summary.get('theme_count') or 0):,}")
+    metric_cols[1].metric("종목 수", f"{int(summary.get('stock_count') or 0):,}")
+    metric_cols[2].metric("평균 등락률", format_pct(summary.get("avg_change_rate") or 0.0))
+    metric_cols[3].metric("상승 종목 비율", f"{float(summary.get('rising_ratio') or 0.0) * 100:.0f}%")
+    metric_cols[4].metric("총 거래대금", format_krw(float(summary.get("total_trade_value") or 0.0)))
+
+    top_theme = summary.get("top_theme") or "-"
+    top_score = summary.get("top_theme_score")
+    st.caption(f"현재 최상위 테마: {top_theme} · 점수: {'-' if top_score is None else f'{float(top_score):.2f}'}")
+
+
+def _fallback_theme_table(heatmap: pd.DataFrame) -> None:
+    display_columns = [
+        "theme_name",
+        "theme_score",
+        "top5_change_rate_mean",
+        "rising_ratio",
+        "total_trading_value",
+        "leader_names",
+    ]
+    available = [column for column in display_columns if column in heatmap.columns]
+    table = heatmap[available].copy()
+    rename_map = {
+        "theme_name": "테마",
+        "theme_score": "점수",
+        "top5_change_rate_mean": "Top5 평균 등락률",
+        "rising_ratio": "상승비율",
+        "total_trading_value": "거래대금",
+        "leader_names": "대표 대장주",
+    }
+    table = table.rename(columns=rename_map)
+    if "거래대금" in table:
+        table["거래대금"] = table["거래대금"].map(lambda value: format_krw(float(value or 0)))
+    if "상승비율" in table:
+        table["상승비율"] = table["상승비율"].map(lambda value: f"{float(value or 0) * 100:.0f}%")
+    st.dataframe(table, use_container_width=True, hide_index=True)
+
+
+def render_theme_treemap(heatmap: pd.DataFrame) -> None:
+    """Render a Plotly treemap when available, otherwise a safe table heatmap fallback."""
+
+    required = ["theme_name", "total_trading_value", "top5_change_rate_mean", "leader_names"]
+    if heatmap.empty:
+        st.info("테마 흐름을 표시할 데이터가 없습니다.")
+        return
+
+    missing = _require_columns(heatmap, required)
+    if missing:
+        st.warning(f"테마 데이터 컬럼이 부족합니다: {', '.join(missing)}")
+        _fallback_theme_table(heatmap)
+        return
+
+    chart_data = heatmap.copy()
+    chart_data["total_trading_value"] = pd.to_numeric(chart_data["total_trading_value"], errors="coerce").fillna(0.0)
+    chart_data["top5_change_rate_mean"] = pd.to_numeric(chart_data["top5_change_rate_mean"], errors="coerce").fillna(0.0)
+    chart_data["leader_preview"] = chart_data["leader_names"].astype(str).map(
+        lambda names: ", ".join([name.strip() for name in names.split(",")[:2] if name.strip()])
+    )
+    chart_data["label"] = chart_data.apply(
+        lambda row: f"{row['theme_name']}<br>{row['top5_change_rate_mean']:+.2f}%<br>{row['leader_preview']}",
+        axis=1,
+    )
+
+    try:
+        import plotly.express as px
+    except ModuleNotFoundError:
+        st.warning("Plotly가 설치되어 있지 않아 표 형태 heatmap으로 표시합니다.")
+        _fallback_theme_table(chart_data)
+        return
+
+    fig = px.treemap(
+        chart_data,
+        path=["theme_name"],
+        values="total_trading_value",
+        color="top5_change_rate_mean",
+        color_continuous_scale="RdBu_r",
+        hover_data={
+            "theme_name": True,
+            "top5_change_rate_mean": ":+.2f",
+            "total_trading_value": ":,.0f",
+            "leader_preview": True,
+        },
+    )
+    fig.update_traces(text=chart_data["label"], textinfo="text")
+    fig.update_layout(margin=dict(t=10, l=10, r=10, b=10), height=520)
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def render_selected_theme_leaders(leaders: pd.DataFrame) -> None:
+    if leaders.empty:
+        st.info("선택한 테마의 대장주 Top 5 데이터가 없습니다.")
+        return
+
+    required = ["rank", "name", "code", "change_rate", "current_price", "trade_value", "leader_score"]
+    missing = _require_columns(leaders, required)
+    if missing:
+        st.warning(f"대장주 데이터 컬럼이 부족합니다: {', '.join(missing)}")
+        st.dataframe(leaders, use_container_width=True, hide_index=True)
+        return
+
+    display = leaders[required].copy().rename(
+        columns={
+            "rank": "순위",
+            "name": "종목명",
+            "code": "코드",
+            "change_rate": "등락률",
+            "current_price": "현재가",
+            "trade_value": "거래대금",
+            "leader_score": "대장주 점수",
+        }
+    )
+    display["등락률"] = display["등락률"].map(format_pct)
+    display["현재가"] = display["현재가"].map(lambda value: f"{float(value or 0):,.0f}원")
+    display["거래대금"] = display["거래대금"].map(lambda value: format_krw(float(value or 0)))
+    display["대장주 점수"] = display["대장주 점수"].map(lambda value: f"{float(value or 0):.2f}")
+    st.dataframe(display, use_container_width=True, hide_index=True)
+
+
+def render_theme_timeline(timeline: pd.DataFrame) -> None:
+    if timeline.empty:
+        st.info("실제 최근 5거래일 테마 지속성 데이터가 아직 없습니다. 현재 MVP는 단일 스냅샷 기준으로 표시합니다.")
+        return
+
+    required = ["date", "theme_name", "sector_score", "is_dummy_timeline"]
+    missing = _require_columns(timeline, required)
+    if missing:
+        st.warning(f"타임라인 데이터 컬럼이 부족합니다: {', '.join(missing)}")
+        st.dataframe(timeline, use_container_width=True, hide_index=True)
+        return
+
+    display = timeline[required].copy().rename(
+        columns={
+            "date": "일자",
+            "theme_name": "테마",
+            "sector_score": "점수",
+            "is_dummy_timeline": "더미 여부",
+        }
+    )
+    st.dataframe(display, use_container_width=True, hide_index=True)
+    if timeline["is_dummy_timeline"].astype(bool).any():
+        st.caption("타임라인은 실제 과거 데이터가 아닌 더미 표시를 포함합니다.")

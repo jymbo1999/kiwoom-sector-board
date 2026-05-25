@@ -91,3 +91,49 @@ Flask route/template/static 파일 생성 금지
 실제 Kiwoom API 연결 금지
 DB migration 금지
 대규모 프론트엔드 프레임워크 도입 금지
+---
+
+## 작업 실행 정리
+
+### 1. 사용자 요청
+
+Streamlit 화면에서 주도테마 정보판 MVP를 실제로 표시하고, REQUEST_02 view-model을 사용해 시장 요약·테마 흐름·선택 테마 Top 5·타임라인 영역을 구성한다.
+
+### 2. 작업 범위
+
+- `app.py`에서 `get_market_summary()`, `get_theme_heatmap()`, `get_theme_leaders()`, `get_theme_timeline()` 호출
+- `src/dashboard_components.py`에 시장 요약 metric, treemap/fallback heatmap, Top 5, timeline 렌더 함수 추가
+- 기존 카드형 섹터맵/관전표 UI는 접힌 expander로 유지
+- 수동 새로고침과 Streamlit cache 유지
+
+### 3. 관련 파일 후보
+
+- `app.py`
+- `src/dashboard_components.py`
+- `src/market_data.py` (기존 함수 재사용)
+- `requests/REQUEST_03_market_theme_template.md`
+
+### 4. 리스크
+
+- Plotly가 requirements에 없으므로 미설치 환경에서는 table fallback으로 표시한다.
+- 최근 5거래일 실제 히스토리 데이터는 아직 없으므로 단일 스냅샷을 지속성처럼 과장하지 않는다.
+- Flask route/template/static, DB, 실제 Kiwoom 연결, 대규모 프론트엔드 의존성은 추가하지 않는다.
+
+### 5. 검증 계획
+
+```bash
+python -m py_compile app.py src/*.py
+pytest -q
+streamlit run app.py
+git diff --check
+git status --short
+git diff --stat
+```
+
+### 6. 완료 기준
+
+- 시장 요약, 기준 시각, `market_phase`가 보인다.
+- 테마 treemap 또는 fallback heatmap이 보인다.
+- selectbox 선택에 따라 Top 5가 바뀐다.
+- 타임라인 영역은 데이터 부재를 안전하게 안내한다.
+- 관련 검증이 통과하고 관련 파일만 커밋한다.
