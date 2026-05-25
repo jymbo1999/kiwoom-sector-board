@@ -1,19 +1,22 @@
+
 # AGENTS.md
 
-This repository uses `AGENTS.md` as the main long-form instruction file.  
-Keep this file short because agents read it every run.
+This repository is a local Streamlit dashboard project for Korean stock market sector/theme monitoring.
+
+Use this AGENTS.md and the active request file under requests/ as the source of truth.
 
 ## Core rules
 
-1. Read `AGENTS.md` first.
-2. Follow the active request file under `requests/`.
-3. Touch only files directly relevant to the request.
-4. Prefer small, safe, compatibility-preserving changes.
-5. Do not remove existing features, fallbacks, TODOs, defensive code, or user data.
-6. Do not run `git add .`.
-7. Stage only related files explicitly.
-8. Do not commit generated zips, runtime DBs, backups, `.env`, virtualenvs, build artifacts, local settings, or untracked user files.
-9. If scope is unclear or risky, stop and report instead of guessing.
+1. Follow the active request file under `requests/`.
+2. This is currently a Streamlit app, not a Flask app.
+3. Main entrypoint is `app.py`.
+4. Main UI layer is `src/dashboard_components.py`.
+5. Data/ranking logic is under `src/theme_loader.py`, `src/market_data.py`, and `src/sector_ranker.py`.
+6. Touch only files directly relevant to the request.
+7. Prefer small, safe, compatibility-preserving changes.
+8. Do not remove existing features, fallbacks, TODOs, defensive code, or user data.
+9. Do not run `git add .`.
+10. If the folder is not a Git repository, do not attempt commits; report that Git is unavailable.
 
 ## Request file rule
 
@@ -45,73 +48,35 @@ Stop and report before continuing if any of these are required:
 - production schema uncertainty
 - missing critical dependencies preventing verification
 
-## DB / Render PostgreSQL rule
+## DB rule
 
-Render production may use `DISABLE_STARTUP_SCHEMA=1`.
+This project currently should not add a database unless explicitly requested.
 
-Agents must not assume production DB schema is auto-patched at startup.
-
-If a change touches models, DB columns, DB tables, relationships, or queries expecting new schema:
-
-1. Check whether production DB migration is needed.
-2. Use only non-destructive SQL unless explicitly approved.
-3. Prefer:
-
-```sql
-ALTER TABLE table_name ADD COLUMN IF NOT EXISTS column_name TYPE;
-```
-
-4. Do not use `DROP`, `DELETE`, `TRUNCATE`, destructive rename, or data-loss migration without explicit approval.
-5. Final report must include:
-
-```text
-Production DB migration needed: YES/NO
-```
-
-If YES, include safe SQL, verification SQL, reason it is safe, and post-deploy checks.
+If a change proposes DB tables, migrations, PostgreSQL, SQLite schema, or persistent storage changes, stop and report first.
 
 ## Verification baseline
 
-Use only relevant checks.
+Use only relevant checks for this Streamlit project.
 
-Python:
-
-```bash
-uv run python -m py_compile apps/__init__.py apps/models.py apps/home/routes.py
-```
-
-Service files when touched:
+Python syntax:
 
 ```bash
-uv run python -m py_compile apps/services/ai.py apps/services/rag.py apps/services/curriculum_gpt.py apps/services/review_export.py
-```
+python -m py_compile app.py src/*.py
 
-Templates when touched:
+Tests:
 
-```bash
-uv run python - <<'PY'
-from jinja2 import Environment, FileSystemLoader
+pytest -q
 
-env = Environment(loader=FileSystemLoader("templates"))
-for t in ["home/child_detail.html", "includes/sidebar.html", "home/duty_schedule.html"]:
-    env.get_template(t)
-    print("OK", t)
-PY
-```
+Streamlit smoke check:
 
-Render startup when app init/schema/deployment changed:
+streamlit run app.py
 
-```bash
-RENDER=1 uv run python - <<'PY'
-from apps import create_app
-app = create_app()
-print("app ok", app.name)
-PY
-```
+Render start command:
+
+streamlit run app.py --server.address 0.0.0.0 --server.port $PORT
 
 Diff hygiene:
 
-```bash
 git diff --check
 git status --short
 git diff --stat

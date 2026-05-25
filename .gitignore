@@ -4,3 +4,7 @@ __pycache__/
 .pytest_cache/
 *.py[cod]
 .DS_Store
+
+.omx_logs/
+*.pyc
+.streamlit/secrets.toml
