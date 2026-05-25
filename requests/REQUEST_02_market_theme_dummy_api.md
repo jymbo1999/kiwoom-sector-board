@@ -89,3 +89,11 @@ data/theme_map.csv가 이미 있으면 그것을 우선 사용한다.
 ```bash
 python -m py_compile app.py src/*.py
 pytest -q
+```
+
+## 제한
+
+실제 Kiwoom API 연결 금지
+DB 추가 금지
+Flask route 추가 금지
+Streamlit UI 구현은 REQUEST_03에서 처리
