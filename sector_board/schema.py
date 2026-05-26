@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import Column, Date, DateTime, Integer, MetaData, Table, Text, UniqueConstraint
+from sqlalchemy import Column, Date, DateTime, Integer, MetaData, String, Table, Text, UniqueConstraint
 
 
 metadata = MetaData()
@@ -16,5 +16,8 @@ sector_snapshots = Table(
     Column("leaders_json", Text, nullable=False, default="[]"),
     Column("created_at", DateTime, nullable=False),
     Column("updated_at", DateTime, nullable=False),
+    Column("refresh_status", String(20), nullable=True),
+    Column("refresh_started_at", DateTime, nullable=True),
+    Column("refresh_error", Text, nullable=True),
     UniqueConstraint("snapshot_date", name="uq_sector_snapshots_snapshot_date"),
 )

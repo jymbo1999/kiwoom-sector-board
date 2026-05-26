@@ -4,6 +4,9 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ url_for('sector_board.static', filename='sector_board.css') }}">
+{% if refresh_status == 'running' %}
+<meta http-equiv="refresh" content="5">
+{% endif %}
 {% endblock stylesheets %}
 
 {% block content %}
@@ -13,12 +16,20 @@
       <p class="sector-board-kicker">Market Snapshot</p>
       <h1>오늘의 주도섹터</h1>
     </div>
-    {% if snapshot %}
-    <div class="sector-board-timestamp">
-      <span>마지막 갱신</span>
-      <strong>{{ snapshot.generated_at }}</strong>
+    <div class="sector-board-header-right">
+      {% if snapshot %}
+      <div class="sector-board-timestamp">
+        <span>마지막 갱신</span>
+        <strong>{{ snapshot.generated_at }}</strong>
+      </div>
+      {% endif %}
+      <form method="post" action="{{ url_for('sector_board.refresh') }}" style="margin:0">
+        <button type="submit" class="sector-board-refresh-btn"
+          {% if refresh_status == 'running' %}disabled{% endif %}>
+          {% if refresh_status == 'running' %}갱신 중…{% else %}새로고침{% endif %}
+        </button>
+      </form>
     </div>
-    {% endif %}
   </section>
 
   {% if error_message %}
@@ -27,11 +38,28 @@
   </div>
   {% endif %}
 
-  {% if not snapshot %}
+  {% if refresh_status == 'running' %}
+  <section class="sector-board-collecting">
+    <div class="sector-board-spinner"></div>
+    <h2>오늘 데이터 수집 중…</h2>
+    <p>Kiwoom API에서 섹터 데이터를 가져오고 있습니다. 5초마다 자동으로 갱신됩니다.</p>
+  </section>
+
+  {% elif refresh_status == 'error' and not snapshot %}
+  <section class="sector-board-collecting">
+    <h2>데이터 수집 오류</h2>
+    {% if refresh_error %}
+    <p class="sector-board-error-detail">{{ refresh_error }}</p>
+    {% endif %}
+    <p>위 "새로고침" 버튼으로 재시도할 수 있습니다.</p>
+  </section>
+
+  {% elif not snapshot %}
   <section class="sector-board-empty">
     <h2>오늘 저장된 섹터보드 스냅샷이 없습니다.</h2>
-    <p>로컬 Streamlit 앱에서 장중 데이터를 한 번 수집하면 이 화면은 DB에 저장된 스냅샷만 읽어서 표시합니다.</p>
+    <p>데이터 수집을 시작하려면 "새로고침" 버튼을 누르세요.</p>
   </section>
+
   {% else %}
   <section class="sector-board-metrics">
     <div>

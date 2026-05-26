@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from datetime import date
+import os
+from datetime import date, datetime
 from math import isfinite
 
-from flask import Blueprint, current_app, jsonify, render_template
+from flask import Blueprint, current_app, jsonify, redirect, render_template, url_for
 from sqlalchemy.exc import SQLAlchemyError
 
 from .auth import auth_gate
@@ -76,6 +77,25 @@ def _build_sector_rows(themes: list[dict], leaders: list[dict], limit: int = 12)
     return rows
 
 
+def _get_max_age_seconds() -> int:
+    try:
+        return max(60, int(os.environ.get("SECTOR_BOARD_REFRESH_MAX_AGE_SECONDS") or 900))
+    except (TypeError, ValueError):
+        return 900
+
+
+def _is_snapshot_stale(snapshot: dict) -> bool:
+    """Return True if the snapshot is older than SECTOR_BOARD_REFRESH_MAX_AGE_SECONDS."""
+    generated_at_str = snapshot.get("generated_at")
+    if not generated_at_str:
+        return False
+    try:
+        generated_at = datetime.fromisoformat(generated_at_str)
+        return (datetime.now() - generated_at).total_seconds() > _get_max_age_seconds()
+    except (ValueError, TypeError):
+        return False
+
+
 def create_sector_board_blueprint() -> Blueprint:
     blueprint = Blueprint(
         "sector_board",
@@ -94,25 +114,74 @@ def create_sector_board_blueprint() -> Blueprint:
         database_url = resolve_database_url(app=current_app)
         snapshot = None
         error_message = None
-        if database_url:
+        refresh_status = "idle"
+        refresh_error_msg = None
+
+        if not database_url:
+            error_message = "SECTOR_BOARD_DATABASE_URL이 설정되지 않았습니다."
+        else:
             try:
                 snapshot = fetch_snapshot(database_url=database_url, snapshot_date=date.today())
             except SQLAlchemyError as exc:
                 error_message = str(exc)
-        else:
-            error_message = "SECTOR_BOARD_DATABASE_URL is not configured."
+
+            if snapshot is not None:
+                refresh_status = snapshot.get("refresh_status") or "success"
+                refresh_error_msg = snapshot.get("refresh_error")
+
+            # Decide whether to trigger auto-collect
+            needs_collect = (
+                snapshot is None
+                or (refresh_status == "error" and not snapshot.get("themes"))
+            )
+            if needs_collect and not error_message:
+                try:
+                    from .collector import schedule_background_collect
+                    started = schedule_background_collect(database_url)
+                    if started:
+                        # Re-fetch to get the 'running' row
+                        snapshot = fetch_snapshot(database_url=database_url, snapshot_date=date.today())
+                        refresh_status = "running"
+                    elif snapshot is None:
+                        # Already running in another thread/worker
+                        refresh_status = "running"
+                except ImportError:
+                    error_message = "수집 모듈(src)을 불러올 수 없습니다. 패키지 설정을 확인하세요."
+                except Exception as exc:
+                    error_message = f"데이터 수집 시작 실패: {exc}"
+
+        has_data = (
+            snapshot is not None
+            and refresh_status not in ("running",)
+            and bool((snapshot or {}).get("themes"))
+        )
 
         return render_template(
             "sector_board/index.html",
-            layout_template=current_app.config.get("SECTOR_BOARD_LAYOUT_TEMPLATE", "sector_board/standalone.html"),
-            snapshot=snapshot,
-            summary=(snapshot or {}).get("summary", {}),
+            layout_template=current_app.config.get(
+                "SECTOR_BOARD_LAYOUT_TEMPLATE", "sector_board/standalone.html"
+            ),
+            snapshot=snapshot if has_data else None,
+            summary=(snapshot or {}).get("summary", {}) if has_data else {},
             sector_rows=_build_sector_rows(
                 (snapshot or {}).get("themes", []),
                 (snapshot or {}).get("leaders", []),
-            ),
+            ) if has_data else [],
             error_message=error_message,
+            refresh_status=refresh_status,
+            refresh_error=refresh_error_msg,
         )
+
+    @blueprint.route("/refresh", methods=["POST"])
+    def refresh():
+        database_url = resolve_database_url(app=current_app)
+        if database_url:
+            try:
+                from .collector import schedule_background_collect
+                schedule_background_collect(database_url)
+            except Exception:
+                pass
+        return redirect(url_for("sector_board.index"))
 
     @blueprint.route("/api/snapshot")
     def api_snapshot():
@@ -139,6 +208,7 @@ def create_sector_board_blueprint() -> Blueprint:
                 "database": "ok",
                 "latest_snapshot_date": None if snapshot is None else snapshot.get("snapshot_date"),
                 "latest_generated_at": None if snapshot is None else snapshot.get("generated_at"),
+                "refresh_status": None if snapshot is None else snapshot.get("refresh_status"),
             }
         )
 

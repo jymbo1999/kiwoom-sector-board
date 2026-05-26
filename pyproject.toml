@@ -11,13 +11,19 @@ dependencies = [
   "Flask>=3.1.0",
   "SQLAlchemy>=2.0.38",
   "psycopg[binary]>=3.2.0",
+  "pandas>=2.2.0",
+  "requests>=2.32.0",
+  "python-dotenv>=1.0.1",
 ]
 
 [tool.setuptools]
-packages = ["sector_board"]
+packages = ["sector_board", "src"]
 
 [tool.setuptools.package-data]
 sector_board = [
   "templates/sector_board/*.html",
   "static/*.css",
+]
+src = [
+  "data/*.csv",
 ]

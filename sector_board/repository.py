@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from datetime import date, datetime
 import json
+import logging
 import os
 from typing import Any
 
 from flask import Flask
-from sqlalchemy import Engine, create_engine, desc, select, update
+from sqlalchemy import Engine, create_engine, desc, inspect as sa_inspect, select, text, update
 from sqlalchemy.dialects.postgresql import insert as postgresql_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
 from .payload import normalize_snapshot_payload
 from .schema import metadata, sector_snapshots
+
+_log = logging.getLogger(__name__)
 
 
 def normalize_database_url(database_url: str) -> str:
@@ -47,9 +50,75 @@ def create_snapshot_engine(database_url: str) -> Engine:
     return create_engine(normalize_database_url(database_url), future=True)
 
 
+def _ensure_refresh_columns(engine: Engine) -> None:
+    """Add refresh tracking columns to an existing table that predates them."""
+    try:
+        insp = sa_inspect(engine)
+        if "sector_snapshots" not in insp.get_table_names():
+            return
+        existing_cols = {c["name"] for c in insp.get_columns("sector_snapshots")}
+        is_pg = engine.dialect.name == "postgresql"
+        with engine.begin() as conn:
+            for col, col_type in [
+                ("refresh_status", "VARCHAR(20)"),
+                ("refresh_started_at", "TIMESTAMP"),
+                ("refresh_error", "TEXT"),
+            ]:
+                if col not in existing_cols:
+                    if is_pg:
+                        conn.execute(text(
+                            f"ALTER TABLE sector_snapshots ADD COLUMN IF NOT EXISTS {col} {col_type}"
+                        ))
+                    else:
+                        conn.execute(text(
+                            f"ALTER TABLE sector_snapshots ADD COLUMN {col} {col_type}"
+                        ))
+    except Exception as exc:
+        _log.warning("[sector-board] _ensure_refresh_columns failed: %s", exc)
+
+
 def ensure_schema(database_url: str | None = None, engine: Engine | None = None) -> None:
     active_engine = engine or create_snapshot_engine(database_url or "")
     metadata.create_all(active_engine, tables=[sector_snapshots], checkfirst=True)
+    _ensure_refresh_columns(active_engine)
+
+
+def _upsert_row(
+    engine: Engine,
+    full_values: dict[str, Any],
+    on_conflict_updates: dict[str, Any],
+) -> None:
+    """Dialect-aware upsert for sector_snapshots."""
+    with engine.begin() as conn:
+        dialect = conn.dialect.name
+        if dialect == "postgresql":
+            stmt = postgresql_insert(sector_snapshots).values(**full_values)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=[sector_snapshots.c.snapshot_date],
+                set_=on_conflict_updates,
+            )
+            conn.execute(stmt)
+        elif dialect == "sqlite":
+            stmt = sqlite_insert(sector_snapshots).values(**full_values)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=[sector_snapshots.c.snapshot_date],
+                set_=on_conflict_updates,
+            )
+            conn.execute(stmt)
+        else:
+            existing = conn.execute(
+                select(sector_snapshots.c.id).where(
+                    sector_snapshots.c.snapshot_date == full_values["snapshot_date"]
+                )
+            ).scalar_one_or_none()
+            if existing is None:
+                conn.execute(sector_snapshots.insert().values(**full_values))
+            else:
+                conn.execute(
+                    update(sector_snapshots)
+                    .where(sector_snapshots.c.id == existing)
+                    .values(**on_conflict_updates)
+                )
 
 
 def upsert_snapshot(
@@ -64,7 +133,7 @@ def upsert_snapshot(
 
     normalized = normalize_snapshot_payload(payload)
     now = datetime.now()
-    values = {
+    full_values = {
         "snapshot_date": normalized["snapshot_date"],
         "fetched_at": normalized["generated_at"],
         "summary_json": json.dumps(normalized["summary"], ensure_ascii=False),
@@ -72,73 +141,101 @@ def upsert_snapshot(
         "leaders_json": json.dumps(normalized["leaders"], ensure_ascii=False),
         "created_at": now,
         "updated_at": now,
+        "refresh_status": "success",
+        "refresh_started_at": now,
+        "refresh_error": None,
     }
-
-    with active_engine.begin() as connection:
-        dialect = connection.dialect.name
-        if dialect == "postgresql":
-            stmt = postgresql_insert(sector_snapshots).values(**values)
-            stmt = stmt.on_conflict_do_update(
-                index_elements=[sector_snapshots.c.snapshot_date],
-                set_={
-                    "fetched_at": stmt.excluded.fetched_at,
-                    "summary_json": stmt.excluded.summary_json,
-                    "themes_json": stmt.excluded.themes_json,
-                    "leaders_json": stmt.excluded.leaders_json,
-                    "updated_at": stmt.excluded.updated_at,
-                },
-            )
-            connection.execute(stmt)
-        elif dialect == "sqlite":
-            stmt = sqlite_insert(sector_snapshots).values(**values)
-            stmt = stmt.on_conflict_do_update(
-                index_elements=[sector_snapshots.c.snapshot_date],
-                set_={
-                    "fetched_at": stmt.excluded.fetched_at,
-                    "summary_json": stmt.excluded.summary_json,
-                    "themes_json": stmt.excluded.themes_json,
-                    "leaders_json": stmt.excluded.leaders_json,
-                    "updated_at": stmt.excluded.updated_at,
-                },
-            )
-            connection.execute(stmt)
-        else:
-            existing = connection.execute(
-                select(sector_snapshots.c.id).where(
-                    sector_snapshots.c.snapshot_date == values["snapshot_date"]
-                )
-            ).scalar_one_or_none()
-            if existing is None:
-                connection.execute(sector_snapshots.insert().values(**values))
-            else:
-                connection.execute(
-                    update(sector_snapshots)
-                    .where(sector_snapshots.c.id == existing)
-                    .values(
-                        fetched_at=values["fetched_at"],
-                        summary_json=values["summary_json"],
-                        themes_json=values["themes_json"],
-                        leaders_json=values["leaders_json"],
-                        updated_at=values["updated_at"],
-                    )
-                )
-
+    on_conflict = {
+        "fetched_at": full_values["fetched_at"],
+        "summary_json": full_values["summary_json"],
+        "themes_json": full_values["themes_json"],
+        "leaders_json": full_values["leaders_json"],
+        "updated_at": now,
+        "refresh_status": "success",
+        "refresh_error": None,
+    }
+    _upsert_row(active_engine, full_values, on_conflict)
     return {
         "sector_db_status": "upserted",
         "sector_db_snapshot_date": normalized["snapshot_date"].isoformat(),
     }
 
 
+def set_refresh_running(
+    database_url: str | None = None,
+    engine: Engine | None = None,
+    snapshot_date: date | None = None,
+) -> None:
+    active_engine = engine or create_snapshot_engine(database_url or "")
+    today = snapshot_date or date.today()
+    now = datetime.now()
+    full_values = {
+        "snapshot_date": today,
+        "fetched_at": now,
+        "summary_json": "{}",
+        "themes_json": "[]",
+        "leaders_json": "[]",
+        "created_at": now,
+        "updated_at": now,
+        "refresh_status": "running",
+        "refresh_started_at": now,
+        "refresh_error": None,
+    }
+    on_conflict = {
+        "refresh_status": "running",
+        "refresh_started_at": now,
+        "refresh_error": None,
+        "updated_at": now,
+    }
+    _upsert_row(active_engine, full_values, on_conflict)
+
+
+def set_refresh_error(
+    error: str,
+    database_url: str | None = None,
+    engine: Engine | None = None,
+    snapshot_date: date | None = None,
+) -> None:
+    active_engine = engine or create_snapshot_engine(database_url or "")
+    today = snapshot_date or date.today()
+    now = datetime.now()
+    full_values = {
+        "snapshot_date": today,
+        "fetched_at": now,
+        "summary_json": "{}",
+        "themes_json": "[]",
+        "leaders_json": "[]",
+        "created_at": now,
+        "updated_at": now,
+        "refresh_status": "error",
+        "refresh_started_at": now,
+        "refresh_error": (error or "")[:500],
+    }
+    on_conflict = {
+        "refresh_status": "error",
+        "refresh_error": (error or "")[:500],
+        "updated_at": now,
+    }
+    _upsert_row(active_engine, full_values, on_conflict)
+
+
 def _row_to_payload(row: Any) -> dict[str, Any] | None:
     if row is None:
         return None
-    mapping = row._mapping
+    m = row._mapping
+    rs_raw = m.get("refresh_status")
+    started_raw = m.get("refresh_started_at")
     return {
-        "snapshot_date": mapping["snapshot_date"].isoformat(),
-        "generated_at": mapping["fetched_at"].isoformat(timespec="seconds"),
-        "summary": json.loads(mapping["summary_json"] or "{}"),
-        "themes": json.loads(mapping["themes_json"] or "[]"),
-        "leaders": json.loads(mapping["leaders_json"] or "[]"),
+        "snapshot_date": m["snapshot_date"].isoformat(),
+        "generated_at": m["fetched_at"].isoformat(timespec="seconds"),
+        "summary": json.loads(m["summary_json"] or "{}"),
+        "themes": json.loads(m["themes_json"] or "[]"),
+        "leaders": json.loads(m["leaders_json"] or "[]"),
+        "refresh_status": rs_raw or "success",
+        "refresh_started_at": (
+            started_raw.isoformat(timespec="seconds") if started_raw else None
+        ),
+        "refresh_error": m.get("refresh_error"),
     }
 
 
