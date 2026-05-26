@@ -11,7 +11,8 @@
 - `theme_map.csv` 기반 다중 테마 매핑
 - 섹터 강도 점수 계산
 - 섹터별 대장주 TOP 5 선정
-- API 실패 또는 Mock 모드에서 `sample_prices.csv` fallback
+- API 실패 또는 Mock/Dummy 모드에서 `sample_prices.csv` fallback
+- Streamlit + Plotly treemap 기반 테마 흐름 표시
 - 향후 WebSocket 실시간화가 쉽도록 Kiwoom adapter 분리
 
 ## macOS Apple Silicon 설치
@@ -26,39 +27,70 @@ cp .env.example .env
 streamlit run app.py
 ```
 
-## .env 설정
+## Render 배포 설정
 
-`.env.example`을 `.env`로 복사한 뒤 값을 채웁니다.
+Render Web Service 기준 설정값입니다.
+
+Build Command:
+
+```bash
+pip install -r requirements.txt
+```
+
+Start Command:
+
+```bash
+streamlit run app.py --server.address 0.0.0.0 --server.port $PORT
+```
+
+실제 Kiwoom API 연결 전에는 환경변수 `USE_DUMMY_DATA=true`를 유지하면 `data/sample_prices.csv`로 화면을 확인할 수 있습니다.
+
+## .env / Render 환경변수
+
+`.env.example`을 `.env`로 복사한 뒤 값을 채웁니다. Render에서는 같은 이름을 Environment Variables에 등록합니다.
 
 ```dotenv
 KIWOOM_APP_KEY=
-KIWOOM_SECRET_KEY=
+KIWOOM_APP_SECRET=
 KIWOOM_BASE_URL=
 KIWOOM_ACCOUNT_NO=
+USE_DUMMY_DATA=true
+```
+
+호환을 위해 기존 이름도 계속 지원합니다.
+
+```dotenv
+KIWOOM_SECRET_KEY=
 KIWOOM_USE_MOCK=true
 ```
 
-`KIWOOM_ACCOUNT_NO`는 이번 조회 전용 MVP에서는 사용하지 않으며, 화면에도 출력하지 않습니다. 향후 계좌 기반 조회 확장 대비용 자리입니다.
+- `KIWOOM_APP_KEY`: 향후 Kiwoom REST API App Key입니다.
+- `KIWOOM_APP_SECRET`: 향후 Kiwoom REST API Secret입니다. 기존 `KIWOOM_SECRET_KEY`도 fallback으로 읽습니다.
+- `KIWOOM_ACCOUNT_NO`: 이번 조회 전용 MVP에서는 사용하지 않으며, 화면에도 출력하지 않습니다. 향후 계좌 기반 조회 확장 대비용 자리입니다.
+- `USE_DUMMY_DATA`: `true`이면 실제 API를 호출하지 않고 더미 데이터로 실행합니다. 기존 `KIWOOM_USE_MOCK`도 fallback으로 읽습니다.
+- `KIWOOM_BASE_URL`: 비워두면 더미 모드에서는 `https://mockapi.kiwoom.com`, 실제 모드에서는 `https://api.kiwoom.com` 기본값을 사용합니다.
 
-## Mock 모드 실행
+민감정보는 README, 코드, 커밋에 넣지 말고 `.env` 또는 Render 환경변수에만 저장합니다.
 
-첫 실행은 Mock 모드가 기본입니다.
+## Dummy/Mock 모드 실행
+
+첫 실행은 Dummy/Mock 모드가 기본입니다.
 
 ```dotenv
-KIWOOM_USE_MOCK=true
+USE_DUMMY_DATA=true
 ```
 
 이 경우 키움 API를 호출하지 않고 `data/sample_prices.csv`를 사용합니다. 샘플 데이터는 화면과 계산 로직 검증용 임의 데이터이며 투자 추천이 아닙니다.
 
 ## 실제 API 모드 전환
 
-키움 REST API 사용신청 후 App Key와 Secret Key를 `.env`에 입력하고 Mock 모드를 끕니다.
+키움 REST API 사용신청 후 App Key와 Secret을 `.env` 또는 Render 환경변수에 입력하고 Dummy 모드를 끕니다.
 
 ```dotenv
 KIWOOM_APP_KEY=your_app_key
-KIWOOM_SECRET_KEY=your_secret_key
+KIWOOM_APP_SECRET=your_secret
 KIWOOM_BASE_URL=https://api.kiwoom.com
-KIWOOM_USE_MOCK=false
+USE_DUMMY_DATA=false
 ```
 
 모의투자 도메인을 사용할 때는 `KIWOOM_BASE_URL=https://mockapi.kiwoom.com`로 설정합니다.
@@ -100,7 +132,8 @@ MVP에서 `theme_representative_score`는 1.0 고정입니다. 향후 `theme_map
 ## 검증
 
 ```bash
-python -m compileall .
-pytest
-python -c "import streamlit; import app; print('streamlit import ok')"
+python3 -m py_compile app.py src/*.py
+python3 -m pytest -q
+git diff --check
+git status --short
 ```

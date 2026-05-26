@@ -1,85 +1,59 @@
-## REQUEST_04 — Render 배포/마무리
-
-```markdown
 # REQUEST_04: 주도테마 정보판 — Render 배포 준비와 최종 검증
 
-## 전제
+## 1. 사용자 요청
 
-REQUEST_01 ~ REQUEST_03 결과를 먼저 읽고 따른다.
+- 기존 Streamlit 주도테마 정보판을 Render Web Service에 배포 가능한 상태로 정리한다.
+- 실제 Kiwoom API 연결 없이 더미 데이터로 treemap, 선택 테마 대장주 Top 5, 최근 테마 타임라인 영역이 확인 가능해야 한다.
+- 민감정보를 코드에 넣지 않고 향후 Kiwoom 실시간 데이터로 교체하기 쉬운 구조를 유지한다.
 
-이번 단계의 목표는 Streamlit 앱을 Render에 배포 가능한 상태로 정리하고 최종 검증하는 것이다.
+## 2. 작업 범위
 
-## 확인할 파일
+- Render Build/Start Command 문서화
+- `requirements.txt` 의존성과 실제 코드 사용 일치 확인
+- 환경변수 이름과 mock/dummy 실행 방법 정리
+- 기존 Streamlit 구조 유지 및 Flask/DB 추가 금지
+- 최종 검증 명령 실행
 
-- requirements.txt
-- README.md
-- app.py
-- src/config.py
-- .gitignore
+## 3. 관련 파일 후보
 
-## Render 설정
+- `requirements.txt`
+- `README.md`
+- `.env.example`
+- `.gitignore`
+- `app.py`
+- `src/config.py`
+- `src/dashboard_components.py`
+- `src/market_data.py`
 
-Render Web Service 기준:
+## 4. 리스크
 
-Build Command:
+- `plotly` 누락 시 Render에서 treemap 대신 fallback 표가 표시될 수 있음
+- README 환경변수와 실제 코드 환경변수가 다르면 Render 설정자가 혼동할 수 있음
+- 실제 Kiwoom API 키/시크릿을 커밋하면 안 됨
+- 실제 과거 데이터가 없어 타임라인은 MVP 안내/스키마 중심으로 표시됨
+
+## 5. 검증 계획
 
 ```bash
-pip install -r requirements.txt
+python3 -m py_compile app.py src/*.py
+python3 -m pytest -q
+git diff --check
+git status --short
+git diff --stat
+```
 
-Start Command:
+가능하면 로컬 smoke:
 
+```bash
+streamlit run app.py
 streamlit run app.py --server.address 0.0.0.0 --server.port $PORT
 ```
 
+## 6. 완료 기준
 
-requirements.txt 확인
-
-다음 의존성이 실제 코드 사용과 일치하는지 확인한다.
-
-streamlit
-pandas
-plotly
-requests
-python-dotenv
-pytest
-
-사용하지 않는 무거운 패키지는 추가하지 않는다.
-
-환경변수
-
-실제 Kiwoom API 연결은 아직 하지 않는다.
-
-다만 나중을 위해 다음 값이 필요한지 README에만 정리한다.
-
-KIWOOM_APP_KEY
-KIWOOM_APP_SECRET
-KIWOOM_ACCOUNT_NO
-USE_DUMMY_DATA
-
-민감정보는 절대 코드에 넣지 않는다.
-
-최종 검증
-python -m py_compile app.py src/*.py
-pytest -q
-git diff --check
-git status --short
-
-가능하면 로컬에서:
-
-streamlit run app.py
-최종 성공 기준
-Streamlit 앱이 실행된다.
-주도테마 정보판이 보인다.
-더미 데이터로 테마 treemap이 표시된다.
-선택한 테마의 대장주 Top 5가 표시된다.
-최근 테마 타임라인이 표시된다.
-실제 Kiwoom API 없이도 Render에 배포 가능하다.
-나중에 Kiwoom 실시간 데이터로 교체하기 쉬운 구조다.
-제한
-실제 Kiwoom API 연결 금지
-DB 추가 금지
-Flask 구조 추가 금지
-민감정보 커밋 금지
-대규모 리팩토링 금지
-
----
+- Streamlit 앱이 더미 데이터 기본값으로 실행 가능
+- Render Build Command와 Start Command가 문서화됨
+- `plotly` 포함 의존성이 실제 UI 코드와 일치
+- `KIWOOM_APP_KEY`, `KIWOOM_APP_SECRET`, `KIWOOM_ACCOUNT_NO`, `USE_DUMMY_DATA` 관련 안내가 README에 있음
+- 기존 `KIWOOM_SECRET_KEY`, `KIWOOM_USE_MOCK` 사용자도 깨지지 않음
+- 실제 Kiwoom API 연결, DB, Flask 구조, 민감정보 커밋 없음

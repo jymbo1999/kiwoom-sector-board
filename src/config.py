@@ -30,14 +30,17 @@ class Settings:
 
 def load_settings() -> Settings:
     load_dotenv(PROJECT_ROOT / ".env")
-    use_mock = _as_bool(os.getenv("KIWOOM_USE_MOCK"), default=True)
+    use_mock = _as_bool(
+        os.getenv("USE_DUMMY_DATA", os.getenv("KIWOOM_USE_MOCK")),
+        default=True,
+    )
     base_url = os.getenv("KIWOOM_BASE_URL") or (
         "https://mockapi.kiwoom.com" if use_mock else "https://api.kiwoom.com"
     )
 
     return Settings(
         app_key=os.getenv("KIWOOM_APP_KEY", ""),
-        secret_key=os.getenv("KIWOOM_SECRET_KEY", ""),
+        secret_key=os.getenv("KIWOOM_APP_SECRET", os.getenv("KIWOOM_SECRET_KEY", "")),
         base_url=base_url.rstrip("/"),
         account_no=os.getenv("KIWOOM_ACCOUNT_NO", ""),
         use_mock=use_mock,
