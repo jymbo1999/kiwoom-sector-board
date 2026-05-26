@@ -14,15 +14,36 @@ def collect_and_store(
     snapshot_date: date | None = None,
 ) -> dict[str, Any]:
     """Collect Kiwoom data and persist to DB. Raises on failure."""
-    from src.market_data import get_morning_board_view_models
-    from src.snapshot_service import build_morning_snapshot_payload
+    import sys
+    _log.info("[sector-board] Python %s | site-packages: %s", sys.version.split()[0],
+              next((p for p in sys.path if "site-packages" in p), "?"))
+
+    try:
+        from src.market_data import get_morning_board_view_models
+        _log.info("[sector-board] src.market_data imported OK")
+    except ImportError as exc:
+        import traceback
+        _log.error("[sector-board] src.market_data import FAILED:\n%s", traceback.format_exc())
+        raise
+
+    try:
+        from src.snapshot_service import build_morning_snapshot_payload
+    except ImportError as exc:
+        _log.error("[sector-board] src.snapshot_service import FAILED: %s", exc)
+        raise
+
     from .repository import upsert_snapshot
 
     today = snapshot_date or date.today()
+    _log.info("[sector-board] calling get_morning_board_view_models()")
     summary, heatmap, leaders = get_morning_board_view_models()
+    _log.info("[sector-board] got summary=%s themes=%d leaders=%d",
+              summary.get("data_mode"), len(heatmap), len(leaders))
     payload = build_morning_snapshot_payload(summary, heatmap, leaders, generated_at=datetime.now())
     payload["snapshot_date"] = today.isoformat()
-    return upsert_snapshot(payload, database_url=database_url, auto_create=True)
+    result = upsert_snapshot(payload, database_url=database_url, auto_create=True)
+    _log.info("[sector-board] upsert done: %s", result)
+    return result
 
 
 def schedule_background_collect(

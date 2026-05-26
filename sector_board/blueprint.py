@@ -187,6 +187,64 @@ def create_sector_board_blueprint() -> Blueprint:
             return jsonify({"ok": False, "snapshot": None}), 404
         return jsonify({"ok": True, "snapshot": snapshot})
 
+    @blueprint.route("/debug")
+    def debug():
+        import sys, os, platform, traceback as tb
+        info: dict = {
+            "python_version": sys.version,
+            "platform": platform.platform(),
+            "sys_path": sys.path[:8],
+        }
+
+        # --- src.market_data import test ---
+        try:
+            import src.market_data as md
+            info["src_market_data_file"] = getattr(md, "__file__", "?")
+            info["src_market_data_has_gmb"] = hasattr(md, "get_morning_board_view_models")
+            info["src_market_data_functions"] = [
+                k for k in dir(md) if not k.startswith("__")
+            ]
+        except Exception as exc:
+            info["src_market_data_error"] = tb.format_exc()
+
+        # --- src.config / DATA_DIR ---
+        try:
+            from src.config import DATA_DIR, load_settings
+            info["DATA_DIR"] = str(DATA_DIR)
+            info["DATA_DIR_exists"] = DATA_DIR.exists()
+            info["DATA_DIR_files"] = [f.name for f in DATA_DIR.iterdir()] if DATA_DIR.exists() else []
+            s = load_settings()
+            info["kiwoom_use_mock"] = s.use_mock
+            info["theme_map_path"] = str(s.theme_map_path)
+            info["theme_map_exists"] = s.theme_map_path.exists()
+            info["sample_prices_path"] = str(s.sample_prices_path)
+            info["sample_prices_exists"] = s.sample_prices_path.exists()
+        except Exception as exc:
+            info["src_config_error"] = tb.format_exc()
+
+        # --- sector_board DB ---
+        database_url = resolve_database_url(app=current_app)
+        info["database_url_set"] = bool(database_url)
+        if database_url:
+            try:
+                from .repository import fetch_snapshot
+                snap = fetch_snapshot(database_url=database_url)
+                info["latest_snapshot_date"] = snap.get("snapshot_date") if snap else None
+                info["latest_refresh_status"] = snap.get("refresh_status") if snap else None
+            except Exception as exc:
+                info["db_error"] = str(exc)
+
+        # --- env vars (masked) ---
+        info["env"] = {
+            "KIWOOM_USE_MOCK": os.getenv("KIWOOM_USE_MOCK"),
+            "KIWOOM_APP_KEY": "***" if os.getenv("KIWOOM_APP_KEY") else None,
+            "SECTOR_BOARD_AUTO_CREATE_TABLE": os.getenv("SECTOR_BOARD_AUTO_CREATE_TABLE"),
+            "SECTOR_BOARD_DATABASE_URL": "***" if os.getenv("SECTOR_BOARD_DATABASE_URL") else None,
+            "MORNING_BOARD_MAX_CODES": os.getenv("MORNING_BOARD_MAX_CODES"),
+        }
+
+        return jsonify(info)
+
     @blueprint.route("/health")
     def health():
         database_url = resolve_database_url(app=current_app)
