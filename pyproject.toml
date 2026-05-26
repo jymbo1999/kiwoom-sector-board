@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kiwoom-sector-board"
+version = "0.1.0"
+description = "Kiwoom sector board Streamlit app with reusable Flask sector_board package."
+requires-python = ">=3.11"
+dependencies = [
+  "Flask>=3.1.0",
+  "SQLAlchemy>=2.0.38",
+  "psycopg[binary]>=3.2.0",
+]
+
+[tool.setuptools]
+packages = ["sector_board"]
+
+[tool.setuptools.package-data]
+sector_board = [
+  "templates/sector_board/*.html",
+  "static/*.css",
+]

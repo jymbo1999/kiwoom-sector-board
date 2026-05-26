@@ -1,0 +1,96 @@
+{% extends layout_template %}
+
+{% block title %}오늘의 주도섹터{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('sector_board.static', filename='sector_board.css') }}">
+{% endblock stylesheets %}
+
+{% block content %}
+<main class="sector-board-page">
+  <section class="sector-board-header">
+    <div>
+      <p class="sector-board-kicker">Market Snapshot</p>
+      <h1>오늘의 주도섹터</h1>
+    </div>
+    {% if snapshot %}
+    <div class="sector-board-timestamp">
+      <span>마지막 갱신</span>
+      <strong>{{ snapshot.generated_at }}</strong>
+    </div>
+    {% endif %}
+  </section>
+
+  {% if error_message %}
+  <div class="sector-board-alert">
+    {{ error_message }}
+  </div>
+  {% endif %}
+
+  {% if not snapshot %}
+  <section class="sector-board-empty">
+    <h2>오늘 저장된 섹터보드 스냅샷이 없습니다.</h2>
+    <p>로컬 Streamlit 앱에서 장중 데이터를 한 번 수집하면 이 화면은 DB에 저장된 스냅샷만 읽어서 표시합니다.</p>
+  </section>
+  {% else %}
+  <section class="sector-board-metrics">
+    <div>
+      <span>테마 수</span>
+      <strong>{{ summary.theme_count or 0 }}</strong>
+    </div>
+    <div>
+      <span>종목 수</span>
+      <strong>{{ summary.stock_count or 0 }}</strong>
+    </div>
+    <div>
+      <span>상위 테마</span>
+      <strong>{{ summary.top_theme or '-' }}</strong>
+    </div>
+    <div>
+      <span>평균 등락률</span>
+      <strong>{{ "%.2f"|format(summary.avg_change_rate or 0) }}%</strong>
+    </div>
+  </section>
+
+  <section class="sector-card-grid">
+    {% for sector in sector_rows %}
+    <article class="sector-card">
+      <header>
+        <span class="sector-rank">#{{ sector.rank }}</span>
+        <h2>{{ sector.theme_name }}</h2>
+      </header>
+      <div class="sector-stats">
+        <div>
+          <span>점수</span>
+          <strong>{{ "%.2f"|format(sector.theme_score) }}</strong>
+        </div>
+        <div>
+          <span>TOP5 평균</span>
+          <strong>{{ sector.top5_change_rate_mean }}</strong>
+        </div>
+        <div>
+          <span>거래대금</span>
+          <strong>{{ sector.total_trading_value }}</strong>
+        </div>
+      </div>
+      {% if sector.leaders %}
+      <ol class="leader-list">
+        {% for leader in sector.leaders %}
+        <li>
+          <span>
+            <strong>{{ leader.rank }}. {{ leader.name }}</strong>
+            <small>{{ leader.code }}</small>
+          </span>
+          <span class="leader-rate">{{ leader.change_rate }}</span>
+        </li>
+        {% endfor %}
+      </ol>
+      {% elif sector.leader_labels %}
+      <p class="leader-fallback">{{ sector.leader_labels }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+</main>
+{% endblock content %}
