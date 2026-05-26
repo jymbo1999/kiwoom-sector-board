@@ -284,3 +284,128 @@ body {
   .sector-card-grid,
   .sector-board-metrics      { grid-template-columns: 1fr; }
 }
+
+/* ── 상승이유 분석 ────────────────────────────────────────── */
+.rise-reason-section {
+  margin-top: 28px;
+}
+
+.rise-reason-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 0 12px;
+  color: var(--sector-text);
+}
+
+.rise-reason-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rr-row {
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  overflow: hidden;
+}
+
+.rr-meta {
+  padding: 16px 14px;
+  border-right: 1px solid var(--sector-border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rr-sector {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--sector-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rr-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--sector-text);
+}
+
+.rr-rate {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.rr-conf {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.rr-conf--high    { background: #14532d; color: #86efac; }
+.rr-conf--medium  { background: #422006; color: #fde68a; }
+.rr-conf--low     { background: #1f2937; color: #9ca3af; }
+.rr-conf--unknown { background: #1f2937; color: #6b7280; }
+
+.rr-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rr-summary {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--sector-text);
+}
+
+.rr-evidence {
+  margin: 0;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rr-evidence li {
+  font-size: 0.82rem;
+  color: var(--sector-muted);
+  line-height: 1.5;
+}
+
+.rr-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.rr-tag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+
+.rr-caveat {
+  margin: 0;
+  font-size: 0.76rem;
+  color: #4b5563;
+  line-height: 1.5;
+  border-top: 1px solid var(--sector-border);
+  padding-top: 8px;
+}
+
+@media (max-width: 700px) {
+  .rr-row { grid-template-columns: 1fr; }
+  .rr-meta { border-right: none; border-bottom: 1px solid var(--sector-border); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+}

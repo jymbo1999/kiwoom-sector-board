@@ -70,6 +70,29 @@ def create_snapshot_engine(database_url: str) -> Engine:
     return _get_engine(database_url)
 
 
+def _ensure_rise_reasons_column(engine: Engine) -> None:
+    """Add rise_reasons_json column to existing tables that predate it."""
+    try:
+        insp = sa_inspect(engine)
+        if "sector_snapshots" not in insp.get_table_names():
+            return
+        existing_cols = {c["name"] for c in insp.get_columns("sector_snapshots")}
+        if "rise_reasons_json" in existing_cols:
+            return
+        is_pg = engine.dialect.name == "postgresql"
+        with engine.begin() as conn:
+            if is_pg:
+                conn.execute(text(
+                    "ALTER TABLE sector_snapshots ADD COLUMN IF NOT EXISTS rise_reasons_json TEXT"
+                ))
+            else:
+                conn.execute(text(
+                    "ALTER TABLE sector_snapshots ADD COLUMN rise_reasons_json TEXT"
+                ))
+    except Exception as exc:
+        _log.warning("[sector-board] _ensure_rise_reasons_column failed: %s", exc)
+
+
 def _ensure_refresh_columns(engine: Engine) -> None:
     """Add refresh tracking columns to an existing table that predates them."""
     try:
@@ -101,6 +124,7 @@ def ensure_schema(database_url: str | None = None, engine: Engine | None = None)
     active_engine = engine or create_snapshot_engine(database_url or "")
     metadata.create_all(active_engine, tables=[sector_snapshots], checkfirst=True)
     _ensure_refresh_columns(active_engine)
+    _ensure_rise_reasons_column(active_engine)
 
 
 def _upsert_row(
@@ -153,12 +177,14 @@ def upsert_snapshot(
 
     normalized = normalize_snapshot_payload(payload)
     now = datetime.now()
+    rise_reasons_json = json.dumps(normalized.get("rise_reasons", []), ensure_ascii=False)
     full_values = {
         "snapshot_date": normalized["snapshot_date"],
         "fetched_at": normalized["generated_at"],
         "summary_json": json.dumps(normalized["summary"], ensure_ascii=False),
         "themes_json": json.dumps(normalized["themes"], ensure_ascii=False),
         "leaders_json": json.dumps(normalized["leaders"], ensure_ascii=False),
+        "rise_reasons_json": rise_reasons_json,
         "created_at": now,
         "updated_at": now,
         "refresh_status": "success",
@@ -170,6 +196,7 @@ def upsert_snapshot(
         "summary_json": full_values["summary_json"],
         "themes_json": full_values["themes_json"],
         "leaders_json": full_values["leaders_json"],
+        "rise_reasons_json": rise_reasons_json,
         "updated_at": now,
         "refresh_status": "success",
         "refresh_error": None,
@@ -195,6 +222,7 @@ def set_refresh_running(
         "summary_json": "{}",
         "themes_json": "[]",
         "leaders_json": "[]",
+        "rise_reasons_json": "[]",
         "created_at": now,
         "updated_at": now,
         "refresh_status": "running",
@@ -251,6 +279,7 @@ def _row_to_payload(row: Any) -> dict[str, Any] | None:
         "summary": json.loads(m["summary_json"] or "{}"),
         "themes": json.loads(m["themes_json"] or "[]"),
         "leaders": json.loads(m["leaders_json"] or "[]"),
+        "rise_reasons": json.loads(m.get("rise_reasons_json") or "[]"),
         "refresh_status": rs_raw or "success",
         "refresh_started_at": (
             started_raw.isoformat(timespec="seconds") if started_raw else None

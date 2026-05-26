@@ -44,9 +44,7 @@
   {% elif refresh_status == 'error' and not snapshot %}
   <section class="sector-board-collecting">
     <h2>데이터 수집 오류</h2>
-    {% if refresh_error %}
-    <p class="sector-board-error-detail">{{ refresh_error }}</p>
-    {% endif %}
+    {% if refresh_error %}<p class="sector-board-error-detail">{{ refresh_error }}</p>{% endif %}
     <p>위 "새로고침" 버튼으로 재시도할 수 있습니다.</p>
   </section>
 
@@ -57,6 +55,8 @@
   </section>
 
   {% else %}
+
+  {# ── Summary metrics ── #}
   <section class="sector-board-metrics">
     <div>
       <span>테마 수</span>
@@ -78,29 +78,25 @@
     </div>
   </section>
 
+  {# ── Treemap ── #}
   <section class="sector-board-treemap-section">
     <div id="sector-treemap"></div>
   </section>
 
+  {# ── Sector cards ── #}
   <section class="sector-card-grid">
     {% for sector in sector_rows %}
     <article class="sector-card">
       <header>
         <span class="sector-rank">#{{ sector.rank }}</span>
         {% set rc = sector.rank_change %}
-        {% if rc == 'NEW' %}
-          <span class="rank-badge rank-badge--new">NEW</span>
-        {% elif rc == '=' %}
-          <span class="rank-badge rank-badge--eq">=</span>
-        {% elif '▲' in rc %}
-          <span class="rank-badge rank-badge--up">{{ rc }}</span>
-        {% elif '▼' in rc %}
-          <span class="rank-badge rank-badge--down">{{ rc }}</span>
+        {% if rc == 'NEW' %}<span class="rank-badge rank-badge--new">NEW</span>
+        {% elif rc == '=' %}<span class="rank-badge rank-badge--eq">=</span>
+        {% elif '▲' in rc %}<span class="rank-badge rank-badge--up">{{ rc }}</span>
+        {% elif '▼' in rc %}<span class="rank-badge rank-badge--down">{{ rc }}</span>
         {% endif %}
         <h2>{{ sector.theme_name }}</h2>
-        {% for badge in sector.badges %}
-          <span class="sector-badge">{{ badge }}</span>
-        {% endfor %}
+        {% for badge in sector.badges %}<span class="sector-badge">{{ badge }}</span>{% endfor %}
       </header>
       <div class="sector-stats">
         <div>
@@ -144,7 +140,44 @@
     </article>
     {% endfor %}
   </section>
+
+  {# ── 상승이유 분석 ── #}
+  {% if rise_reasons %}
+  <section class="rise-reason-section">
+    <h2 class="rise-reason-title">상승이유 분석</h2>
+    <div class="rise-reason-table">
+      {% for r in rise_reasons %}
+      <div class="rr-row">
+        <div class="rr-meta">
+          <span class="rr-sector">{{ r.market_move.sector if r.market_move else '-' }}</span>
+          <span class="rr-name">{{ r.name }}</span>
+          {% set pct = r.market_move.pct_change if r.market_move else 0 %}
+          <span class="rr-rate {% if pct > 0 %}rate--pos{% elif pct < 0 %}rate--neg{% endif %}">
+            {{ "+%.2f"|format(pct) if pct > 0 else "%.2f"|format(pct) }}%
+          </span>
+          <span class="rr-conf rr-conf--{{ r.confidence }}">{{ r.confidence }}</span>
+        </div>
+        <div class="rr-body">
+          <p class="rr-summary">{{ r.reason_summary_ko }}</p>
+          {% if r.evidence_titles %}
+          <ul class="rr-evidence">
+            {% for title in r.evidence_titles %}<li>{{ title }}</li>{% endfor %}
+          </ul>
+          {% endif %}
+          {% if r.reason_tags %}
+          <div class="rr-tags">
+            {% for tag in r.reason_tags %}<span class="rr-tag">{{ tag }}</span>{% endfor %}
+          </div>
+          {% endif %}
+          <p class="rr-caveat">{{ r.caveat }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
   {% endif %}
+
+  {% endif %}{# end snapshot #}
 </main>
 
 {% if sector_rows %}
@@ -160,11 +193,13 @@
   var values = themes.map(function(t) { return parseFloat(t.total_trading_value) || 0; });
   var rates  = themes.map(function(t) { return parseFloat(t.top5_change_rate_mean) || 0; });
   var texts  = themes.map(function(t) {
-    var rate = (parseFloat(t.top5_change_rate_mean) || 0).toFixed(2);
-    var sign = rate > 0 ? '+' : '';
-    var names = (t.leader_names || '').split(',').slice(0, 3).map(function(n){ return n.trim(); }).join(', ');
-    var badges = (t.badges || '').replace(/,/g, ' ');
-    return '<b>' + t.theme_name + '</b>' + (badges ? ' [' + badges + ']' : '') + '<br>' + sign + rate + '%<br><span style="font-size:11px">' + names + '</span>';
+    var rate = parseFloat(t.top5_change_rate_mean) || 0;
+    var sign = rate >= 0 ? '+' : '';
+    var names = (t.leader_names || '').split(',').slice(0, 3).map(function(n){ return n.trim(); }).filter(Boolean).join(', ');
+    var badges = (t.badges || '').replace(/,/g, ' · ');
+    return '<b>' + t.theme_name + '</b>' + (badges ? ' [' + badges + ']' : '') +
+           '<br>' + sign + rate.toFixed(2) + '%' +
+           (names ? '<br><span style="font-size:11px">' + names + '</span>' : '');
   });
 
   Plotly.newPlot(el, [{
@@ -178,11 +213,11 @@
     marker: {
       colors: rates,
       colorscale: [
-        [0,    '#1d4ed8'],
+        [0,    '#dc2626'],
         [0.35, '#334155'],
         [0.5,  '#1e293b'],
-        [0.65, '#7f1d1d'],
-        [1,    '#b91c1c']
+        [0.65, '#166534'],
+        [1,    '#16a34a']
       ],
       cmid: 0,
       showscale: true,
@@ -190,7 +225,7 @@
         title: {text: '등락률 %', side: 'right'},
         thickness: 12,
         len: 0.8,
-        tickfont: {size: 11, color: '#667085'}
+        tickfont: {size: 11, color: '#8b92a5'}
       }
     },
     pathbar: {visible: false},

@@ -41,6 +41,19 @@ def collect_and_store(
               summary.get("data_mode"), len(heatmap), len(leaders))
     payload = build_morning_snapshot_payload(summary, heatmap, leaders, generated_at=datetime.now())
     payload["snapshot_date"] = today.isoformat()
+
+    # 상승이유 분석 (Naver 뉴스 + OpenAI 요약 — 실패해도 수집은 계속)
+    try:
+        from src.evidence_service import build_evidence_bundles
+        from src.rise_reason_service import summarize_rise_reasons
+        _log.info("[sector-board] building evidence bundles (limit=20)...")
+        evidence_bundles = build_evidence_bundles(limit=20)
+        payload["rise_reasons"] = summarize_rise_reasons(evidence_bundles)
+        _log.info("[sector-board] rise_reasons collected: %d", len(payload["rise_reasons"]))
+    except Exception as exc:
+        _log.warning("[sector-board] rise_reason collection skipped (non-fatal): %s", exc)
+        payload["rise_reasons"] = []
+
     result = upsert_snapshot(payload, database_url=database_url, auto_create=True)
     _log.info("[sector-board] upsert done: %s", result)
     return result

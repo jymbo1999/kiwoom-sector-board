@@ -217,6 +217,7 @@ def create_sector_board_blueprint() -> Blueprint:
                 rank_changes=rank_changes,
             ) if has_data else [],
             treemap_json=treemap_json,
+            rise_reasons=(snapshot or {}).get("rise_reasons", []) if has_data else [],
             error_message=error_message,
             refresh_status=refresh_status,
             refresh_error=refresh_error_msg,

@@ -19,5 +19,6 @@ sector_snapshots = Table(
     Column("refresh_status", String(20), nullable=True),
     Column("refresh_started_at", DateTime, nullable=True),
     Column("refresh_error", Text, nullable=True),
+    Column("rise_reasons_json", Text, nullable=True),
     UniqueConstraint("snapshot_date", name="uq_sector_snapshots_snapshot_date"),
 )

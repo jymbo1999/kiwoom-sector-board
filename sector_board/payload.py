@@ -28,10 +28,13 @@ def normalize_snapshot_payload(payload: dict[str, Any]) -> dict[str, Any]:
     else:
         day = generated_at.date()
 
+    rise_reasons = payload.get("rise_reasons") if isinstance(payload.get("rise_reasons"), list) else []
+
     return {
         "generated_at": generated_at,
         "snapshot_date": day,
         "summary": summary,
         "themes": themes,
         "leaders": leaders,
+        "rise_reasons": rise_reasons,
     }
