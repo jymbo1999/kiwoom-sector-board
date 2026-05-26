@@ -285,3 +285,59 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Treemap ─────────────────────────────────────────────── */
+.sector-board-treemap-section {
+  margin-bottom: 20px;
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 8px 0 4px;
+}
+
+#sector-treemap {
+  width: 100%;
+}
+
+/* ── Rate colors ─────────────────────────────────────────── */
+.rate--pos { color: #c2410c; }
+.rate--neg { color: #1d4ed8; }
+
+/* ── Rank change badges ──────────────────────────────────── */
+.rank-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rank-badge--new  { background: #0f766e; color: #fff; }
+.rank-badge--up   { background: #fef3c7; color: #92400e; }
+.rank-badge--down { background: #eff6ff; color: #1e40af; }
+.rank-badge--eq   { background: #f3f4f6; color: #6b7280; }
+
+/* ── Sector badges (급등, 거래대금 TOP) ──────────────────── */
+.sector-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #fef9c3;
+  color: #713f12;
+  flex-shrink: 0;
+}
+
+/* ── Card header flex wrap for badges ───────────────────── */
+.sector-card header {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+/* ── Stats grid: 2×2 ────────────────────────────────────── */
+.sector-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}

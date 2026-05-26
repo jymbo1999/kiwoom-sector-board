@@ -73,13 +73,13 @@ KIWOOM_USE_MOCK=true
 - `KIWOOM_ACCOUNT_NO`: 이번 조회 전용 MVP에서는 사용하지 않으며, 화면에도 출력하지 않습니다. 향후 계좌 기반 조회 확장 대비용 자리입니다.
 - `USE_DUMMY_DATA`: `true`이면 실제 API를 호출하지 않고 더미 데이터로 실행합니다. 기존 `KIWOOM_USE_MOCK`도 fallback으로 읽습니다.
 - `KIWOOM_BASE_URL`: 비워두면 더미 모드에서는 `https://mockapi.kiwoom.com`, 실제 모드에서는 `https://api.kiwoom.com` 기본값을 사용합니다.
-- `OPENDART_API_KEY`: 상승이유 대시보드의 OpenDART 공시 검색용 키입니다. 비워두면 공시 결과는 빈 리스트로 처리됩니다.
+- `OPENDART_API_KEY`: 현재 뉴스 전용 상승이유 흐름에서는 사용하지 않는 예비 키입니다.
 - `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`: 상승이유 대시보드의 Naver News Search API 키입니다. 둘 중 하나라도 비워두면 뉴스 결과는 빈 리스트로 처리됩니다.
 - `OPENAI_API_KEY`: evidence bundle 요약용 OpenAI API 키입니다. 비워두면 안전한 fallback 요약 JSON을 표시합니다.
 
 민감정보는 README, 코드, 커밋에 넣지 말고 `.env` 또는 Render 환경변수에만 저장합니다.
 
-상승이유 MVP는 위 API 키가 모두 비어 있어도 mock market mover와 fallback 요약으로 화면이 실행되도록 구성되어 있습니다.
+상승이유 MVP는 주가 흐름과 직접 관련된 네이버 뉴스 snippet만 필터링한 뒤 "관련 뉴스 요약"으로 톤을 낮춰 표시합니다. API 키가 비어 있어도 mock market mover와 fallback 요약으로 화면이 실행되도록 구성되어 있습니다.
 
 ## Dummy/Mock 모드 실행
 

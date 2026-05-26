@@ -56,20 +56,7 @@ def test_build_evidence_bundles_returns_limited_list_without_api_keys(monkeypatc
     assert all("evidence" in bundle for bundle in bundles)
 
 
-def test_build_evidence_bundle_deduplicates_and_sorts_evidence(monkeypatch) -> None:
-    def fake_dart(*_args, **_kwargs):
-        return [
-            {
-                "source_type": "dart",
-                "provider": "OpenDART",
-                "title": "단일판매 공급계약",
-                "published_at": "2026-05-26T09:03:00",
-                "url": "https://dart.example/a",
-                "excerpt": "공급계약 체결",
-                "weight": 1.0,
-            }
-        ]
-
+def test_build_evidence_bundle_uses_naver_news_only(monkeypatch) -> None:
     def fake_queries(_mover):
         return ["삼성전자 상승"]
 
@@ -83,6 +70,8 @@ def test_build_evidence_bundle_deduplicates_and_sorts_evidence(monkeypatch) -> N
                 "url": "https://news.example/a",
                 "excerpt": "뉴스 요약",
                 "weight": 0.5,
+                "relevance_score": 5.8,
+                "matched_terms": ["상승", "주가"],
             },
             {
                 "source_type": "news",
@@ -95,11 +84,12 @@ def test_build_evidence_bundle_deduplicates_and_sorts_evidence(monkeypatch) -> N
             },
         ]
 
-    monkeypatch.setattr("src.evidence_service.search_dart_disclosures", fake_dart)
     monkeypatch.setattr("src.evidence_service.build_news_queries_for_mover", fake_queries)
     monkeypatch.setattr("src.evidence_service.search_naver_news", fake_news)
 
     evidence = build_evidence_bundle(MOCK_MOVER)["evidence"]
 
-    assert [item["source_type"] for item in evidence] == ["dart", "news"]
-    assert len(evidence) == 2
+    assert [item["source_type"] for item in evidence] == ["news"]
+    assert len(evidence) == 1
+    assert evidence[0]["relevance_score"] == 5.8
+    assert evidence[0]["matched_terms"] == ["상승", "주가"]

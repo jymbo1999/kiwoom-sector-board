@@ -30,9 +30,7 @@
   </section>
 
   {% if error_message %}
-  <div class="sector-board-alert">
-    {{ error_message }}
-  </div>
+  <div class="sector-board-alert">{{ error_message }}</div>
   {% endif %}
 
   {% if refresh_status == 'running' %}
@@ -74,8 +72,14 @@
     </div>
     <div>
       <span>평균 등락률</span>
-      <strong>{{ "%.2f"|format(summary.avg_change_rate or 0) }}%</strong>
+      <strong class="{% if (summary.avg_change_rate or 0) > 0 %}rate--pos{% elif (summary.avg_change_rate or 0) < 0 %}rate--neg{% endif %}">
+        {{ "%.2f"|format(summary.avg_change_rate or 0) }}%
+      </strong>
     </div>
+  </section>
+
+  <section class="sector-board-treemap-section">
+    <div id="sector-treemap"></div>
   </section>
 
   <section class="sector-card-grid">
@@ -83,7 +87,20 @@
     <article class="sector-card">
       <header>
         <span class="sector-rank">#{{ sector.rank }}</span>
+        {% set rc = sector.rank_change %}
+        {% if rc == 'NEW' %}
+          <span class="rank-badge rank-badge--new">NEW</span>
+        {% elif rc == '=' %}
+          <span class="rank-badge rank-badge--eq">=</span>
+        {% elif '▲' in rc %}
+          <span class="rank-badge rank-badge--up">{{ rc }}</span>
+        {% elif '▼' in rc %}
+          <span class="rank-badge rank-badge--down">{{ rc }}</span>
+        {% endif %}
         <h2>{{ sector.theme_name }}</h2>
+        {% for badge in sector.badges %}
+          <span class="sector-badge">{{ badge }}</span>
+        {% endfor %}
       </header>
       <div class="sector-stats">
         <div>
@@ -91,8 +108,16 @@
           <strong>{{ "%.2f"|format(sector.theme_score) }}</strong>
         </div>
         <div>
+          <span>상승비율</span>
+          <strong class="{% if sector.rising_ratio >= 0.5 %}rate--pos{% else %}rate--neg{% endif %}">
+            {{ "%.0f"|format(sector.rising_ratio * 100) }}%
+          </strong>
+        </div>
+        <div>
           <span>TOP5 평균</span>
-          <strong>{{ sector.top5_change_rate_mean }}</strong>
+          <strong class="{% if sector.top5_change_rate_mean_val > 0 %}rate--pos{% elif sector.top5_change_rate_mean_val < 0 %}rate--neg{% endif %}">
+            {{ sector.top5_change_rate_mean }}
+          </strong>
         </div>
         <div>
           <span>거래대금</span>
@@ -107,7 +132,9 @@
             <strong>{{ leader.rank }}. {{ leader.name }}</strong>
             <small>{{ leader.code }}</small>
           </span>
-          <span class="leader-rate">{{ leader.change_rate }}</span>
+          <span class="leader-rate {% if leader.change_rate_val > 0 %}rate--pos{% elif leader.change_rate_val < 0 %}rate--neg{% endif %}">
+            {{ leader.change_rate }}
+          </span>
         </li>
         {% endfor %}
       </ol>
@@ -119,4 +146,63 @@
   </section>
   {% endif %}
 </main>
+
+{% if sector_rows %}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+(function () {
+  var themes = {{ treemap_json | safe }};
+  if (!themes || !themes.length) return;
+  var el = document.getElementById('sector-treemap');
+  if (!el) return;
+
+  var labels = themes.map(function(t) { return t.theme_name; });
+  var values = themes.map(function(t) { return parseFloat(t.total_trading_value) || 0; });
+  var rates  = themes.map(function(t) { return parseFloat(t.top5_change_rate_mean) || 0; });
+  var texts  = themes.map(function(t) {
+    var rate = (parseFloat(t.top5_change_rate_mean) || 0).toFixed(2);
+    var sign = rate > 0 ? '+' : '';
+    var names = (t.leader_names || '').split(',').slice(0, 3).map(function(n){ return n.trim(); }).join(', ');
+    var badges = (t.badges || '').replace(/,/g, ' ');
+    return '<b>' + t.theme_name + '</b>' + (badges ? ' [' + badges + ']' : '') + '<br>' + sign + rate + '%<br><span style="font-size:11px">' + names + '</span>';
+  });
+
+  Plotly.newPlot(el, [{
+    type: 'treemap',
+    labels: labels,
+    parents: labels.map(function() { return ''; }),
+    values: values,
+    text: texts,
+    textinfo: 'text',
+    hovertemplate: '<b>%{label}</b><br>거래대금: %{value:,.0f}원<extra></extra>',
+    marker: {
+      colors: rates,
+      colorscale: [
+        [0,    '#1d4ed8'],
+        [0.35, '#334155'],
+        [0.5,  '#1e293b'],
+        [0.65, '#7f1d1d'],
+        [1,    '#b91c1c']
+      ],
+      cmid: 0,
+      showscale: true,
+      colorbar: {
+        title: {text: '등락률 %', side: 'right'},
+        thickness: 12,
+        len: 0.8,
+        tickfont: {size: 11, color: '#667085'}
+      }
+    },
+    pathbar: {visible: false},
+    tiling: {pad: 3},
+    textfont: {color: '#ffffff', size: 13}
+  }], {
+    margin: {t: 4, l: 4, r: 70, b: 4},
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    height: 420
+  }, {responsive: true, displayModeBar: false});
+})();
+</script>
+{% endif %}
 {% endblock content %}

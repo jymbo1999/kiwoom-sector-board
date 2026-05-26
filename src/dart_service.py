@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from datetime import date, timedelta
-import os
 from typing import Any
 
 import requests
+
+from src.config import get_opendart_api_key
 
 
 DART_DISCLOSURE_SEARCH_URL = "https://opendart.fss.or.kr/api/list.json"
@@ -63,7 +64,7 @@ def search_dart_disclosures(ticker: str, corp_name: str, days: int = 7) -> list[
     for the dashboard and searches by company name until corp-code mapping exists.
     """
 
-    api_key = os.getenv("OPENDART_API_KEY")
+    api_key = get_opendart_api_key()
     if not api_key:
         return []
 

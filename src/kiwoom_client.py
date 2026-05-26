@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 import pandas as pd
 import requests
@@ -53,6 +53,12 @@ class KiwoomRestClient:
                     json=body,
                     timeout=self.timeout,
                 )
+                if response.status_code == 429:
+                    retry_after = int(response.headers.get("Retry-After", "3"))
+                    wait = max(retry_after, self.backoff_seconds * (2 ** (attempt + 1)))
+                    time.sleep(min(wait, 5.0))
+                    last_error = KiwoomApiError(f"429 rate limit (retry {attempt+1})")
+                    continue
                 response.raise_for_status()
                 payload = response.json()
                 if payload.get("return_code") not in (None, 0):
@@ -64,15 +70,19 @@ class KiwoomRestClient:
                     time.sleep(self.backoff_seconds * (2**attempt))
         raise KiwoomApiError(str(last_error)) from last_error
 
-    def fetch_current_prices(self, codes: list[str]) -> pd.DataFrame:
+    def fetch_current_prices(
+        self,
+        codes: list[str],
+        on_progress: Callable[[int, int], None] | None = None,
+    ) -> pd.DataFrame:
         rows: list[dict[str, Any]] = []
-        for code in codes:
-            # Official guide: ka10001 stock basic information, POST /api/dostk/stkinfo,
-            # body {"stk_cd": "..."} with api-id header. Field names below are
-            # adapter-normalized from Kiwoom's abbreviated response.
+        total = len(codes)
+        for i, code in enumerate(codes):
             payload = self._post("/api/dostk/stkinfo", "ka10001", {"stk_cd": code})
             rows.append(_normalize_ka10001(payload, fallback_code=code))
             time.sleep(self.backoff_seconds)
+            if on_progress is not None:
+                on_progress(i + 1, total)
         return pd.DataFrame(rows)
 
 

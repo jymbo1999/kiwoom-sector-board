@@ -66,11 +66,36 @@ def test_summarize_rise_reason_without_api_key_returns_required_schema(monkeypat
     assert summary["name"] == "삼성전자"
     assert summary["confidence"] in ALLOWED_CONFIDENCE
     assert len(summary["evidence_titles"]) <= 3
+    assert "단일판매 공급계약" not in summary["evidence_titles"]
 
 
 def test_summarize_rise_reason_without_evidence_returns_unknown(monkeypatch) -> None:
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     bundle = {**SAMPLE_BUNDLE, "evidence": []}
+
+    summary = summarize_rise_reason(bundle)
+
+    assert summary["confidence"] == "unknown"
+    assert summary["reason_tags"] == []
+    assert summary["evidence_titles"] == []
+
+
+def test_summarize_rise_reason_ignores_non_news_evidence(monkeypatch) -> None:
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    bundle = {
+        **SAMPLE_BUNDLE,
+        "evidence": [
+            {
+                "source_type": "dart",
+                "provider": "OpenDART",
+                "title": "단일판매 공급계약",
+                "published_at": "2026-05-26T09:03:00",
+                "url": "https://example.com/b",
+                "excerpt": "공급계약 체결 관련 공시",
+                "weight": 1.0,
+            }
+        ],
+    }
 
     summary = summarize_rise_reason(bundle)
 

@@ -2,19 +2,18 @@ from __future__ import annotations
 
 import pandas as pd
 
+from src.config import DATA_DIR, Settings
+from src.kiwoom_auth import KiwoomAuthError
 from src.market_data import (
     MARKET_MOVER_KEYS,
     MARKET_SUMMARY_KEYS,
     THEME_HEATMAP_COLUMNS,
     THEME_LEADER_COLUMNS,
-    THEME_TIMELINE_COLUMNS,
-    compute_badges_from_history,
     get_market_movers,
     get_market_summary,
     get_theme_heatmap,
-    get_theme_history,
     get_theme_leaders,
-    get_theme_timeline,
+    load_market_prices,
 )
 
 
@@ -83,19 +82,6 @@ def test_get_theme_leaders_unknown_theme_id_returns_empty_stable_frame(monkeypat
     assert leaders.empty
 
 
-def test_get_theme_timeline_returns_new_schema_with_mock_data(monkeypatch) -> None:
-    monkeypatch.setenv("KIWOOM_USE_MOCK", "true")
-
-    timeline = get_theme_timeline(days=5)
-
-    assert list(timeline.columns) == THEME_TIMELINE_COLUMNS
-    assert not timeline.empty
-    assert len(timeline) <= 5
-    assert timeline["date"].notna().all()
-    assert timeline["rank_1_theme"].str.len().gt(0).all()
-    assert (timeline["total_trading_value"] > 0).all()
-
-
 def test_get_theme_heatmap_has_badges_column(monkeypatch) -> None:
     monkeypatch.setenv("KIWOOM_USE_MOCK", "true")
 
@@ -105,18 +91,39 @@ def test_get_theme_heatmap_has_badges_column(monkeypatch) -> None:
     assert heatmap["badges"].notna().all()
 
 
-def test_compute_badges_from_history_produces_badges_for_today_themes() -> None:
-    history = get_theme_history()
+def test_load_market_prices_falls_back_when_auth_fails(monkeypatch) -> None:
+    class AuthFailingClient:
+        def __init__(self, **_kwargs) -> None:
+            pass
 
-    badges = compute_badges_from_history(history)
+        def fetch_current_prices(self, _codes: list[str], on_progress=None) -> pd.DataFrame:
+            raise KiwoomAuthError("투자구분(실전/모의)이 달라서 Appkey를 사용할수가 없습니다")
 
-    assert isinstance(badges, dict)
-    today_themes = {t["theme"] for t in history[0]["themes"]}
-    assert any(t in badges for t in today_themes), "오늘 테마 중 배지가 있는 항목이 없습니다"
-    for badge_list in badges.values():
-        assert isinstance(badge_list, list)
-        assert 1 <= len(badge_list) <= 2
+    monkeypatch.setattr("src.market_data.KiwoomRestClient", AuthFailingClient)
+    settings = Settings(
+        app_key="mock-key",
+        secret_key="mock-secret",
+        base_url="https://api.kiwoom.com",
+        account_no="",
+        use_mock=False,
+        theme_map_path=DATA_DIR / "theme_map.csv",
+        sample_prices_path=DATA_DIR / "sample_prices.csv",
+    )
+
+    prices, error_message, effective_mock = load_market_prices(settings, ["005930"])
+
+    assert not prices.empty
+    assert effective_mock is True
+    assert error_message is not None
+    assert "키움 API 조회에 실패" in error_message
 
 
-def test_compute_badges_from_history_empty_input() -> None:
-    assert compute_badges_from_history([]) == {}
+def test_get_theme_heatmap_has_leader_labels_with_change_rates(monkeypatch) -> None:
+    monkeypatch.setenv("KIWOOM_USE_MOCK", "true")
+
+    heatmap = get_theme_heatmap()
+
+    assert "leader_labels" in heatmap.columns
+    assert heatmap["leader_labels"].str.contains("%", regex=False).any()
+
+

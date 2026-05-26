@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import date
 from typing import Any
 
-from .dart_service import search_dart_disclosures
 from .market_data import get_market_movers
 from .news_service import build_news_queries_for_mover, search_naver_news
 
@@ -16,6 +15,8 @@ EVIDENCE_KEYS = [
     "url",
     "excerpt",
     "weight",
+    "relevance_score",
+    "matched_terms",
 ]
 
 
@@ -43,6 +44,12 @@ def _safe_evidence_items(items: Any) -> list[dict[str, Any]]:
             "url": str(item.get("url", "")),
             "excerpt": str(item.get("excerpt", "")),
             "weight": float(item.get("weight", 0.0) or 0.0),
+            "relevance_score": float(item.get("relevance_score", 0.0) or 0.0),
+            "matched_terms": [
+                str(term)
+                for term in item.get("matched_terms", [])
+                if str(term).strip()
+            ][:10] if isinstance(item.get("matched_terms", []), list) else [],
         }
         safe_items.append({key: normalized[key] for key in EVIDENCE_KEYS})
     return safe_items
@@ -72,6 +79,7 @@ def _sort_evidence(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(
         items,
         key=lambda item: (
+            float(item.get("relevance_score", 0.0) or 0.0),
             float(item.get("weight", 0.0) or 0.0),
             str(item.get("published_at", "")),
         ),
@@ -80,18 +88,12 @@ def _sort_evidence(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _collect_evidence(mover: dict[str, Any]) -> list[dict[str, Any]]:
-    ticker = str(mover.get("ticker", ""))
     name = str(mover.get("name", ""))
     evidence: list[dict[str, Any]] = []
 
     try:
-        evidence.extend(_safe_evidence_items(search_dart_disclosures(ticker, name, days=7)))
-    except Exception:
-        pass
-
-    try:
         for query in build_news_queries_for_mover(mover)[:5]:
-            evidence.extend(_safe_evidence_items(search_naver_news(query, display=5)))
+            evidence.extend(_safe_evidence_items(search_naver_news(query, display=10, stock_name=name)))
     except Exception:
         pass
 

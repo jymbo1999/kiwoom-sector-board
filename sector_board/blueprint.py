@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import json
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from math import isfinite
 
 from flask import Blueprint, current_app, jsonify, redirect, render_template, url_for
@@ -32,7 +33,39 @@ def _format_krw(value: object) -> str:
     return f"{number:,.0f}원"
 
 
-def _build_sector_rows(themes: list[dict], leaders: list[dict], limit: int = 12) -> list[dict]:
+def _compute_rank_changes(today_themes: list[dict], yesterday_themes: list[dict], limit: int = 12) -> dict[str, str]:
+    if not today_themes:
+        return {}
+    sorted_today = sorted(
+        today_themes,
+        key=lambda t: (_to_float(t.get("theme_score")), _to_float(t.get("total_trading_value"))),
+        reverse=True,
+    )[:limit]
+    today_ranks = {str(t.get("theme_name", "")): i + 1 for i, t in enumerate(sorted_today)}
+    if not yesterday_themes:
+        return {name: "NEW" for name in today_ranks}
+    sorted_yesterday = sorted(
+        yesterday_themes,
+        key=lambda t: (_to_float(t.get("theme_score")), _to_float(t.get("total_trading_value"))),
+        reverse=True,
+    )[:limit]
+    yesterday_ranks = {str(t.get("theme_name", "")): i + 1 for i, t in enumerate(sorted_yesterday)}
+    result: dict[str, str] = {}
+    for name, today_rank in today_ranks.items():
+        if name not in yesterday_ranks:
+            result[name] = "NEW"
+        else:
+            diff = yesterday_ranks[name] - today_rank
+            if diff > 0:
+                result[name] = f"▲{diff}"
+            elif diff < 0:
+                result[name] = f"▼{abs(diff)}"
+            else:
+                result[name] = "="
+    return result
+
+
+def _build_sector_rows(themes: list[dict], leaders: list[dict], rank_changes: dict[str, str] | None = None, limit: int = 12) -> list[dict]:
     leaders_by_theme: dict[str, list[dict]] = {}
     for leader in leaders:
         theme_id = str(leader.get("theme_id") or leader.get("sector") or "")
@@ -49,25 +82,32 @@ def _build_sector_rows(themes: list[dict], leaders: list[dict], limit: int = 12)
     rows = []
     for rank, theme in enumerate(sorted_themes, start=1):
         theme_id = str(theme.get("theme_id") or theme.get("sector") or theme.get("theme_name") or "")
+        theme_name = str(theme.get("theme_name") or theme.get("sector") or theme_id)
         theme_leaders = sorted(
             leaders_by_theme.get(theme_id, []),
             key=lambda item: int(_to_float(item.get("rank"), 999)),
         )[:5]
+        badges_raw = str(theme.get("badges") or "")
         rows.append(
             {
                 "rank": rank,
                 "theme_id": theme_id,
-                "theme_name": str(theme.get("theme_name") or theme.get("sector") or theme_id),
+                "theme_name": theme_name,
                 "theme_score": _to_float(theme.get("theme_score")),
                 "top5_change_rate_mean": _format_pct(theme.get("top5_change_rate_mean")),
+                "top5_change_rate_mean_val": _to_float(theme.get("top5_change_rate_mean")),
                 "total_trading_value": _format_krw(theme.get("total_trading_value")),
                 "leader_labels": str(theme.get("leader_labels") or ""),
+                "rising_ratio": _to_float(theme.get("rising_ratio")),
+                "badges": [b.strip() for b in badges_raw.split(",") if b.strip()],
+                "rank_change": (rank_changes or {}).get(theme_name, "NEW"),
                 "leaders": [
                     {
                         "rank": int(_to_float(leader.get("rank"), idx)),
                         "name": str(leader.get("name") or ""),
                         "code": str(leader.get("code") or ""),
                         "change_rate": _format_pct(leader.get("change_rate")),
+                        "change_rate_val": _to_float(leader.get("change_rate")),
                         "trade_value": _format_krw(leader.get("trade_value")),
                     }
                     for idx, leader in enumerate(theme_leaders, start=1)
@@ -150,6 +190,22 @@ def create_sector_board_blueprint() -> Blueprint:
             and bool((snapshot or {}).get("themes"))
         )
 
+        today_themes = (snapshot or {}).get("themes", []) if has_data else []
+        yesterday_snapshot = None
+        if database_url and has_data:
+            try:
+                yesterday_snapshot = fetch_snapshot(
+                    database_url=database_url,
+                    snapshot_date=date.today() - timedelta(days=1),
+                )
+            except Exception:
+                pass
+        rank_changes = _compute_rank_changes(
+            today_themes,
+            (yesterday_snapshot or {}).get("themes", []),
+        )
+        treemap_json = json.dumps(today_themes, ensure_ascii=False)
+
         return render_template(
             "sector_board/index.html",
             layout_template=current_app.config.get(
@@ -158,9 +214,11 @@ def create_sector_board_blueprint() -> Blueprint:
             snapshot=snapshot if has_data else None,
             summary=(snapshot or {}).get("summary", {}) if has_data else {},
             sector_rows=_build_sector_rows(
-                (snapshot or {}).get("themes", []),
+                today_themes,
                 (snapshot or {}).get("leaders", []),
+                rank_changes=rank_changes,
             ) if has_data else [],
+            treemap_json=treemap_json,
             error_message=error_message,
             refresh_status=refresh_status,
             refresh_error=refresh_error_msg,
