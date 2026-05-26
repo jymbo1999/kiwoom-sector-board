@@ -7,22 +7,29 @@ import streamlit as st
 
 from src.config import load_settings
 from src.dashboard_components import (
+    render_featured_themes,
     render_header,
     render_market_summary,
     render_refresh_targets,
+    render_rise_reason_summaries,
     render_sector_cards,
     render_selected_theme_leaders,
     render_summary_table,
+    render_theme_history_table,
     render_theme_timeline,
     render_theme_treemap,
 )
+from src.evidence_service import build_evidence_bundles
 from src.market_data import (
     get_market_summary,
     get_theme_heatmap,
+    get_theme_history,
     get_theme_leaders,
     get_theme_timeline,
+    get_today_featured_themes,
     load_market_prices,
 )
+from src.rise_reason_service import summarize_rise_reasons
 from src.sector_ranker import rank_sectors
 from src.theme_loader import load_theme_map
 
@@ -51,6 +58,27 @@ def load_board_view_models() -> tuple[dict, pd.DataFrame, pd.DataFrame]:
 @st.cache_data(ttl=30)
 def load_selected_leaders(theme_id: str) -> pd.DataFrame:
     return get_theme_leaders(theme_id)
+
+
+@st.cache_data(ttl=3600)
+def load_featured_and_history() -> tuple[list[dict], list[dict]]:
+    return get_today_featured_themes(), get_theme_history()
+
+
+@st.cache_data(ttl=300)
+def load_rise_reason_summaries(limit: int = 10) -> list[dict]:
+    bundles = build_evidence_bundles(limit=limit)
+    summaries = summarize_rise_reasons(bundles)
+    by_ticker = {str(bundle.get("ticker", "")): bundle for bundle in bundles if isinstance(bundle, dict)}
+    rows: list[dict] = []
+    for summary in summaries:
+        ticker = str(summary.get("ticker", ""))
+        bundle = by_ticker.get(ticker, {})
+        market_move = bundle.get("market_move", {}) if isinstance(bundle, dict) else {}
+        row = dict(summary)
+        row["market_move"] = market_move if isinstance(market_move, dict) else {}
+        rows.append(row)
+    return rows
 
 
 def _empty_board_state(error: Exception) -> tuple[dict, pd.DataFrame, pd.DataFrame, str]:
@@ -102,30 +130,22 @@ def main() -> None:
 
     render_market_summary(summary)
 
-    theme_options = heatmap["theme_id"].astype(str).tolist() if "theme_id" in heatmap and not heatmap.empty else []
-    default_theme = str(summary.get("top_theme") or theme_options[0]) if theme_options else None
-    default_index = theme_options.index(default_theme) if default_theme in theme_options else 0
+    st.subheader("상승이유 요약")
+    try:
+        rise_reason_summaries = load_rise_reason_summaries(limit=10)
+    except Exception as exc:
+        st.warning(f"상승이유 요약 데이터를 불러오지 못했습니다: {exc}")
+        rise_reason_summaries = []
+    render_rise_reason_summaries(rise_reason_summaries)
+    st.caption("상승이유 요약은 수집된 공시와 뉴스 snippet 기반의 보조 정보이며, 투자 추천이나 매수·매도 권유가 아닙니다.")
 
-    chart_col, detail_col = st.columns([2, 1], gap="large")
-    with chart_col:
-        st.subheader("테마 흐름")
-        render_theme_treemap(heatmap)
-    with detail_col:
-        st.subheader("선택 테마 대장주 Top 5")
-        if theme_options:
-            selected_theme = st.selectbox(
-                "테마 선택",
-                options=theme_options,
-                index=default_index,
-                format_func=lambda theme_id: _theme_label(heatmap, theme_id),
-            )
-            leaders = load_selected_leaders(selected_theme)
-            render_selected_theme_leaders(leaders)
-        else:
-            st.info("선택 가능한 테마 데이터가 없습니다.")
+    featured_themes, history = load_featured_and_history()
 
-    st.subheader("최근 5거래일 테마 지속성")
-    render_theme_timeline(timeline)
+    st.subheader("오늘의 특징테마 (2026-05-22)")
+    render_featured_themes(featured_themes)
+
+    st.subheader("날짜별 섹터 히스토리")
+    render_theme_history_table(history)
 
     with st.expander("기존 카드형 섹터맵/관전표 보기", expanded=False):
         try:
@@ -142,6 +162,42 @@ def main() -> None:
                 render_sector_cards(sectors, leaders, limit=6)
             with table_tab:
                 render_summary_table(sectors, leaders, limit=12)
+
+    st.subheader("최근 날짜별 테마 흐름")
+    render_theme_timeline(timeline)
+
+    theme_options = heatmap["theme_id"].astype(str).tolist() if "theme_id" in heatmap and not heatmap.empty else []
+    default_theme = str(summary.get("top_theme") or theme_options[0]) if theme_options else None
+    default_index = theme_options.index(default_theme) if default_theme in theme_options else 0
+
+    chart_col, detail_col = st.columns([2, 1], gap="large")
+    with chart_col:
+        st.subheader("테마 흐름")
+        _SIZE_OPTIONS = {
+            "total_trading_value": "테마 거래대금",
+            "market_cap": "시가총액",
+            "theme_score": "테마 점수",
+            "equal": "동일 크기",
+        }
+        size_by = st.selectbox(
+            "박스 크기 기준",
+            options=list(_SIZE_OPTIONS.keys()),
+            format_func=lambda k: _SIZE_OPTIONS[k],
+            key="treemap_size_by",
+        )
+        render_theme_treemap(heatmap, size_by=size_by)
+    with detail_col:
+        if theme_options:
+            selected_theme = st.selectbox(
+                "테마 선택",
+                options=theme_options,
+                index=default_index,
+                format_func=lambda theme_id: _theme_label(heatmap, theme_id),
+            )
+            leaders = load_selected_leaders(selected_theme)
+            render_selected_theme_leaders(leaders)
+        else:
+            st.info("선택 가능한 테마 데이터가 없습니다.")
 
 
 if __name__ == "__main__":
