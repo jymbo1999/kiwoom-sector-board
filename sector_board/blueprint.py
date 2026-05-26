@@ -208,9 +208,7 @@ def create_sector_board_blueprint() -> Blueprint:
 
         return render_template(
             "sector_board/index.html",
-            layout_template=current_app.config.get(
-                "SECTOR_BOARD_LAYOUT_TEMPLATE", "sector_board/standalone.html"
-            ),
+            layout_template="sector_board/standalone.html",
             snapshot=snapshot if has_data else None,
             summary=(snapshot or {}).get("summary", {}) if has_data else {},
             sector_rows=_build_sector_rows(
