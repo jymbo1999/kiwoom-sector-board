@@ -137,14 +137,8 @@ def create_sector_board_blueprint() -> Blueprint:
             if needs_collect and not error_message:
                 try:
                     from .collector import schedule_background_collect
-                    started = schedule_background_collect(database_url)
-                    if started:
-                        # Re-fetch to get the 'running' row
-                        snapshot = fetch_snapshot(database_url=database_url, snapshot_date=date.today())
-                        refresh_status = "running"
-                    elif snapshot is None:
-                        # Already running in another thread/worker
-                        refresh_status = "running"
+                    schedule_background_collect(database_url)
+                    refresh_status = "running"
                 except ImportError:
                     error_message = "수집 모듈(src)을 불러올 수 없습니다. 패키지 설정을 확인하세요."
                 except Exception as exc:

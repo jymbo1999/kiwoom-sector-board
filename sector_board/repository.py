@@ -4,6 +4,7 @@ from datetime import date, datetime
 import json
 import logging
 import os
+import threading
 from typing import Any
 
 from flask import Flask
@@ -15,6 +16,25 @@ from .payload import normalize_snapshot_payload
 from .schema import metadata, sector_snapshots
 
 _log = logging.getLogger(__name__)
+
+_engine_cache: dict[str, "Engine"] = {}
+_engine_cache_lock = threading.Lock()
+
+
+def _get_engine(database_url: str) -> "Engine":
+    """Return a cached SQLAlchemy engine for the given URL (one pool per URL)."""
+    normalized = normalize_database_url(database_url)
+    if normalized not in _engine_cache:
+        with _engine_cache_lock:
+            if normalized not in _engine_cache:
+                _engine_cache[normalized] = create_engine(
+                    normalized,
+                    future=True,
+                    pool_size=2,
+                    max_overflow=4,
+                    pool_pre_ping=True,
+                )
+    return _engine_cache[normalized]
 
 
 def normalize_database_url(database_url: str) -> str:
@@ -47,7 +67,7 @@ def resolve_database_url(app: Flask | None = None, explicit_url: str | None = No
 
 
 def create_snapshot_engine(database_url: str) -> Engine:
-    return create_engine(normalize_database_url(database_url), future=True)
+    return _get_engine(database_url)
 
 
 def _ensure_refresh_columns(engine: Engine) -> None:

@@ -4,9 +4,6 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ url_for('sector_board.static', filename='sector_board.css') }}">
-{% if refresh_status == 'running' %}
-<meta http-equiv="refresh" content="5">
-{% endif %}
 {% endblock stylesheets %}
 
 {% block content %}
@@ -44,6 +41,7 @@
     <h2>오늘 데이터 수집 중…</h2>
     <p>Kiwoom API에서 섹터 데이터를 가져오고 있습니다. 5초마다 자동으로 갱신됩니다.</p>
   </section>
+  <script>setTimeout(function(){ location.reload(); }, 5000);</script>
 
   {% elif refresh_status == 'error' and not snapshot %}
   <section class="sector-board-collecting">
