@@ -47,7 +47,7 @@ def collect_and_store(
         from src.evidence_service import build_evidence_bundles
         from src.rise_reason_service import summarize_rise_reasons
         _log.info("[sector-board] building evidence bundles (limit=20)...")
-        evidence_bundles = build_evidence_bundles(limit=20)
+        evidence_bundles = build_evidence_bundles(limit=10)
         payload["rise_reasons"] = summarize_rise_reasons(evidence_bundles)
         _log.info("[sector-board] rise_reasons collected: %d", len(payload["rise_reasons"]))
     except Exception as exc:

@@ -9,7 +9,7 @@ from flask import Blueprint, current_app, jsonify, redirect, render_template, ur
 from sqlalchemy.exc import SQLAlchemyError
 
 from .auth import auth_gate
-from .repository import fetch_previous_snapshot, fetch_snapshot, resolve_database_url
+from .repository import fetch_previous_snapshot, fetch_recent_snapshots, fetch_snapshot, resolve_database_url
 
 
 def _to_float(value: object, default: float = 0.0) -> float:
@@ -117,6 +117,40 @@ def _build_sector_rows(themes: list[dict], leaders: list[dict], rank_changes: di
     return rows
 
 
+_KR_WEEKDAYS = ["월", "화", "수", "목", "금", "토", "일"]
+
+
+def _build_weekly_table(snapshots: list[dict], top_n: int = 5) -> list[dict]:
+    rows = []
+    for snap in snapshots:
+        date_str = snap.get("snapshot_date", "")
+        themes = snap.get("themes", [])
+        sorted_themes = sorted(
+            themes,
+            key=lambda t: (_to_float(t.get("theme_score")), _to_float(t.get("total_trading_value"))),
+            reverse=True,
+        )[:top_n]
+        weekday = ""
+        try:
+            dt = date.fromisoformat(date_str)
+            weekday = _KR_WEEKDAYS[dt.weekday()]
+        except (ValueError, TypeError):
+            pass
+        rows.append({
+            "date": date_str,
+            "weekday": weekday,
+            "themes": [
+                {
+                    "name": str(t.get("theme_name") or ""),
+                    "rate": _format_pct(t.get("top5_change_rate_mean")),
+                    "rate_val": _to_float(t.get("top5_change_rate_mean")),
+                }
+                for t in sorted_themes
+            ],
+        })
+    return rows
+
+
 def _get_max_age_seconds() -> int:
     try:
         return max(60, int(os.environ.get("SECTOR_BOARD_REFRESH_MAX_AGE_SECONDS") or 900))
@@ -210,6 +244,15 @@ def create_sector_board_blueprint() -> Blueprint:
         )
         treemap_json = json.dumps(today_themes, ensure_ascii=False)
 
+        weekly_table: list[dict] = []
+        if database_url and has_data:
+            try:
+                weekly_table = _build_weekly_table(
+                    fetch_recent_snapshots(5, database_url=database_url)
+                )
+            except Exception:
+                pass
+
         return render_template(
             "sector_board/index.html",
             layout_template="sector_board/standalone.html",
@@ -221,7 +264,8 @@ def create_sector_board_blueprint() -> Blueprint:
                 rank_changes=rank_changes,
             ) if has_data else [],
             treemap_json=treemap_json,
-            rise_reasons=(snapshot or {}).get("rise_reasons", []) if has_data else [],
+            weekly_table=weekly_table,
+            rise_reasons=(snapshot or {}).get("rise_reasons", [])[:10] if has_data else [],
             error_message=error_message,
             refresh_status=refresh_status,
             refresh_error=refresh_error_msg,

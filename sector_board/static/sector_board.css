@@ -409,3 +409,101 @@ body {
   .rr-row { grid-template-columns: 1fr; }
   .rr-meta { border-right: none; border-bottom: 1px solid var(--sector-border); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
 }
+
+/* ── 주간 주도테마 테이블 ──────────────────────────────── */
+.weekly-table-section {
+  margin-bottom: 20px;
+}
+.weekly-table-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: var(--sector-text);
+}
+.weekly-table-wrap {
+  overflow-x: auto;
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 8px;
+}
+.weekly-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.weekly-table th {
+  padding: 10px 12px;
+  text-align: left;
+  color: var(--sector-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--sector-border);
+  white-space: nowrap;
+}
+.weekly-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--sector-border);
+  vertical-align: top;
+}
+.weekly-table tr:last-child td { border-bottom: none; }
+.weekly-table tr.wt-today td { background: rgba(20, 184, 166, 0.06); }
+
+.wt-head-date { min-width: 58px; }
+.wt-date-cell { white-space: nowrap; }
+.wt-weekday {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: var(--sector-accent);
+}
+.wt-datenum {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--sector-muted);
+}
+.wt-theme-cell { min-width: 100px; }
+.wt-name {
+  display: block;
+  font-weight: 700;
+  color: var(--sector-text);
+  line-height: 1.35;
+}
+.wt-rate {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.wt-empty { color: var(--sector-muted); }
+
+/* ── 트리맵 기타 패널 ────────────────────────────────── */
+.treemap-others-panel {
+  padding: 12px 16px;
+  border-top: 1px solid var(--sector-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.treemap-others-panel.hidden { display: none; }
+.others-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--sector-border);
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.80rem;
+}
+.others-rank {
+  color: var(--sector-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+}
+.others-name {
+  color: var(--sector-text);
+  font-weight: 600;
+}
+.others-rate { font-weight: 800; font-size: 0.80rem; }

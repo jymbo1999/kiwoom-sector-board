@@ -315,3 +315,20 @@ def fetch_previous_snapshot(
     stmt = stmt.order_by(desc(sector_snapshots.c.snapshot_date)).limit(1)
     with active_engine.connect() as connection:
         return _row_to_payload(connection.execute(stmt).first())
+
+
+def fetch_recent_snapshots(
+    n: int = 5,
+    database_url: str | None = None,
+    engine: Engine | None = None,
+) -> list[dict[str, Any]]:
+    """최근 N개 스냅샷 반환 (날짜 내림차순). 주간 테이블용."""
+    active_engine = engine or create_snapshot_engine(database_url or "")
+    stmt = (
+        select(sector_snapshots)
+        .order_by(desc(sector_snapshots.c.snapshot_date))
+        .limit(n)
+    )
+    with active_engine.connect() as conn:
+        rows = conn.execute(stmt).all()
+    return [p for r in rows if (p := _row_to_payload(r)) is not None]

@@ -81,7 +81,44 @@
   {# ── Treemap ── #}
   <section class="sector-board-treemap-section">
     <div id="sector-treemap"></div>
+    <div id="treemap-others-panel" class="treemap-others-panel hidden"></div>
   </section>
+
+  {# ── 주간 주도테마 ── #}
+  {% if weekly_table and weekly_table|length > 1 %}
+  <section class="weekly-table-section">
+    <h2 class="weekly-table-title">이번 주 주도테마</h2>
+    <div class="weekly-table-wrap">
+      <table class="weekly-table">
+        <thead>
+          <tr>
+            <th class="wt-head-date">날짜</th>
+            <th>1위</th><th>2위</th><th>3위</th><th>4위</th><th>5위</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for day in weekly_table %}
+          <tr {% if loop.first %}class="wt-today"{% endif %}>
+            <td class="wt-date-cell">
+              <span class="wt-weekday">{{ day.weekday }}</span>
+              <span class="wt-datenum">{{ day.date[5:] }}</span>
+            </td>
+            {% for theme in day.themes %}
+            <td class="wt-theme-cell">
+              <span class="wt-name">{{ theme.name }}</span>
+              <span class="wt-rate {% if theme.rate_val > 0 %}rate--pos{% elif theme.rate_val < 0 %}rate--neg{% endif %}">{{ theme.rate }}</span>
+            </td>
+            {% endfor %}
+            {% for _ in range(5 - day.themes|length) %}
+            <td class="wt-theme-cell wt-empty">—</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
 
   {# ── Sector cards ── #}
   <section class="sector-card-grid">
@@ -184,10 +221,36 @@
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script>
 (function () {
-  var themes = {{ treemap_json | safe }};
-  if (!themes || !themes.length) return;
+  var allThemes = {{ treemap_json | safe }};
+  if (!allThemes || !allThemes.length) return;
   var el = document.getElementById('sector-treemap');
   if (!el) return;
+
+  var TOP = 15;
+  var top = allThemes.slice(0, TOP);
+  var rest = allThemes.slice(TOP);
+
+  var othersPanel = document.getElementById('treemap-others-panel');
+  if (rest.length && othersPanel) {
+    var html = '';
+    rest.forEach(function(t, i) {
+      var rate = parseFloat(t.top5_change_rate_mean) || 0;
+      var sign = rate >= 0 ? '+' : '';
+      html += '<div class="others-item">' +
+        '<span class="others-rank">' + (TOP + 1 + i) + '</span>' +
+        '<span class="others-name">' + (t.theme_name || '') + '</span>' +
+        '<span class="others-rate ' + (rate >= 0 ? 'rate--pos' : 'rate--neg') + '">' +
+        sign + rate.toFixed(2) + '%</span></div>';
+    });
+    othersPanel.innerHTML = html;
+  }
+
+  var themes = top.slice();
+  if (rest.length) {
+    var ref = parseFloat(top[top.length - 1].total_trading_value) || 1;
+    themes.push({ theme_name: '기타 (' + rest.length + ')', total_trading_value: ref,
+                  top5_change_rate_mean: 0, leader_names: '', badges: '' });
+  }
 
   var labels = themes.map(function(t) { return t.theme_name; });
   var values = themes.map(function(t) { return parseFloat(t.total_trading_value) || 0; });
@@ -195,6 +258,9 @@
   var texts  = themes.map(function(t) {
     var rate = parseFloat(t.top5_change_rate_mean) || 0;
     var sign = rate >= 0 ? '+' : '';
+    if ((t.theme_name || '').indexOf('기타') === 0) {
+      return '<b>' + t.theme_name + '</b><br><span style="font-size:11px;color:#8b92a5">클릭하여 펼치기</span>';
+    }
     var names = (t.leader_names || '').split(',').slice(0, 3).map(function(n){ return n.trim(); }).filter(Boolean).join(', ');
     var badges = (t.badges || '').replace(/,/g, ' · ');
     return '<b>' + t.theme_name + '</b>' + (badges ? ' [' + badges + ']' : '') +
@@ -237,6 +303,17 @@
     plot_bgcolor: 'transparent',
     height: 420
   }, {responsive: true, displayModeBar: false});
+
+  if (rest.length && othersPanel) {
+    el.on('plotly_click', function(data) {
+      if (!data.points || !data.points[0]) return;
+      var lbl = data.points[0].label || '';
+      if (lbl.indexOf('기타') === 0) {
+        othersPanel.classList.toggle('hidden');
+        othersPanel.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+      }
+    });
+  }
 })();
 </script>
 {% endif %}
