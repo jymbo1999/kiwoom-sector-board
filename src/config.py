@@ -57,6 +57,10 @@ class Settings:
     api_timeout_seconds: float = 10.0
     api_retry_count: int = 2
     api_request_interval_seconds: float = 0.35
+    # KRX 전체 종목 수집 모드 (pykrx 기반, Kiwoom API 불필요)
+    use_krx_data: bool = True
+    # KRX 수집 실행 시각 (KST 기준 시)
+    krx_collect_hour: int = 4
 
 
 def load_settings() -> Settings:
@@ -70,6 +74,13 @@ def load_settings() -> Settings:
         "https://mockapi.kiwoom.com" if use_mock else "https://api.kiwoom.com"
     )
 
+    # KRX 모드: 명시적으로 비활성화(USE_KRX_DATA=false)하지 않으면 기본 True
+    _use_krx_env = os.getenv("USE_KRX_DATA")
+    if _use_krx_env is not None:
+        use_krx_data = _as_bool(_use_krx_env)
+    else:
+        use_krx_data = True
+
     return Settings(
         app_key=os.getenv("KIWOOM_APP_KEY", ""),
         secret_key=os.getenv("KIWOOM_APP_SECRET", os.getenv("KIWOOM_SECRET_KEY", "")),
@@ -82,6 +93,8 @@ def load_settings() -> Settings:
         api_timeout_seconds=max(1.0, _as_float(os.getenv("KIWOOM_API_TIMEOUT_SECONDS"), 10.0)),
         api_retry_count=max(0, _as_int(os.getenv("KIWOOM_API_RETRY_COUNT"), 2)),
         api_request_interval_seconds=max(0.0, _as_float(os.getenv("KIWOOM_REQUEST_INTERVAL_SECONDS"), 0.35)),
+        use_krx_data=use_krx_data,
+        krx_collect_hour=max(0, min(23, _as_int(os.getenv("KRX_COLLECT_HOUR"), 4))),
     )
 
 

@@ -35,8 +35,8 @@ def collect_and_store(
     from .repository import upsert_snapshot
 
     today = snapshot_date or date.today()
-    _log.info("[sector-board] calling get_morning_board_view_models()")
-    summary, heatmap, leaders = get_morning_board_view_models()
+    _log.info("[sector-board] calling get_morning_board_view_models(trade_date=%s)", today)
+    summary, heatmap, leaders = get_morning_board_view_models(trade_date=today)
     _log.info("[sector-board] got summary=%s themes=%d leaders=%d",
               summary.get("data_mode"), len(heatmap), len(leaders))
     payload = build_morning_snapshot_payload(summary, heatmap, leaders, generated_at=datetime.now())

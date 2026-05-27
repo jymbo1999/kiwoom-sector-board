@@ -300,3 +300,18 @@ def fetch_snapshot(
     stmt = stmt.order_by(desc(sector_snapshots.c.snapshot_date), desc(sector_snapshots.c.fetched_at)).limit(1)
     with active_engine.connect() as connection:
         return _row_to_payload(connection.execute(stmt).first())
+
+
+def fetch_previous_snapshot(
+    database_url: str | None = None,
+    engine: Engine | None = None,
+    before_date: date | None = None,
+) -> dict[str, Any] | None:
+    """before_date 이전 스냅샷 중 가장 최신 것을 반환. 전일 비교용."""
+    active_engine = engine or create_snapshot_engine(database_url or "")
+    stmt = select(sector_snapshots)
+    if before_date is not None:
+        stmt = stmt.where(sector_snapshots.c.snapshot_date < before_date)
+    stmt = stmt.order_by(desc(sector_snapshots.c.snapshot_date)).limit(1)
+    with active_engine.connect() as connection:
+        return _row_to_payload(connection.execute(stmt).first())

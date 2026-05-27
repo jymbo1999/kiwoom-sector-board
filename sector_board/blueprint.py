@@ -9,7 +9,7 @@ from flask import Blueprint, current_app, jsonify, redirect, render_template, ur
 from sqlalchemy.exc import SQLAlchemyError
 
 from .auth import auth_gate
-from .repository import fetch_snapshot, resolve_database_url
+from .repository import fetch_previous_snapshot, fetch_snapshot, resolve_database_url
 
 
 def _to_float(value: object, default: float = 0.0) -> float:
@@ -161,7 +161,8 @@ def create_sector_board_blueprint() -> Blueprint:
             error_message = "SECTOR_BOARD_DATABASE_URL이 설정되지 않았습니다."
         else:
             try:
-                snapshot = fetch_snapshot(database_url=database_url, snapshot_date=date.today())
+                # 날짜 고정 없이 최신 스냅샷 조회 (KRX 모드는 전 거래일 날짜로 저장됨)
+                snapshot = fetch_snapshot(database_url=database_url)
             except SQLAlchemyError as exc:
                 error_message = str(exc)
 
@@ -169,7 +170,8 @@ def create_sector_board_blueprint() -> Blueprint:
                 refresh_status = snapshot.get("refresh_status") or "success"
                 refresh_error_msg = snapshot.get("refresh_error")
 
-            # Decide whether to trigger auto-collect
+            # 스냅샷이 아예 없거나 수집 오류 상태일 때만 즉시 수집 트리거
+            # (정상 케이스: 스케줄러가 04:00에 이미 수집해 둠)
             needs_collect = (
                 snapshot is None
                 or (refresh_status == "error" and not snapshot.get("themes"))
@@ -192,11 +194,13 @@ def create_sector_board_blueprint() -> Blueprint:
 
         today_themes = (snapshot or {}).get("themes", []) if has_data else []
         yesterday_snapshot = None
-        if database_url and has_data:
+        if database_url and has_data and snapshot.get("snapshot_date"):
             try:
-                yesterday_snapshot = fetch_snapshot(
+                from datetime import date as _date_cls
+                current_snap_date = _date_cls.fromisoformat(snapshot["snapshot_date"])
+                yesterday_snapshot = fetch_previous_snapshot(
                     database_url=database_url,
-                    snapshot_date=date.today() - timedelta(days=1),
+                    before_date=current_snap_date,
                 )
             except Exception:
                 pass

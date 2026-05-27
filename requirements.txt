@@ -9,3 +9,8 @@ Flask>=3.1.0
 SQLAlchemy>=2.0.38
 psycopg[binary]>=3.2.0
 gunicorn>=23.0.0
+# KRX 전체 종목 수집 (fdr: OHLCV, kind.krx.co.kr: 업종)
+finance-datareader>=0.9.50
+# 일일 04:00 KST 자동 수집 스케줄러
+APScheduler>=3.10.0
+pytz>=2024.1

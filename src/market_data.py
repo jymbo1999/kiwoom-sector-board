@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime, time
+import logging
+from datetime import date, datetime, time
 from typing import Any, Callable
 
 import pandas as pd
@@ -9,8 +10,10 @@ from .config import Settings, load_settings
 from .dummy_data import load_sample_prices
 from .kiwoom_auth import KiwoomAuthError
 from .kiwoom_client import KiwoomApiError, KiwoomRestClient
-from .sector_ranker import rank_sectors
+from .sector_ranker import rank_sectors, rank_sectors_krx
 from .theme_loader import load_theme_map
+
+_log = logging.getLogger(__name__)
 
 
 MARKET_SUMMARY_KEYS = [
@@ -273,9 +276,28 @@ def _load_ranked_snapshot(
     return settings, theme_map, prices, sectors, leaders, error_message, effective_mock
 
 
+def _load_krx_snapshot(
+    trade_date: date | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """pykrx로 전 거래일 전체 KRX 종목 수집 후 섹터 랭킹 반환.
+
+    Returns
+    -------
+    (prices, sectors, leaders)  — theme_map 없이 동작
+    """
+    from .krx_collector import fetch_krx_snapshot, get_last_trading_date
+
+    target = trade_date or get_last_trading_date()
+    prices = fetch_krx_snapshot(target)
+    sectors, leaders = rank_sectors_krx(prices)
+    return prices, sectors, leaders
+
+
 def _data_mode(settings: Settings, effective_mock: bool) -> str:
     if effective_mock:
         return "mock"
+    if settings.use_krx_data:
+        return "krx"
     if settings.use_mock:
         return "mock"
     return "kiwoom_rest"
@@ -364,12 +386,32 @@ def _build_leader_view(leaders: pd.DataFrame) -> pd.DataFrame:
 
 def get_morning_board_view_models(
     on_progress: Callable[[int, int], None] | None = None,
+    trade_date: date | None = None,
 ) -> tuple[dict[str, Any], pd.DataFrame, pd.DataFrame]:
-    """Return summary, ranked themes, and sector leader rows from one API snapshot."""
+    """KRX 또는 Kiwoom 경로로 섹터 분석 결과 반환.
 
-    settings, theme_map, prices, sectors, leaders, error_message, effective_mock = _load_ranked_snapshot(
-        on_progress=on_progress
-    )
+    KRX 모드(USE_KRX_DATA=true 또는 Kiwoom 키 미설정): pykrx로 전체 종목 수집.
+    Kiwoom 모드: 기존 Kiwoom REST API + theme_map.csv 경로.
+    """
+    settings = load_settings()
+
+    if settings.use_krx_data:
+        try:
+            prices, sectors, leaders = _load_krx_snapshot(trade_date=trade_date)
+            error_message = None
+            effective_mock = False
+            theme_map = None
+        except Exception as exc:
+            _log.warning("[market_data] KRX 수집 실패, mock으로 폴백: %s", exc)
+            settings, theme_map, prices, sectors, leaders, error_message, effective_mock = (
+                _load_ranked_snapshot(on_progress=on_progress)
+            )
+    else:
+        settings, theme_map, prices, sectors, leaders, error_message, effective_mock = (
+            _load_ranked_snapshot(on_progress=on_progress)
+        )
+        theme_map = None  # _build_market_summary does not use theme_map
+
     summary = _build_market_summary(settings, theme_map, prices, sectors, error_message, effective_mock)
     heatmap = _build_theme_heatmap(sectors, leaders)
     leader_view = _build_leader_view(leaders)

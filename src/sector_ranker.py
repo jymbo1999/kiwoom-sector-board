@@ -5,6 +5,10 @@ import pandas as pd
 from .dummy_data import REQUIRED_PRICE_COLUMNS
 from .theme_loader import themes_to_long
 
+_KRX_REQUIRED_COLUMNS = frozenset(
+    ["code", "name", "sector", "change_rate", "trade_value", "volume", "open_price", "current_price"]
+)
+
 
 def _min_max_to_10(series: pd.Series) -> pd.Series:
     numeric = pd.to_numeric(series, errors="coerce").fillna(0.0)
@@ -98,3 +102,75 @@ def rank_sectors(prices: pd.DataFrame, theme_map: pd.DataFrame, top_n: int = 5) 
     leaders = pd.concat(leader_rows, ignore_index=True)
     leaders["rank"] = leaders["rank"].astype(int)
     return sectors, leaders
+
+
+def rank_sectors_krx(prices: pd.DataFrame, top_n: int = 5) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """KRX 전체 종목 데이터로 섹터 랭킹 계산.
+
+    prices 에는 이미 'sector' 컬럼이 있어야 한다 (theme_map 불필요).
+    반환 스키마는 rank_sectors() 와 동일.
+    """
+    missing = _KRX_REQUIRED_COLUMNS - set(prices.columns)
+    if missing:
+        raise ValueError(f"KRX price data missing columns: {sorted(missing)}")
+
+    df = prices.copy()
+    for col in ("change_rate", "trade_value", "volume", "open_price", "current_price"):
+        df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
+
+    open_nonzero = df["open_price"].replace(0, pd.NA)
+    df["open_to_current_strength"] = (
+        (df["current_price"] - df["open_price"]) / open_nonzero * 10.0
+    ).fillna(0.0)
+    df["theme_representative_score"] = 1.0
+
+    df["change_rate_rank_score"] = df.groupby("sector")["change_rate"].transform(_rank_score)
+    df["trade_value_rank_score"] = df.groupby("sector")["trade_value"].transform(_rank_score)
+    df["leader_score"] = (
+        df["change_rate_rank_score"] * 0.45
+        + df["trade_value_rank_score"] * 0.35
+        + df["open_to_current_strength"] * 0.10
+        + df["theme_representative_score"] * 0.10
+    )
+
+    sector_rows = []
+    leader_rows = []
+    for sector, group in df.groupby("sector", sort=False):
+        if group.empty:
+            continue
+        top_by_change = group.nlargest(min(top_n, len(group)), "change_rate")
+        leaders = group.sort_values(
+            ["leader_score", "change_rate", "trade_value"],
+            ascending=[False, False, False],
+        ).head(top_n)
+        sector_rows.append(
+            {
+                "sector": sector,
+                "top5_change_rate_mean": float(top_by_change["change_rate"].mean()),
+                "trade_value_sum": float(group["trade_value"].sum()),
+                "rising_ratio": float((group["change_rate"] > 0).mean()),
+                "limit_up_count": int((group["change_rate"] >= 29.5).sum()),
+                "stock_count": len(group),
+            }
+        )
+        leader_rows.append(leaders.assign(rank=range(1, len(leaders) + 1)))
+
+    if not sector_rows:
+        return pd.DataFrame(), pd.DataFrame()
+
+    sectors = pd.DataFrame(sector_rows)
+    sectors["normalized_trade_value_sum"] = _min_max_to_10(sectors["trade_value_sum"])
+    sectors["sector_score"] = (
+        sectors["top5_change_rate_mean"] * 0.45
+        + sectors["normalized_trade_value_sum"] * 0.30
+        + sectors["rising_ratio"] * 20.0 * 0.15
+        + sectors["limit_up_count"] * 2.0
+    )
+    sectors = sectors.sort_values(
+        ["sector_score", "trade_value_sum"],
+        ascending=[False, False],
+    ).reset_index(drop=True)
+
+    leaders_df = pd.concat(leader_rows, ignore_index=True)
+    leaders_df["rank"] = leaders_df["rank"].astype(int)
+    return sectors, leaders_df
