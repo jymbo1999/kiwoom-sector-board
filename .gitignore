@@ -20,3 +20,15 @@ logs/intraday_snapshot_*.jsonl
 .omc/project-memory.json
 .omc/sessions/
 .omc/state/sessions/
+
+# Local agent settings
+.agents/
+
+# Generated universe samples
+data/universe_codes_*.txt
+
+# Local request test files
+requests/test_codes_5.txt
+
+# Local skills lock
+skills-lock.json
