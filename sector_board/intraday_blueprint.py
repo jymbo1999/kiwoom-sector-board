@@ -25,10 +25,12 @@ from .auth import auth_gate
 # ---------------------------------------------------------------------------
 
 _RUNTIME_KEY = "INTRADAY_RUNTIME"
+_RUNTIME_META_KEY = "INTRADAY_RUNTIME_META"
 _MAX_WEBSOCKET_CODES = 200          # Kiwoom WebSocket 세션 총 등록 상한
 _DEFAULT_SNAPSHOT_INTERVAL = 1.0
 _DEFAULT_MAX_CODES = 150
 _DEFAULT_LISTEN_SECONDS = 7200      # 2시간
+_SENSITIVE_ENV_PARTS = ("SECRET", "APP_KEY", "TOKEN", "PASSWORD")
 
 
 # ---------------------------------------------------------------------------
@@ -75,7 +77,7 @@ def create_intraday_blueprint() -> Blueprint:
     def api_snapshot():
         """최신 snapshot + 런타임 진단 정보를 JSON 으로 반환한다.
 
-        런타임이 없으면 status="not_running", snapshot 없으면 status="empty".
+        런타임이 없으면 status="not_running", 실행 중 snapshot 없으면 status="warming".
         항상 200 OK 를 반환하고 클라이언트가 status/ok 로 판단한다.
         """
         runtime = _get_runtime()
@@ -84,10 +86,13 @@ def create_intraday_blueprint() -> Blueprint:
             return jsonify({
                 "ok": False,
                 "status": "not_running",
+                "provider": None,
+                "exchange": None,
                 "running": False,
                 "runtime_state": "not_running",
                 "started_at": None,
                 "updated_at": None,
+                "last_updated_at": None,
                 "runtime_error": None,
                 "runtime_close_reason": None,
                 "latest_count": 0,
@@ -100,20 +105,27 @@ def create_intraday_blueprint() -> Blueprint:
 
         snap = runtime.get_latest_snapshot()
         rt = runtime.get_status()
+        meta = _get_runtime_meta()
+        runtime_error = _redact_sensitive_text(rt.get("error"))
+        runtime_close_reason = _redact_sensitive_text(rt.get("close_reason"))
+        running = rt["state"] == "running"
 
         base = {
-            "running": rt["state"] == "running",
+            **meta,
+            "running": running,
             "runtime_state": rt["state"],
-            "runtime_error": rt.get("error"),
-            "runtime_close_reason": rt.get("close_reason"),
+            "runtime_error": runtime_error,
+            "runtime_close_reason": runtime_close_reason,
             "started_at": rt.get("started_at"),
         }
 
         if snap is None:
+            status = "error" if runtime_error else ("warming" if running else "not_running")
             return jsonify({
                 "ok": False,
-                "status": "empty",
+                "status": status,
                 "updated_at": None,
+                "last_updated_at": None,
                 "latest_count": 0,
                 "bucket_count": 0,
                 "raw_row_count": 0,
@@ -123,11 +135,17 @@ def create_intraday_blueprint() -> Blueprint:
                 **base,
             }), 200
 
+        status = "error" if runtime_error else snap.get("status", "warming")
+        if status == "empty" and running:
+            status = "warming"
+        updated_at = snap.get("generated_at")
         return jsonify({
             **snap,                                  # status, minute_key, counts, sector_views …
             **base,
-            "ok": True,
-            "updated_at": snap.get("generated_at"),
+            "ok": runtime_error is None,
+            "status": status,
+            "updated_at": updated_at,
+            "last_updated_at": updated_at,
         }), 200
 
     # ------------------------------------------------------------------ #
@@ -151,7 +169,11 @@ def create_intraday_blueprint() -> Blueprint:
         """
         existing = _get_runtime()
         if existing and existing.is_running():
-            return jsonify({"ok": True, "message": "already running"}), 200
+            return jsonify({
+                "ok": True,
+                "message": "already running",
+                **_get_runtime_meta(),
+            }), 200
 
         body: dict = {}
         try:
@@ -159,21 +181,36 @@ def create_intraday_blueprint() -> Blueprint:
         except Exception:
             pass
 
-        provider = str(body.get("provider") or "mock").lower()
-        exchange = str(body.get("exchange") or "sor").lower()
-        snapshot_interval = float(body.get("snapshot_interval") or _DEFAULT_SNAPSHOT_INTERVAL)
-        max_codes = int(body.get("max_codes") or _DEFAULT_MAX_CODES)
-        max_total_realtime_codes = int(
-            body.get("max_total_realtime_codes") or _MAX_WEBSOCKET_CODES
-        )
-        listen_seconds = float(body.get("listen_seconds") or _DEFAULT_LISTEN_SECONDS)
+        provider = str(_body_value(body, "provider") or "mock").lower()
+        exchange = str(_body_value(body, "exchange") or "sor").lower()
+        if provider not in {"mock", "websocket"}:
+            return jsonify({
+                "ok": False,
+                "error": (
+                    f"지원하지 않는 provider: {provider!r}. "
+                    "가능한 값: 'mock', 'websocket'"
+                ),
+            }), 400
+
+        _si = body.get("snapshot_interval")
+        snapshot_interval = float(_si) if _si is not None else _DEFAULT_SNAPSHOT_INTERVAL
+        _mc = body.get("max_codes")
+        max_codes = int(_mc) if _mc is not None else _DEFAULT_MAX_CODES
+        _mtr = body.get("max_total_realtime_codes")
+        max_total_realtime_codes = int(_mtr) if _mtr is not None else _MAX_WEBSOCKET_CODES
+        _ls = body.get("listen_seconds")
+        listen_seconds = float(_ls) if _ls is not None else _DEFAULT_LISTEN_SECONDS
 
         project_root = Path(__file__).resolve().parent.parent
-        codes_file = Path(
-            body.get("codes_file") or project_root / "data" / "universe_codes_150.txt"
+        codes_file = _resolve_data_file(
+            _body_value(body, "codes_file", "codes-file", "codesFile"),
+            project_root / "data" / "universe_codes_150.txt",
+            project_root,
         )
-        sector_map_file = Path(
-            body.get("sector_map_file") or project_root / "data" / "sector_map.json"
+        sector_map_file = _resolve_data_file(
+            _body_value(body, "sector_map_file", "sector-map-file", "sectorMapFile"),
+            project_root / "data" / "sector_map.json",
+            project_root,
         )
 
         # ---- 파일 로드 ----
@@ -191,6 +228,7 @@ def create_intraday_blueprint() -> Blueprint:
         if provider == "mock":
             from src.intraday_runtime import make_mock_source
             source_factory = make_mock_source(base_codes, exchange)
+            kiwoom_env = None
             response_extra: dict = {}
 
         elif provider == "websocket":
@@ -209,7 +247,7 @@ def create_intraday_blueprint() -> Blueprint:
                     "max_total_realtime_codes": max_total_realtime_codes,
                 }), 400
 
-            kiwoom_env = str(body.get("kiwoom_env") or "prod").lower()
+            kiwoom_env = str(_body_value(body, "kiwoom_env", "kiwoom-env") or "prod").lower()
             os.environ["KIWOOM_ENV"] = kiwoom_env
 
             from src.intraday_runtime import make_websocket_source
@@ -223,15 +261,6 @@ def create_intraday_blueprint() -> Blueprint:
                 "listen_seconds": listen_seconds,
                 "formatted_code_count": formatted_code_count,
             }
-
-        else:
-            return jsonify({
-                "ok": False,
-                "error": (
-                    f"지원하지 않는 provider: {provider!r}. "
-                    "가능한 값: 'mock', 'websocket'"
-                ),
-            }), 400
 
         # ---- Service + Runtime 생성 ----
         from src.intraday_snapshot_service import IntradaySnapshotService
@@ -248,17 +277,23 @@ def create_intraday_blueprint() -> Blueprint:
             snapshot_interval=snapshot_interval,
         )
         runtime.start()
-        _set_runtime(runtime)
-
-        return jsonify({
-            "ok": True,
+        metadata = {
             "provider": provider,
             "exchange": exchange,
+            "kiwoom_env": kiwoom_env,
             "codes": len(base_codes),
             "sector_map_size": len(sector_map),
+            "codes_file": _display_path(codes_file, project_root),
+            "sector_map_file": _display_path(sector_map_file, project_root),
             "snapshot_interval": snapshot_interval,
             "max_total_realtime_codes": max_total_realtime_codes,
             **response_extra,
+        }
+        _set_runtime(runtime, metadata)
+
+        return jsonify({
+            "ok": True,
+            **metadata,
         }), 200
 
     # ------------------------------------------------------------------ #
@@ -288,8 +323,24 @@ def _get_runtime():
     return current_app.config.get(_RUNTIME_KEY)
 
 
-def _set_runtime(rt) -> None:
+def _set_runtime(rt, metadata: dict | None = None) -> None:
     current_app.config[_RUNTIME_KEY] = rt
+    current_app.config[_RUNTIME_META_KEY] = metadata or {}
+
+
+def _get_runtime_meta() -> dict:
+    meta = current_app.config.get(_RUNTIME_META_KEY) or {}
+    return {
+        "provider": meta.get("provider"),
+        "exchange": meta.get("exchange"),
+        "kiwoom_env": meta.get("kiwoom_env"),
+        "codes": meta.get("codes", 0),
+        "sector_map_size": meta.get("sector_map_size", 0),
+        "codes_file": meta.get("codes_file"),
+        "sector_map_file": meta.get("sector_map_file"),
+        "snapshot_interval": meta.get("snapshot_interval"),
+        "max_total_realtime_codes": meta.get("max_total_realtime_codes"),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -323,3 +374,38 @@ def _load_codes(path: Path) -> list[str]:
         return codes
     except Exception:
         return []
+
+
+def _body_value(body: dict, *names: str):
+    for name in names:
+        if name in body:
+            return body.get(name)
+    return None
+
+
+def _resolve_data_file(value, default_path: Path, project_root: Path) -> Path:
+    if value is None or str(value).strip() == "":
+        return default_path
+    path = Path(str(value))
+    if path.is_absolute():
+        return path
+    return project_root / path
+
+
+def _display_path(path: Path, project_root: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(project_root.resolve()))
+    except ValueError:
+        return str(path)
+
+
+def _redact_sensitive_text(value) -> str | None:
+    if value is None:
+        return None
+    text = str(value)
+    for key, raw in os.environ.items():
+        if not raw or len(raw) < 4:
+            continue
+        if any(part in key.upper() for part in _SENSITIVE_ENV_PARTS):
+            text = text.replace(raw, "[redacted]")
+    return text

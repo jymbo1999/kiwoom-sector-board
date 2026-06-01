@@ -273,10 +273,59 @@ FLASK_APP=sector_board FLASK_DEBUG=1 flask run
 
 | URL | 내용 |
 |---|---|
-| `GET /sector-board/` | v1 Morning Board (기존) |
-| `GET /sector-board/intraday` | **v2 장중 리더보드 (신규)** |
+| `GET /sector-board/` | v1 Morning Board (기존, 건드리지 않음) |
+| `GET /sector-board/intraday` | v2 JSONL 기반 장중 화면 |
 | `GET /sector-board/api/snapshot` | v1 snapshot JSON API |
 | `GET /sector-board/health` | 헬스체크 |
+| `GET /intraday/` | **v3 실시간 장중 리더보드 (1초 polling)** |
+| `GET /intraday/api/snapshot` | 최신 snapshot + runtime 진단 JSON |
+| `POST /intraday/api/start` | runtime 시작 (mock 또는 websocket) |
+| `POST /intraday/api/stop` | runtime 중지 |
+
+### 8-3. `/intraday` Runtime 시작 방법
+
+**Mock 시작 (API 키 불필요, 개발 검증용)**
+
+```bash
+# Flask 실행 후 브라우저에서 ▶ Mock 시작 버튼 클릭, 또는 curl:
+curl -X POST http://localhost:5000/intraday/api/start \
+  -H "Content-Type: application/json" \
+  -d '{"provider": "mock", "exchange": "sor", "snapshot_interval": 1.0}'
+
+# 상태 확인
+curl http://localhost:5000/intraday/api/snapshot | python3 -m json.tool
+
+# 중지
+curl -X POST http://localhost:5000/intraday/api/stop
+```
+
+**Prod WebSocket 시작 (장중 08:00~18:00, 실전 키 필요)**
+
+```bash
+# Flask 실행
+KIWOOM_REAL_APP_KEY=<키> KIWOOM_REAL_SECRET_KEY=<시크릿> \
+flask --app "sector_board:create_app()" run
+
+# 별도 터미널에서 runtime 시작
+curl -X POST http://localhost:5000/intraday/api/start \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "websocket",
+    "kiwoom_env": "prod",
+    "exchange": "sor",
+    "codes_file": "data/universe_codes_150.txt",
+    "sector_map_file": "data/sector_map.json",
+    "max_codes": 150,
+    "max_total_realtime_codes": 200,
+    "snapshot_interval": 1.0,
+    "listen_seconds": 7200
+  }'
+
+# 브라우저: http://localhost:5000/intraday/
+```
+
+> **주의**: `max_total_realtime_codes` 기본값은 200 이며, 초과 시 시작 전 차단된다.
+> WebSocket 1000 Bye 발생 시 화면에 파란 배너로 표시되며, 다시 start API 를 호출하면 재연결된다.
 
 ### 8-3. 화면 데이터 공급 방식 (A안)
 

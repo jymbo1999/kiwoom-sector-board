@@ -60,6 +60,16 @@ def test_intraday_index_contains_live_script(tmp_path, monkeypatch):
     assert "/intraday/api/snapshot" in html
 
 
+def test_intraday_index_has_separate_prod_sor_button(tmp_path, monkeypatch):
+    app = _make_app(tmp_path, monkeypatch)
+    with app.test_client() as c:
+        r = c.get("/intraday/")
+    html = r.data.decode()
+    assert "Mock 시작" in html
+    assert "실전 SOR 시작" in html
+    assert "window.confirm" in html
+
+
 # ---------------------------------------------------------------------------
 # 2. GET /intraday/api/snapshot — runtime 없음
 # ---------------------------------------------------------------------------
@@ -73,6 +83,8 @@ def test_api_snapshot_no_runtime(tmp_path, monkeypatch):
     data = json.loads(r.data)
     assert data["status"] == "not_running"
     assert data["ok"] is False
+    assert data["provider"] is None
+    assert data["exchange"] is None
 
 
 # ---------------------------------------------------------------------------
@@ -93,6 +105,7 @@ def test_api_start_mock_returns_ok(tmp_path, monkeypatch):
     assert r.status_code == 200
     assert data["ok"] is True
     assert data["provider"] == "mock"
+    assert data["exchange"] == "sor"
 
     # cleanup
     with app.test_client() as c:
@@ -291,18 +304,32 @@ def test_websocket_over_200_codes_returns_400(tmp_path, monkeypatch):
 
 def test_websocket_exactly_200_codes_not_blocked_by_limit(tmp_path, monkeypatch):
     """200종목은 limit 자체에서 차단되지 않는다 (인증 실패는 허용)."""
+    from src import intraday_runtime as runtime_mod
+
+    monkeypatch.setattr(
+        runtime_mod,
+        "make_websocket_source",
+        lambda base_codes, exchange, listen_seconds: (lambda: iter(())),
+    )
     app = _make_app(tmp_path, monkeypatch)
     with app.test_client() as c:
         r = c.post("/intraday/api/start",
                    data=json.dumps({
                        "provider": "websocket",
                        "codes_file": _codes_file(tmp_path, 200),
+                       "max_codes": 200,
                        "max_total_realtime_codes": 200,
                    }),
                    content_type="application/json")
     data = json.loads(r.data)
     # 200종목은 limit 오류가 아님 — 인증 오류(400/200) 또는 시작 성공
     assert "formatted_code_count=200 >" not in data.get("error", "")
+    if data.get("ok"):
+        assert data["provider"] == "websocket"
+        assert data["exchange"] == "sor"
+        assert data["formatted_code_count"] == 200
+        with app.test_client() as c2:
+            c2.post("/intraday/api/stop")
 
 
 def test_websocket_custom_max_total_realtime_codes(tmp_path, monkeypatch):
@@ -324,6 +351,13 @@ def test_websocket_custom_max_total_realtime_codes(tmp_path, monkeypatch):
 
 def test_websocket_start_response_includes_kiwoom_env(tmp_path, monkeypatch):
     """provider=websocket 시작 응답에 kiwoom_env 포함 (인증 실패 전까지 파라미터 확인)."""
+    from src import intraday_runtime as runtime_mod
+
+    monkeypatch.setattr(
+        runtime_mod,
+        "make_websocket_source",
+        lambda base_codes, exchange, listen_seconds: (lambda: iter(())),
+    )
     app = _make_app(tmp_path, monkeypatch)
     # 1종목으로 limit 통과, 실제 WebSocket 연결은 백그라운드에서 실패해도 시작 응답은 반환됨
     with app.test_client() as c:
@@ -341,8 +375,98 @@ def test_websocket_start_response_includes_kiwoom_env(tmp_path, monkeypatch):
     if data["ok"]:
         assert data["kiwoom_env"] == "mock"
         assert data["exchange"] == "sor"
+        assert "mock-app" not in r.data.decode()
+        assert "mock-secret" not in r.data.decode()
         with app.test_client() as c2:
             c2.post("/intraday/api/stop")
+
+
+def test_websocket_prod_sor_payload_starts_without_secret_echo(tmp_path, monkeypatch):
+    """prod SOR payload 는 WebSocket source 를 만들되 secret 값을 응답하지 않는다."""
+    from src import intraday_runtime as runtime_mod
+
+    captured = {}
+
+    def fake_make_websocket_source(base_codes, exchange, listen_seconds):
+        captured["base_codes"] = list(base_codes)
+        captured["exchange"] = exchange
+        captured["listen_seconds"] = listen_seconds
+        return lambda: iter(())
+
+    monkeypatch.setattr(runtime_mod, "make_websocket_source", fake_make_websocket_source)
+    monkeypatch.setenv("KIWOOM_REAL_APP_KEY", "real-app-key-should-not-echo")
+    monkeypatch.setenv("KIWOOM_REAL_SECRET_KEY", "real-secret-should-not-echo")
+    codes_file = _codes_file(tmp_path, 3)
+    sector_map_file = tmp_path / "sector_map.json"
+    sector_map_file.write_text('{"000001":["A"],"000002":["A"],"000003":["B"]}', encoding="utf-8")
+    app = _make_app(tmp_path, monkeypatch)
+
+    with app.test_client() as c:
+        r = c.post("/intraday/api/start",
+                   data=json.dumps({
+                       "provider": "websocket",
+                       "kiwoom_env": "prod",
+                       "exchange": "sor",
+                       "codes_file": codes_file,
+                       "sector_map_file": str(sector_map_file),
+                       "max_codes": 150,
+                       "max_total_realtime_codes": 200,
+                       "snapshot_interval": 0.1,
+                       "listen_seconds": 12,
+                   }),
+                   content_type="application/json")
+        data = json.loads(r.data)
+        c.post("/intraday/api/stop")
+
+    assert r.status_code == 200
+    assert data["ok"] is True
+    assert data["provider"] == "websocket"
+    assert data["kiwoom_env"] == "prod"
+    assert data["exchange"] == "sor"
+    assert data["codes"] == 3
+    assert captured["exchange"] == "sor"
+    assert captured["listen_seconds"] == 12
+    body = r.data.decode()
+    assert "real-app-key-should-not-echo" not in body
+    assert "real-secret-should-not-echo" not in body
+
+
+def test_websocket_prod_sor_uses_default_data_files(tmp_path, monkeypatch):
+    """prod SOR 기본 시작은 150 universe 와 기본 sector_map 을 사용한다."""
+    from src import intraday_runtime as runtime_mod
+
+    captured = {}
+
+    def fake_make_websocket_source(base_codes, exchange, listen_seconds):
+        captured["code_count"] = len(base_codes)
+        captured["exchange"] = exchange
+        return lambda: iter(())
+
+    monkeypatch.setattr(runtime_mod, "make_websocket_source", fake_make_websocket_source)
+    app = _make_app(tmp_path, monkeypatch)
+
+    with app.test_client() as c:
+        r = c.post("/intraday/api/start",
+                   data=json.dumps({
+                       "provider": "websocket",
+                       "kiwoom_env": "prod",
+                       "exchange": "sor",
+                       "snapshot_interval": 0.1,
+                   }),
+                   content_type="application/json")
+        data = json.loads(r.data)
+        c.post("/intraday/api/stop")
+
+    assert r.status_code == 200
+    assert data["ok"] is True
+    assert data["provider"] == "websocket"
+    assert data["kiwoom_env"] == "prod"
+    assert data["exchange"] == "sor"
+    assert data["codes"] == 150
+    assert data["codes_file"] == "data/universe_codes_150.txt"
+    assert data["sector_map_file"] == "data/sector_map.json"
+    assert captured["code_count"] == 150
+    assert captured["exchange"] == "sor"
 
 
 def test_unknown_provider_returns_400(tmp_path, monkeypatch):
@@ -367,8 +491,8 @@ def test_snapshot_no_runtime_has_diagnosis_fields(tmp_path, monkeypatch):
     with app.test_client() as c:
         r = c.get("/intraday/api/snapshot")
     data = json.loads(r.data)
-    for key in ("running", "runtime_state", "started_at", "runtime_error",
-                "runtime_close_reason", "latest_count", "bucket_count",
+    for key in ("provider", "exchange", "running", "runtime_state", "started_at", "runtime_error",
+                "runtime_close_reason", "last_updated_at", "latest_count", "bucket_count",
                 "raw_row_count", "ignored_row_count", "sector_count"):
         assert key in data, f"Missing diagnosis key: {key}"
     assert data["running"] is False

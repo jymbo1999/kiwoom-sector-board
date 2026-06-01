@@ -36,10 +36,12 @@
 .il-badge--not_running, .il-badge--empty { background:#374151; color:#9ca3af; }
 .il-badge--warming { background:#78350f; color:#fbbf24; }
 .il-badge--ready   { background:#064e3b; color:#34d399; }
+.il-badge--error   { background:#7f1d1d; color:#fca5a5; }
 .il-badge__dot { width:6px; height:6px; border-radius:50%; }
 .il-badge--not_running .il-badge__dot, .il-badge--empty .il-badge__dot { background:#6b7280; }
 .il-badge--warming .il-badge__dot { background:#f59e0b; animation: il-pulse 1.4s ease-in-out infinite; }
 .il-badge--ready   .il-badge__dot { background:#10b981; animation: il-pulse 1.4s ease-in-out infinite; }
+.il-badge--error   .il-badge__dot { background:#ef4444; }
 @keyframes il-pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
 /* stats bar */
@@ -172,7 +174,8 @@
 
   <!-- ── Controls ──────────────────────────────────────────── -->
   <div class="il-controls">
-    <button id="btn-start" class="il-btn il-btn--start" onclick="startRuntime()">▶ Mock 시작</button>
+    <button id="btn-start-mock" class="il-btn il-btn--start" onclick="startMockRuntime()">▶ Mock 시작</button>
+    <button id="btn-start-prod" class="il-btn il-btn--start" onclick="startProdSorRuntime()">▶ 실전 SOR 시작</button>
     <button id="btn-stop"  class="il-btn il-btn--stop"  onclick="stopRuntime()">■ 중지</button>
     <span class="il-poll-info">폴링 간격 <span id="poll-interval">1s</span> &middot; 마지막 갱신 <span id="last-updated">—</span></span>
   </div>
@@ -186,8 +189,12 @@
 
   <!-- ── Stats bar ─────────────────────────────────────────── -->
   <div id="il-stats" class="il-stats">
+    <div class="il-stat"><span class="il-stat-label">provider</span><span class="il-stat-value" id="s-provider">—</span></div>
+    <div class="il-stat"><span class="il-stat-label">exchange</span><span class="il-stat-value" id="s-exchange">—</span></div>
+    <div class="il-stat"><span class="il-stat-label">running</span><span class="il-stat-value" id="s-running">false</span></div>
     <div class="il-stat"><span class="il-stat-label">상태</span><span class="il-stat-value" id="s-state">—</span></div>
     <div class="il-stat"><span class="il-stat-label">시작</span><span class="il-stat-value" id="s-started">—</span></div>
+    <div class="il-stat"><span class="il-stat-label">마지막 갱신</span><span class="il-stat-value" id="s-updated">—</span></div>
     <div class="il-stat"><span class="il-stat-label">기준분</span><span class="il-stat-value" id="s-minute">—</span></div>
     <div class="il-stat"><span class="il-stat-label">수신종목</span><span class="il-stat-value" id="s-latest">0</span></div>
     <div class="il-stat"><span class="il-stat-label">미매핑</span><span class="il-stat-value il-stat-value--warn" id="s-unmapped" style="display:none">0</span></div>
@@ -201,7 +208,7 @@
   <div id="il-body">
     <div class="il-hint">
       <h2>대기 중</h2>
-      <p>▶ Mock 시작 버튼을 누르거나 prod smoke script 를 실행하세요.<br>
+      <p>Mock 시작 또는 실전 SOR 시작 버튼으로 런타임을 시작하세요.<br>
          데이터가 수신되면 자동으로 화면이 갱신됩니다.</p>
     </div>
   </div>
@@ -209,7 +216,7 @@
   <p class="il-footer">
     <a href="{{ url_for('intraday.index') }}">새로고침</a>
     &nbsp;·&nbsp;
-    prod: smoke script + <code>--dump-snapshot-jsonl</code> 불필요 (runtime 직접 연결)
+    prod: 실전 SOR 시작 버튼은 확인 후 <code>websocket/prod/sor</code> 런타임을 직접 연결
   </p>
 
 </main>
@@ -259,7 +266,8 @@ function fmtPrice(v) {
 function setStatus(state) {
   const badge  = document.getElementById("il-status-badge");
   const text   = document.getElementById("il-status-text");
-  const states = ["not_running","empty","warming","ready"];
+  const states = ["not_running","empty","warming","ready","error"];
+  if (!states.includes(state)) state = "warming";
   states.forEach(s => badge.classList.remove("il-badge--" + s));
   badge.classList.add("il-badge--" + state);
   text.textContent = state.toUpperCase().replace("_", " ");
@@ -272,9 +280,13 @@ function showError(msg) {
 }
 
 function renderStats(snap) {
+  document.getElementById("s-provider").textContent = snap.provider || "—";
+  document.getElementById("s-exchange").textContent = snap.exchange || "—";
+  document.getElementById("s-running").textContent = snap.running ? "true" : "false";
+
   // runtime 상태
   const stateEl = document.getElementById("s-state");
-  if (stateEl) stateEl.textContent = snap.runtime_state || snap.status || "—";
+  if (stateEl) stateEl.textContent = snap.status || snap.runtime_state || "—";
 
   // 시작 시각
   const startedEl = document.getElementById("s-started");
@@ -282,6 +294,11 @@ function renderStats(snap) {
     startedEl.textContent = snap.started_at
       ? new Date(snap.started_at).toLocaleTimeString("ko-KR")
       : "—";
+  }
+  const updatedEl = document.getElementById("s-updated");
+  const updatedAt = snap.last_updated_at || snap.updated_at || snap.generated_at;
+  if (updatedEl) {
+    updatedEl.textContent = updatedAt ? new Date(updatedAt).toLocaleTimeString("ko-KR") : "—";
   }
 
   document.getElementById("s-minute").textContent  = snap.minute_key || "—";
@@ -303,8 +320,8 @@ function renderStats(snap) {
   const crEl = document.getElementById("il-close-reason");
   if (crEl) {
     if (snap.runtime_close_reason) {
-      crEl.textContent = "ℹ 서버 정상 종료 (1000 OK Bye) — " + snap.runtime_close_reason
-        + " — LOGIN 실패가 아닙니다. 재시작하려면 ▶ 시작 버튼을 누르세요.";
+      crEl.textContent = "ℹ close_reason — " + snap.runtime_close_reason
+        + " — 재시작하려면 시작 버튼을 누르세요.";
       crEl.style.display = "";
     } else {
       crEl.style.display = "none";
@@ -357,9 +374,10 @@ function renderSectors(sectorViews) {
 
 function renderEmpty(status) {
   const msgs = {
-    not_running: { h: "런타임 미실행", p: "▶ Mock 시작 버튼을 누르거나 prod smoke script 를 실행하세요." },
+    not_running: { h: "런타임 미실행", p: "Mock 시작 또는 실전 SOR 시작 버튼을 눌러 런타임을 시작하세요." },
     empty:       { h: "데이터 없음",   p: "런타임이 실행 중이지만 아직 tick 데이터가 없습니다. 장중(08:00~18:00 KST)인지 확인하세요." },
     warming:     { h: "수집 중 (Warming)", p: "tick 을 수신 중입니다. 섹터 집계가 시작되면 화면이 갱신됩니다." },
+    error:       { h: "런타임 오류", p: "상단 오류 메시지를 확인한 뒤 설정을 수정하고 다시 시작하세요." },
   };
   const m = msgs[status] || msgs.empty;
   document.getElementById("il-body").innerHTML =
@@ -374,7 +392,7 @@ async function fetchSnapshot() {
     const snap = await res.json();
     showError(snap.runtime_error || null);
 
-    const state = snap.status || "empty";
+    const state = snap.status || "not_running";
     setStatus(state);
     renderStats(snap);
 
@@ -384,8 +402,9 @@ async function fetchSnapshot() {
       renderEmpty(state);
     }
 
-    const ts = snap.generated_at ? new Date(snap.generated_at).toLocaleTimeString("ko-KR") : "—";
-    document.getElementById("last-updated").textContent = ts;
+    const ts = snap.last_updated_at || snap.updated_at || snap.generated_at;
+    document.getElementById("last-updated").textContent =
+      ts ? new Date(ts).toLocaleTimeString("ko-KR") : "—";
 
   } catch (e) {
     showError("네트워크 오류: " + e.message);
@@ -393,18 +412,42 @@ async function fetchSnapshot() {
 }
 
 // ── 런타임 제어 ─────────────────────────────────────────────
-async function startRuntime() {
-  document.getElementById("btn-start").disabled = true;
+async function postStart(payload) {
+  const mockBtn = document.getElementById("btn-start-mock");
+  const prodBtn = document.getElementById("btn-start-prod");
+  mockBtn.disabled = true;
+  prodBtn.disabled = true;
   try {
     const res = await fetch("/intraday/api/start", {method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({provider: "mock", exchange: "sor"})
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (!data.ok) showError(data.error || "시작 실패");
     else { showError(null); await fetchSnapshot(); }
   } catch(e) { showError("시작 오류: " + e.message); }
-  document.getElementById("btn-start").disabled = false;
+  mockBtn.disabled = false;
+  prodBtn.disabled = false;
+}
+
+async function startMockRuntime() {
+  await postStart({provider: "mock", exchange: "sor"});
+}
+
+async function startProdSorRuntime() {
+  const ok = window.confirm("실전 SOR WebSocket을 시작합니다. KIWOOM_REAL_APP_KEY / KIWOOM_REAL_SECRET_KEY가 설정된 장중 환경에서만 진행하세요.");
+  if (!ok) return;
+  await postStart({
+    provider: "websocket",
+    kiwoom_env: "prod",
+    exchange: "sor",
+    codes_file: "data/universe_codes_150.txt",
+    sector_map_file: "data/sector_map.json",
+    max_codes: 150,
+    max_total_realtime_codes: 200,
+    snapshot_interval: 1.0,
+    listen_seconds: 7200
+  });
 }
 
 async function stopRuntime() {
