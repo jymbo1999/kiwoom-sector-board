@@ -9,6 +9,7 @@ from src.market_data import (
     MARKET_SUMMARY_KEYS,
     THEME_HEATMAP_COLUMNS,
     THEME_LEADER_COLUMNS,
+    get_intraday_board_view_models,
     get_market_movers,
     get_market_summary,
     get_theme_heatmap,
@@ -126,4 +127,16 @@ def test_get_theme_heatmap_has_leader_labels_with_change_rates(monkeypatch) -> N
     assert "leader_labels" in heatmap.columns
     assert heatmap["leader_labels"].str.contains("%", regex=False).any()
 
+
+def test_get_intraday_board_view_models_returns_payload(monkeypatch) -> None:
+    monkeypatch.setenv("INTRADAY_PROVIDER", "mock")
+
+    payload = get_intraday_board_view_models()
+
+    assert payload["summary"]["board_type"] == "intraday"
+    assert payload["summary"]["data_mode"] == "mock"
+    assert len(payload["themes"]) <= 5
+    assert payload["leaders"]
+    assert "rank_events" in payload
+    assert "provider_status" in payload
 

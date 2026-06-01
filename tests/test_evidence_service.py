@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from src.evidence_service import build_evidence_bundle, build_evidence_bundles
+from src.evidence_service import (
+    build_evidence_bundle,
+    build_evidence_bundles,
+    build_evidence_bundles_for_leaders,
+)
 
 
 MOCK_MOVER = {
@@ -93,3 +97,56 @@ def test_build_evidence_bundle_uses_naver_news_only(monkeypatch) -> None:
     assert len(evidence) == 1
     assert evidence[0]["relevance_score"] == 5.8
     assert evidence[0]["matched_terms"] == ["상승", "주가"]
+
+
+def test_build_evidence_bundles_for_leaders_maps_intraday_leaders(monkeypatch) -> None:
+    captured: list[dict] = []
+
+    def fake_bundle(mover, trade_date=None):
+        captured.append({"mover": mover, "trade_date": trade_date})
+        return {"ticker": mover["ticker"], "name": mover["name"], "market_move": mover, "evidence": []}
+
+    monkeypatch.setattr("src.evidence_service.build_evidence_bundle", fake_bundle)
+
+    bundles = build_evidence_bundles_for_leaders(
+        [
+            {
+                "code": "005930",
+                "name": "삼성전자",
+                "theme_name": "반도체",
+                "change_rate": 4.2,
+                "rank": 1,
+                "trade_value": 123_000_000_000,
+            },
+            {
+                "code": "000660",
+                "name": "SK하이닉스",
+                "theme_id": "반도체",
+                "change_rate": 3.1,
+                "rank": 2,
+                "trade_value": 100_000_000_000,
+            },
+        ],
+        limit=1,
+        trade_date="2026-06-01",
+    )
+
+    assert len(bundles) == 1
+    assert captured[0]["trade_date"] == "2026-06-01"
+    assert captured[0]["mover"]["ticker"] == "005930"
+    assert captured[0]["mover"]["sector"] == "반도체"
+    assert captured[0]["mover"]["pct_change"] == 4.2
+
+
+def test_build_evidence_bundles_for_leaders_fails_open(monkeypatch) -> None:
+    def broken_bundle(*_args, **_kwargs):
+        raise RuntimeError("news unavailable")
+
+    monkeypatch.setattr("src.evidence_service.build_evidence_bundle", broken_bundle)
+
+    bundles = build_evidence_bundles_for_leaders(
+        [{"code": "005930", "name": "삼성전자", "change_rate": 4.2}],
+        limit=10,
+    )
+
+    assert bundles == []
