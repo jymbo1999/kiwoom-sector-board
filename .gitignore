@@ -15,3 +15,8 @@ logs/intraday_snapshot_*.jsonl
 # Agent / OMC local state
 .omc/sessions/
 .omc/state/sessions/
+
+# OMC / agent local memory
+.omc/project-memory.json
+.omc/sessions/
+.omc/state/sessions/
