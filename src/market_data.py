@@ -220,6 +220,50 @@ def _empty_dataframe(columns: list[str]) -> pd.DataFrame:
     return pd.DataFrame(columns=columns)
 
 
+def _mock_intraday_universe() -> pd.DataFrame:
+    rows = []
+    for index, mover in enumerate(MOCK_MARKET_MOVERS):
+        code = str(mover["ticker"]).zfill(6)
+        sector = str(mover["sector"])
+        rows.append(
+            {
+                "code": code,
+                "name": str(mover["name"]),
+                "sector": sector,
+                "theme": sector,
+                "market": str(mover["market"]),
+                "market_cap": 500_000_000_000 + index * 50_000_000_000,
+                "source": "mock_intraday",
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _mock_intraday_quotes(reference_time: datetime | None = None) -> pd.DataFrame:
+    timestamp = (reference_time or datetime.now()).isoformat(timespec="seconds")
+    rows = []
+    for index, mover in enumerate(MOCK_MARKET_MOVERS):
+        pct_change = float(mover["pct_change"])
+        prev_close = 100_000 + index * 1_000
+        current_price = prev_close * (1 + pct_change / 100.0)
+        rows.append(
+            {
+                "code": str(mover["ticker"]).zfill(6),
+                "name": str(mover["name"]),
+                "current_price": current_price,
+                "open_price": prev_close * 0.995,
+                "prev_close": prev_close,
+                "change_rate": pct_change,
+                "volume": max(1, int(float(mover["trading_value"]) / max(current_price, 1))),
+                "trade_value": float(mover["trading_value"]),
+                "accumulated_trade_value": float(mover["trading_value"]),
+                "minute_trade_value": float(mover["trading_value"]) * (0.01 + index * 0.001),
+                "updated_at": timestamp,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 _REFRESH_CHECKPOINTS: list[time] = [time(9, 3), time(9, 15), time(10, 0)]
 
 
@@ -418,6 +462,47 @@ def get_morning_board_view_models(
     return summary, heatmap, leader_view
 
 
+def get_intraday_board_view_models(
+    previous_snapshot: dict[str, Any] | None = None,
+    quotes: pd.DataFrame | None = None,
+    universe: pd.DataFrame | None = None,
+    generated_at: datetime | None = None,
+) -> dict[str, Any]:
+    """Return an intraday snapshot payload without changing morning flow.
+
+    V1 is intentionally mock/fallback first. REST/WebSocket modes are surfaced
+    in metadata but are not used for bulk quote collection here yet.
+    """
+    from .intraday_snapshot_service import build_intraday_snapshot_payload
+
+    settings = load_settings()
+    provider_mode = settings.intraday_provider if settings.intraday_provider in {"mock", "rest", "websocket"} else "mock"
+    effective_mode = provider_mode
+    provider_note = None
+    if provider_mode in {"rest", "websocket"} and (quotes is None or universe is None):
+        effective_mode = "fallback"
+        provider_note = f"{provider_mode} intraday snapshot collection is not wired in V1; mock fallback used."
+
+    active_quotes = quotes if quotes is not None else _mock_intraday_quotes(generated_at)
+    active_universe = universe if universe is not None else _mock_intraday_universe()
+    payload = build_intraday_snapshot_payload(
+        active_quotes,
+        active_universe,
+        previous_snapshot=previous_snapshot,
+        data_mode=effective_mode,
+        provider_mode=provider_mode,
+        generated_at=generated_at,
+        universe_metadata={
+            "count": int(active_universe["code"].dropna().astype(str).nunique()) if "code" in active_universe else 0,
+            "source": "provided" if universe is not None else "mock_intraday",
+        },
+    )
+    if provider_note:
+        payload.setdefault("provider_status", {})["warning"] = provider_note
+        payload.setdefault("summary", {})["error_message"] = provider_note
+    return payload
+
+
 def get_market_summary() -> dict[str, Any]:
     """Return stable market/theme summary values for Streamlit view models."""
 
@@ -470,4 +555,3 @@ def get_theme_leaders(theme_id: str | None) -> pd.DataFrame:
         return _empty_dataframe(THEME_LEADER_COLUMNS)
 
     return _build_leader_view(selected)
-

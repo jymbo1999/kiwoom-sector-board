@@ -131,3 +131,51 @@ def build_evidence_bundles(date: str | date | None = None, limit: int = 30) -> l
         for mover in movers
         if isinstance(mover, dict)
     ]
+
+
+def _leader_to_mover(leader: dict[str, Any]) -> dict[str, Any]:
+    raw_code = str(leader.get("ticker") or leader.get("code") or "").strip()
+    return {
+        "ticker": raw_code.zfill(6) if raw_code else "",
+        "name": str(leader.get("name") or ""),
+        "market": str(leader.get("market") or ""),
+        "sector": str(leader.get("sector") or leader.get("theme_name") or leader.get("theme_id") or ""),
+        "pct_change": float(leader.get("pct_change", leader.get("change_rate", 0.0)) or 0.0),
+        "volume_rank": int(float(leader.get("volume_rank", leader.get("rank", 0)) or 0)),
+        "trading_value": int(float(leader.get("trading_value", leader.get("trade_value", 0)) or 0)),
+    }
+
+
+def build_evidence_bundles_for_leaders(
+    leaders: list[dict[str, Any]] | Any,
+    limit: int = 10,
+    trade_date: str | date | None = None,
+) -> list[dict[str, Any]]:
+    """Build non-blocking evidence bundles from intraday leader rows.
+
+    This is intentionally separate from ranking. Any malformed leader row or
+    evidence-provider failure is skipped so the intraday leaderboard can still
+    render with an empty rise-reason section.
+    """
+
+    if not isinstance(leaders, list):
+        return []
+    try:
+        normalized_limit = max(0, int(limit))
+    except (TypeError, ValueError):
+        normalized_limit = 10
+    if normalized_limit == 0:
+        return []
+
+    bundles: list[dict[str, Any]] = []
+    for leader in leaders[:normalized_limit]:
+        if not isinstance(leader, dict):
+            continue
+        try:
+            mover = _leader_to_mover(leader)
+            if not mover["ticker"] or not mover["name"]:
+                continue
+            bundles.append(build_evidence_bundle(mover, trade_date=trade_date))
+        except Exception:
+            continue
+    return bundles

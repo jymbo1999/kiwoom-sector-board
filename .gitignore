@@ -9,3 +9,9 @@ __pycache__/
 *.pyc
 .streamlit/secrets.toml
 snapshots/
+logs/kiwoom_ws_raw_*.jsonl
+logs/intraday_snapshot_*.jsonl
+
+# Agent / OMC local state
+.omc/sessions/
+.omc/state/sessions/

@@ -56,6 +56,99 @@
 
   {% else %}
 
+  {% if intraday_leaderboard and intraday_leaderboard.enabled %}
+  <section class="intraday-leaderboard-section">
+    <div class="intraday-leaderboard-head">
+      <div>
+        <p class="sector-board-kicker">Intraday Leader Board</p>
+        <h2>오늘의 주도섹터 Top 5</h2>
+      </div>
+      <div class="intraday-status">
+        <span>마지막 업데이트: <strong>{{ intraday_leaderboard.last_updated or snapshot.generated_at }}</strong></span>
+        <span>데이터모드: <strong class="{% if intraday_leaderboard.is_mock_or_fallback %}rate--neg{% else %}rate--pos{% endif %}">{{ intraday_leaderboard.data_mode|upper }}</strong></span>
+        <span>공급자: <strong>{{ intraday_leaderboard.provider_mode|upper }}</strong></span>
+        {% if intraday_leaderboard.provider_status.mode %}
+        <span>상태: <strong>{{ intraday_leaderboard.provider_status.mode }}</strong></span>
+        {% endif %}
+        {% if intraday_leaderboard.provider_status.matched_count is defined %}
+        <span>매칭: <strong>{{ intraday_leaderboard.provider_status.matched_count }}</strong></span>
+        {% endif %}
+        <span>신선도: <strong>{{ intraday_leaderboard.freshness_label }}</strong></span>
+      </div>
+    </div>
+
+    {% if intraday_leaderboard.is_mock_or_fallback %}
+    <div class="intraday-mode-alert">
+      현재 {{ intraday_leaderboard.data_mode|upper }} 데이터입니다. 실제 실시간 시세로 오해하지 않도록 표시 중입니다.
+    </div>
+    {% endif %}
+    {% if intraday_leaderboard.is_stale %}
+    <div class="intraday-stale-alert">
+      업데이트 지연 가능성이 있습니다. 마지막 quote 기준 {{ intraday_leaderboard.freshness_label }}입니다.
+    </div>
+    {% endif %}
+
+    <div class="intraday-sector-list">
+      {% for sector in intraday_leaderboard.rows %}
+      <article class="intraday-sector-card">
+        <header>
+          <span class="intraday-rank">{{ sector.rank }}</span>
+          <div>
+            <h3>{{ sector.theme_name }}</h3>
+            <p>시장대비 <span class="{% if sector.excess_return_val > 0 %}rate--pos{% elif sector.excess_return_val < 0 %}rate--neg{% endif %}">{{ sector.excess_return }}</span></p>
+          </div>
+          <strong class="intraday-score">{{ "%.2f"|format(sector.theme_score) }}</strong>
+        </header>
+        <div class="intraday-sector-stats">
+          <div><span>평균 등락률</span><strong class="{% if sector.avg_change_val > 0 %}rate--pos{% elif sector.avg_change_val < 0 %}rate--neg{% endif %}">{{ sector.avg_change }}</strong></div>
+          <div><span>거래대금</span><strong>{{ sector.total_trading_value }}</strong></div>
+          <div><span>상승 종목 비율</span><strong>{{ "%.0f"|format(sector.rising_ratio * 100) }}%</strong></div>
+          <div><span>섹터 순위</span><strong>#{{ sector.rank }}</strong></div>
+        </div>
+        {% if sector.leaders %}
+        <ol class="intraday-leader-list">
+          {% for leader in sector.leaders[:5] %}
+          <li>
+            <span class="intraday-leader-rank">{{ leader.rank }}</span>
+            <span class="intraday-leader-main">
+              <strong>{{ leader.name }}</strong>
+              <small>{{ leader.code }} · 현재가 {{ leader.current_price }}</small>
+            </span>
+            <span class="intraday-leader-metrics">
+              <strong class="{% if leader.change_rate_val > 0 %}rate--pos{% elif leader.change_rate_val < 0 %}rate--neg{% endif %}">{{ leader.change_rate }}</strong>
+              <small>{{ leader.trade_value }} · score {{ leader.leader_score }}</small>
+            </span>
+          </li>
+          {% endfor %}
+        </ol>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+
+    {% if intraday_leaderboard.rank_events %}
+    <section class="intraday-events">
+      <h3>교체 감지</h3>
+      <div class="intraday-event-list">
+        {% for event in intraday_leaderboard.rank_events %}
+        <div class="intraday-event-item">
+          <strong>{{ event.theme_name }}</strong>
+          <span>{{ event.label }}</span>
+          {% if event.previous_rank and event.current_rank %}
+          <small>#{{ event.previous_rank }} → #{{ event.current_rank }}</small>
+          {% elif event.previous_rank %}
+          <small>이전 #{{ event.previous_rank }}</small>
+          {% elif event.current_rank %}
+          <small>현재 #{{ event.current_rank }}</small>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </section>
+  {% endif %}
+
   {# ── Summary metrics ── #}
   <section class="sector-board-metrics">
     <div>

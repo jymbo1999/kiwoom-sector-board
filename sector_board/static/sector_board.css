@@ -100,6 +100,198 @@ body {
 .sector-board-empty h2 { margin: 0 0 8px; font-size: 1.1rem; }
 .sector-board-empty p  { margin: 0; color: var(--sector-muted); }
 
+/* ── Intraday leader board ───────────────────────────────── */
+.intraday-leaderboard-section {
+  margin: 0 0 18px;
+  background: #141821;
+  border: 1px solid var(--sector-border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.intraday-leaderboard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.intraday-leaderboard-head h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.intraday-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  color: var(--sector-muted);
+  font-size: 0.78rem;
+}
+
+.intraday-status span,
+.intraday-mode-alert,
+.intraday-stale-alert {
+  border: 1px solid var(--sector-border);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  padding: 6px 9px;
+}
+
+.intraday-status strong { color: var(--sector-text); }
+
+.intraday-mode-alert,
+.intraday-stale-alert {
+  margin-bottom: 10px;
+  font-size: 0.84rem;
+}
+.intraday-mode-alert  { color: #93c5fd; border-color: #1e3a5f; background: #111827; }
+.intraday-stale-alert { color: #fde68a; border-color: #713f12; background: #1c1608; }
+
+.intraday-sector-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.intraday-sector-card {
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.intraday-sector-card header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--sector-border);
+  padding: 12px 14px;
+}
+
+.intraday-rank {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sector-accent);
+  color: #061716;
+  font-weight: 900;
+}
+
+.intraday-sector-card h3 {
+  margin: 0 0 2px;
+  font-size: 1.08rem;
+}
+
+.intraday-sector-card p {
+  margin: 0;
+  color: var(--sector-muted);
+  font-size: 0.78rem;
+}
+
+.intraday-score {
+  font-size: 1.05rem;
+  color: #fde68a;
+}
+
+.intraday-sector-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.intraday-sector-stats span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--sector-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.intraday-sector-stats strong {
+  font-size: 0.88rem;
+}
+
+.intraday-leader-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 14px 12px;
+}
+
+.intraday-leader-list li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) minmax(150px, auto);
+  gap: 8px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--sector-border);
+}
+
+.intraday-leader-rank {
+  color: var(--sector-accent);
+  font-weight: 900;
+}
+
+.intraday-leader-main,
+.intraday-leader-metrics {
+  display: grid;
+  gap: 2px;
+}
+
+.intraday-leader-main strong,
+.intraday-leader-metrics strong {
+  font-size: 0.9rem;
+}
+
+.intraday-leader-main small,
+.intraday-leader-metrics small {
+  color: var(--sector-muted);
+  font-size: 0.72rem;
+}
+
+.intraday-leader-metrics {
+  text-align: right;
+}
+
+.intraday-events {
+  margin-top: 12px;
+  border-top: 1px solid var(--sector-border);
+  padding-top: 12px;
+}
+
+.intraday-events h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.intraday-event-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.intraday-event-item {
+  display: grid;
+  gap: 3px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--sector-border);
+  border-radius: 6px;
+  padding: 9px 10px;
+}
+
+.intraday-event-item span,
+.intraday-event-item small {
+  color: var(--sector-muted);
+  font-size: 0.78rem;
+}
+
 /* ── Collecting / spinner ────────────────────────────────── */
 .sector-board-collecting {
   background: var(--sector-panel);
@@ -275,6 +467,9 @@ body {
 @media (max-width: 980px) {
   .sector-card-grid,
   .sector-board-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .intraday-sector-list,
+  .intraday-event-list { grid-template-columns: 1fr; }
+  .intraday-sector-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {
@@ -283,6 +478,10 @@ body {
   .sector-board-timestamp    { text-align: left; }
   .sector-card-grid,
   .sector-board-metrics      { grid-template-columns: 1fr; }
+  .intraday-leaderboard-head  { flex-direction: column; }
+  .intraday-status           { justify-content: flex-start; }
+  .intraday-leader-list li   { grid-template-columns: 24px minmax(0, 1fr); }
+  .intraday-leader-metrics   { grid-column: 2; text-align: left; }
 }
 
 /* ── 상승이유 분석 ────────────────────────────────────────── */

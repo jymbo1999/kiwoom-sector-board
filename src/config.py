@@ -61,16 +61,40 @@ class Settings:
     use_krx_data: bool = True
     # KRX 수집 실행 시각 (KST 기준 시)
     krx_collect_hour: int = 4
+    universe_min_market_cap: int = 500_000_000_000
+    universe_min_trade_value: int = 0
+    universe_exclude_etf: bool = True
+    universe_exclude_spac: bool = True
+    universe_exclude_preferred: bool = True
+    universe_exclude_managed: bool = True
+    kiwoom_env: str = "mock"
+    intraday_max_codes: int = 300
+    intraday_board_enabled: bool = False
+    intraday_provider: str = "mock"
+    intraday_poll_seconds: int = 60
+    intraday_evidence_enabled: bool = False
+    intraday_evidence_limit: int = 10
 
 
 def load_settings() -> Settings:
-    # KIWOOM_USE_MOCK takes highest priority when explicitly set; fall back to USE_DUMMY_DATA.
-    _kiwoom_use_mock = os.getenv("KIWOOM_USE_MOCK")
-    if _kiwoom_use_mock is not None:
-        use_mock = _as_bool(_kiwoom_use_mock)
+    # KIWOOM_ENV is the primary authority for environment selection.
+    # KIWOOM_USE_MOCK / USE_DUMMY_DATA are only consulted when KIWOOM_ENV is absent.
+    _kiwoom_env = (os.getenv("KIWOOM_ENV") or "").strip().lower()
+    if _kiwoom_env == "prod":
+        _kiwoom_env = "real"
+
+    if _kiwoom_env in ("mock", "real"):
+        use_mock = _kiwoom_env == "mock"
     else:
-        use_mock = _as_bool(os.getenv("USE_DUMMY_DATA"), default=True)
-    base_url = os.getenv("KIWOOM_BASE_URL") or (
+        _kiwoom_use_mock = os.getenv("KIWOOM_USE_MOCK")
+        if _kiwoom_use_mock is not None:
+            use_mock = _as_bool(_kiwoom_use_mock)
+        else:
+            use_mock = _as_bool(os.getenv("USE_DUMMY_DATA"), default=True)
+
+    # KIWOOM_BASE_URL is for manual override only; otherwise derived from KIWOOM_ENV.
+    _kiwoom_base_url = (os.getenv("KIWOOM_BASE_URL") or "").strip()
+    base_url = _kiwoom_base_url if _kiwoom_base_url else (
         "https://mockapi.kiwoom.com" if use_mock else "https://api.kiwoom.com"
     )
 
@@ -95,6 +119,19 @@ def load_settings() -> Settings:
         api_request_interval_seconds=max(0.0, _as_float(os.getenv("KIWOOM_REQUEST_INTERVAL_SECONDS"), 0.35)),
         use_krx_data=use_krx_data,
         krx_collect_hour=max(0, min(23, _as_int(os.getenv("KRX_COLLECT_HOUR"), 4))),
+        universe_min_market_cap=max(0, _as_int(os.getenv("UNIVERSE_MIN_MARKET_CAP"), 500_000_000_000)),
+        universe_min_trade_value=max(0, _as_int(os.getenv("UNIVERSE_MIN_TRADE_VALUE"), 0)),
+        universe_exclude_etf=_as_bool(os.getenv("UNIVERSE_EXCLUDE_ETF"), default=True),
+        universe_exclude_spac=_as_bool(os.getenv("UNIVERSE_EXCLUDE_SPAC"), default=True),
+        universe_exclude_preferred=_as_bool(os.getenv("UNIVERSE_EXCLUDE_PREFERRED"), default=True),
+        universe_exclude_managed=_as_bool(os.getenv("UNIVERSE_EXCLUDE_MANAGED"), default=True),
+        kiwoom_env=(os.getenv("KIWOOM_ENV") or "mock").strip().lower(),
+        intraday_max_codes=max(0, _as_int(os.getenv("INTRADAY_MAX_CODES"), 300)),
+        intraday_board_enabled=_as_bool(os.getenv("INTRADAY_BOARD_ENABLED"), default=False),
+        intraday_provider=(os.getenv("INTRADAY_PROVIDER") or "mock").strip().lower(),
+        intraday_poll_seconds=max(5, _as_int(os.getenv("INTRADAY_POLL_SECONDS"), 60)),
+        intraday_evidence_enabled=_as_bool(os.getenv("INTRADAY_EVIDENCE_ENABLED"), default=False),
+        intraday_evidence_limit=max(0, _as_int(os.getenv("INTRADAY_EVIDENCE_LIMIT"), 10)),
     )
 
 

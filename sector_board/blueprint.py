@@ -33,6 +33,10 @@ def _format_krw(value: object) -> str:
     return f"{number:,.0f}원"
 
 
+def _format_number(value: object) -> str:
+    return f"{_to_float(value):,.0f}"
+
+
 def _compute_rank_changes(today_themes: list[dict], yesterday_themes: list[dict], limit: int = 12) -> dict[str, str]:
     if not today_themes:
         return {}
@@ -115,6 +119,122 @@ def _build_sector_rows(themes: list[dict], leaders: list[dict], rank_changes: di
             }
         )
     return rows
+
+
+def _is_intraday_snapshot(snapshot: dict | None) -> bool:
+    summary = (snapshot or {}).get("summary", {})
+    board_type = str(summary.get("board_type") or "").lower()
+    return board_type == "intraday"
+
+
+def _get_intraday_stale_seconds() -> int:
+    try:
+        return max(60, int(os.environ.get("INTRADAY_FRESHNESS_WARN_SECONDS") or 300))
+    except (TypeError, ValueError):
+        return 300
+
+
+def _build_intraday_leaderboard_context(snapshot: dict | None, limit: int = 5, leader_limit: int = 5) -> dict:
+    if not _is_intraday_snapshot(snapshot):
+        return {"enabled": False}
+
+    summary = (snapshot or {}).get("summary", {})
+    themes = (snapshot or {}).get("themes", [])
+    leaders = (snapshot or {}).get("leaders", [])
+    leaders_by_theme: dict[str, list[dict]] = {}
+    for leader in leaders:
+        theme_id = str(leader.get("theme_id") or leader.get("theme_name") or leader.get("sector") or "")
+        if theme_id:
+            leaders_by_theme.setdefault(theme_id, []).append(leader)
+
+    has_rank = any(row.get("rank") for row in themes)
+    if has_rank:
+        sorted_themes = sorted(
+            themes,
+            key=lambda row: int(_to_float(row.get("rank"), 999)),
+        )[:limit]
+    else:
+        sorted_themes = sorted(
+            themes,
+            key=lambda row: (_to_float(row.get("theme_score")), _to_float(row.get("total_trading_value"))),
+            reverse=True,
+        )[:limit]
+
+    rows = []
+    for idx, theme in enumerate(sorted_themes, start=1):
+        theme_id = str(theme.get("theme_id") or theme.get("theme_name") or theme.get("sector") or "")
+        theme_name = str(theme.get("theme_name") or theme_id)
+        theme_leaders = sorted(
+            leaders_by_theme.get(theme_id, []),
+            key=lambda item: int(_to_float(item.get("rank"), 999)),
+        )[:leader_limit]
+        rows.append(
+            {
+                "rank": int(_to_float(theme.get("rank"), idx)),
+                "theme_id": theme_id,
+                "theme_name": theme_name,
+                "theme_score": _to_float(theme.get("theme_score")),
+                "avg_change": _format_pct(theme.get("top5_change_rate_mean") or theme.get("top_leader_change_rate_mean")),
+                "avg_change_val": _to_float(theme.get("top5_change_rate_mean") or theme.get("top_leader_change_rate_mean")),
+                "total_trading_value": _format_krw(theme.get("total_trading_value")),
+                "excess_return": _format_pct(theme.get("excess_return")),
+                "excess_return_val": _to_float(theme.get("excess_return")),
+                "rising_ratio": _to_float(theme.get("rising_ratio")),
+                "leaders": [
+                    {
+                        "rank": int(_to_float(leader.get("rank"), leader_idx)),
+                        "name": str(leader.get("name") or ""),
+                        "code": str(leader.get("code") or ""),
+                        "current_price": _format_krw(leader.get("current_price")),
+                        "change_rate": _format_pct(leader.get("change_rate")),
+                        "change_rate_val": _to_float(leader.get("change_rate")),
+                        "trade_value": _format_krw(leader.get("trade_value")),
+                        "leader_score": f"{_to_float(leader.get('leader_score')):.2f}",
+                    }
+                    for leader_idx, leader in enumerate(theme_leaders, start=1)
+                ],
+            }
+        )
+
+    provider_status = dict((snapshot or {}).get("provider_status") or summary.get("provider_status") or {})
+    rank_events_raw = (snapshot or {}).get("rank_events") or summary.get("rank_events") or []
+    event_labels = {
+        "new_entry": "신규 진입",
+        "dropped": "Top 5 이탈",
+        "rank_up": "순위 상승",
+        "rank_down": "순위 하락",
+    }
+    rank_events = [
+        {
+            "event_type": str(event.get("event_type") or ""),
+            "label": event_labels.get(str(event.get("event_type") or ""), "순위 변동"),
+            "theme_name": str(event.get("theme_name") or ""),
+            "previous_rank": event.get("previous_rank"),
+            "current_rank": event.get("current_rank"),
+            "rank_delta": event.get("rank_delta"),
+        }
+        for event in rank_events_raw
+        if isinstance(event, dict)
+    ]
+    freshness_seconds = int(_to_float(summary.get("freshness_seconds")))
+    data_mode = str(summary.get("data_mode") or "").lower()
+    provider_mode = str(summary.get("provider_mode") or provider_status.get("provider_mode") or data_mode or "-")
+    provider_status.setdefault("provider_mode", provider_mode)
+    provider_status.setdefault("mode", provider_mode)
+
+    return {
+        "enabled": True,
+        "rows": rows,
+        "rank_events": rank_events,
+        "provider_status": provider_status,
+        "data_mode": data_mode or "-",
+        "provider_mode": provider_mode,
+        "last_updated": summary.get("generated_at") or (snapshot or {}).get("generated_at"),
+        "freshness_seconds": freshness_seconds,
+        "freshness_label": f"{_format_number(freshness_seconds)}초 전",
+        "is_stale": freshness_seconds > _get_intraday_stale_seconds(),
+        "is_mock_or_fallback": data_mode in {"mock", "fallback"},
+    }
 
 
 _KR_WEEKDAYS = ["월", "화", "수", "목", "금", "토", "일"]
@@ -242,6 +362,7 @@ def create_sector_board_blueprint() -> Blueprint:
             today_themes,
             (yesterday_snapshot or {}).get("themes", []),
         )
+        intraday_leaderboard_context = _build_intraday_leaderboard_context(snapshot if has_data else None)
         treemap_json = json.dumps(today_themes, ensure_ascii=False)
 
         weekly_table: list[dict] = []
@@ -263,6 +384,7 @@ def create_sector_board_blueprint() -> Blueprint:
                 (snapshot or {}).get("leaders", []),
                 rank_changes=rank_changes,
             ) if has_data else [],
+            intraday_leaderboard=intraday_leaderboard_context,
             treemap_json=treemap_json,
             weekly_table=weekly_table,
             rise_reasons=(snapshot or {}).get("rise_reasons", [])[:10] if has_data else [],
@@ -349,6 +471,29 @@ def create_sector_board_blueprint() -> Blueprint:
         }
 
         return jsonify(info)
+
+    @blueprint.route("/intraday")
+    def intraday():
+        """장중 주도섹터 리더보드 (A안: JSONL 최신 snapshot 기반)."""
+        from pathlib import Path
+        from .intraday_reader import build_intraday_view, load_latest_intraday_snapshot
+
+        logs_dir_cfg = current_app.config.get("INTRADAY_LOGS_DIR")
+        if logs_dir_cfg:
+            logs_dir = Path(logs_dir_cfg)
+        else:
+            logs_dir = Path(__file__).resolve().parent.parent / "logs"
+
+        snapshot = load_latest_intraday_snapshot(logs_dir)
+        view = build_intraday_view(snapshot)
+        layout = current_app.config.get(
+            "SECTOR_BOARD_LAYOUT_TEMPLATE", "sector_board/standalone.html"
+        )
+        return render_template(
+            "sector_board/intraday.html",
+            layout_template=layout,
+            **view,
+        )
 
     @blueprint.route("/health")
     def health():

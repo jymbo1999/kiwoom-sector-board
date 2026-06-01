@@ -1,108 +1,267 @@
-
 # AGENTS.md
 
-This repository is a local Streamlit dashboard project for Korean stock market sector/theme monitoring.
+## Project Overview
 
-Use this AGENTS.md and the active request file under requests/ as the source of truth.
+This repository is `kiwoom-sector-board`, a sector and market-leader stock dashboard project.
 
-## Core rules
+The project currently has two display layers:
 
-1. Follow the active request file under `requests/`.
-2. This is currently a Streamlit app, not a Flask app.
-3. Main entrypoint is `app.py`.
-4. Main UI layer is `src/dashboard_components.py`.
-5. Data/ranking logic is under `src/theme_loader.py`, `src/market_data.py`, and `src/sector_ranker.py`.
-6. Touch only files directly relevant to the request.
-7. Prefer small, safe, compatibility-preserving changes.
-8. Do not remove existing features, fallbacks, TODOs, defensive code, or user data.
-9. Do not run `git add .`.
-10. If the folder is not a Git repository, do not attempt commits; report that Git is unavailable.
+1. `app.py`
+   - Local Streamlit dashboard entry point.
+   - Uses `src/market_data.py`, `src/dashboard_components.py`, and `src/snapshot_service.py`.
 
-## Request file rule
+2. `sector_board/*`
+   - Flask Blueprint + DB layer for Render deployment.
+   - Reads the latest DB snapshot and renders `sector_board/templates/sector_board/index.html`.
 
-- If the user already provides a specific `requests/*.md` file, use it as the active request.
-- Do not create a duplicate request file for an already-defined task.
-- If no request file exists and the task is non-trivial, create one under `requests/`.
-- Trivial typo, label, or one-line style fixes do not require a request file unless asked.
+The current production behavior is closer to a previous-day, KRX-based morning briefing than to a true intraday leaderboard.
 
-## Work sequence
+The target direction is documented in:
 
-Use this order:
+- `docs/INTRADAY_LEADER_BOARD_PLAN.md`
 
-1. Analyze relevant files only.
-2. Identify affected routes, templates, services, models, JS, CSS, storage, auth, and deployment risks.
-3. Implement only the minimal scope defined in the active request.
-4. Review the diff for regressions, duplicated UI, route/template mismatch, and compatibility issues.
-5. Run relevant verification.
-6. Fix only issues directly found by verification.
-7. Report clearly.
+Always read this document before making intraday leaderboard-related changes.
 
-## Safety stops
+---
 
-Stop and report before continuing if any of these are required:
+## Core Goal
 
-- destructive DB migration
-- deleting user data, uploads, storage objects, local DBs, or untracked files
-- unknown auth/owner behavior
-- large refactor outside the request
-- production schema uncertainty
-- missing critical dependencies preventing verification
+Add an intraday sector and market-leader stock board without breaking the existing morning snapshot board.
 
-## DB rule
+Target architecture:
 
-This project currently should not add a database unless explicitly requested.
+1. Universe Layer
+2. Data Provider Layer
+3. Intraday State Layer
+4. Ranking Engine
+5. Snapshot/Delivery Layer
+6. Evidence/Rise Reason Layer
 
-If a change proposes DB tables, migrations, PostgreSQL, SQLite schema, or persistent storage changes, stop and report first.
+The key principle is that data providers should be replaceable.
 
-## Verification baseline
+The same ranking/snapshot contract should work with:
 
-Use only relevant checks for this Streamlit project.
+- KRX delayed/EOD provider
+- Kiwoom REST polling provider
+- Kiwoom WebSocket provider
+- Mock provider
+- Fallback provider
 
-Python syntax:
+---
 
-```bash
-python -m py_compile app.py src/*.py
+## Hard Rules
 
-Tests:
+### Do Not Break Existing Morning Board
 
-pytest -q
+Do not remove or break:
 
-Streamlit smoke check:
+- `get_morning_board_view_models()`
+- `build_morning_snapshot_payload()`
+- `sector_board/collector.collect_and_store()`
+- Existing `/sector-board/` rendering
+- Existing KRX fallback behavior
+- Existing mock fallback behavior
 
-streamlit run app.py
+New intraday behavior must be added in parallel.
 
-Render start command:
+---
 
-streamlit run app.py --server.address 0.0.0.0 --server.port $PORT
+### No Trading or Order APIs
 
-Diff hygiene:
+This project is for market data display only.
 
-git diff --check
-git status --short
-git diff --stat
+Never add or call:
+
+- Buy order API
+- Sell order API
+- Order correction API
+- Order cancellation API
+- Balance inquiry logic unless explicitly requested
+- Account trading logic
+
+Kiwoom integration should be limited to quote, current-price, tick, and orderbook-style market data.
+
+---
+
+### Avoid DB Migration Unless Explicitly Requested
+
+Do not change the production DB schema unless explicitly requested.
+
+Do not modify:
+
+- `sector_board/schema.py`
+
+For the V1 intraday board, use the existing snapshot upsert structure and optional JSON fields.
+
+If a schema change seems necessary, stop and report why before changing it.
+
+---
+
+### Preserve Existing Public Routes
+
+Do not remove or rename:
+
+- `GET /sector-board/`
+- `POST /sector-board/refresh`
+- `GET /sector-board/api/snapshot`
+- `GET /sector-board/health`
+- `GET /sector-board/debug`
+
+---
+
+## Preferred Implementation Pattern
+
+When adding intraday features, prefer new modules and facade functions.
+
+Recommended files:
+
+- `src/universe_builder.py`
+- `src/data_providers.py` or `src/quote_provider.py`
+- `src/intraday_state.py`
+- `src/intraday_snapshot_service.py`
+
+Modify existing files carefully:
+
+- `src/market_data.py`
+  - Keep the existing morning facade.
+  - Add the intraday facade separately.
+
+- `src/sector_ranker.py`
+  - Keep the existing `rank_sectors()` and `rank_sectors_krx()`.
+  - Add `rank_intraday_leaders()` separately.
+
+- `sector_board/collector.py`
+  - Keep the existing `collect_and_store()`.
+  - Add an intraday collector separately.
+
+- `sector_board/blueprint.py`
+  - Keep the existing rendering.
+  - Add intraday context only when the snapshot indicates intraday mode.
+
+---
+
+## Intraday Snapshot Contract
+
+The intraday snapshot payload should follow this general structure:
+
+```python
+{
+    "summary": {
+        "board_type": "intraday",
+        "data_mode": "mock/rest/websocket/fallback",
+        "provider_mode": "...",
+        "generated_at": "...",
+        "freshness_seconds": 0,
+        "universe_count": 0,
+        "selected_sector_count": 0,
+        "selected_leader_count": 0,
+    },
+    "themes": [],
+    "leaders": [],
+    "rank_events": [],
+    "universe": {},
+    "provider_status": {},
+}
 ```
 
-## Commit policy
+Existing `themes` and `leaders` keys should remain compatible with the old template as much as possible.
 
-- Commit each logical fix separately when possible.
-- Commit only related files.
-- Keep request markdown files committed unless explicitly told not to.
-- Do not commit unrelated formatting churn.
+New keys should be optional.
 
-## Final report format
+---
 
-Include:
+## Environment Variables
 
-1. 원인
-2. 수정한 파일
-3. 기능별 변경 요약
-4. 실행한 검증 명령
-5. 검증 결과
-6. git diff 요약
-7. 커밋 해시
-8. git status --short
-9. 사용자가 직접 확인할 화면/동작
-10. 남은 리스크
-11. Production DB migration needed: YES/NO
+Use environment variables for intraday behavior.
 
-Clearly separate automated checks actually run from browser/UI checks the user must confirm manually.
+Recommended defaults:
+
+```text
+INTRADAY_BOARD_ENABLED=false
+INTRADAY_PROVIDER=mock
+INTRADAY_POLL_SECONDS=60
+INTRADAY_MAX_CODES=300
+
+UNIVERSE_MIN_MARKET_CAP=500000000000
+UNIVERSE_MIN_TRADE_VALUE=0
+
+INTRADAY_EVIDENCE_ENABLED=false
+INTRADAY_EVIDENCE_LIMIT=10
+
+KIWOOM_ENV=mock
+```
+
+The user already has the Kiwoom app key and secret in `.env`.
+
+Do not print secrets.
+
+Do not commit `.env`.
+
+---
+
+## Kiwoom Notes
+
+Kiwoom keys may currently be for simulated trading.
+
+That is acceptable because this project only needs market data display.
+
+However, simulated trading mode may not support all markets or real-time behavior.
+
+Build the provider layer so that mock, REST, and WebSocket providers can be swapped without changing the ranking or UI code.
+
+---
+
+## Testing Rules
+
+After changes, run:
+
+```bash
+python -m py_compile app.py src/*.py sector_board/*.py
+pytest -q
+git diff --check
+git status --short
+```
+
+When external APIs are involved, tests should use mock data by default.
+
+Do not require a real Kiwoom connection for normal pytest runs.
+
+WebSocket smoke tests should live under `scripts/` and be run manually.
+
+---
+
+## Reporting Format
+
+After each task, report:
+
+- Success/failure
+- Files changed
+- Commands run
+- Test results
+- Existing behavior impact
+- Production DB migration needed: YES/NO
+- Remaining TODO
+
+---
+
+## 6. Codex 단계별 프롬프트 앞에 붙일 공통 헤더
+
+앞으로 6단계 프롬프트마다 아래 공통 헤더를 맨 위에 붙이세요.
+
+```text
+작업 시작 전에 반드시 아래 두 문서를 먼저 읽으세요.
+
+1. AGENTS.md
+2. docs/INTRADAY_LEADER_BOARD_PLAN.md
+
+이 작업은 장중 주도섹터/대장주 리더보드 전환 계획의 일부입니다.
+
+중요 원칙:
+- 기존 morning board 기능을 깨지 마세요.
+- 기존 Flask/Render `/sector-board/` 흐름을 보존하세요.
+- 주문/매수/매도/정정/취소/잔고 관련 API는 절대 추가하거나 호출하지 마세요.
+- 실거래 기능은 만들지 않습니다. 필요한 것은 가격/체결/호가 등 시세 데이터뿐입니다.
+- DB migration은 명시적으로 요청받기 전까지 수행하지 마세요.
+- WebSocket 또는 Kiwoom API 연결이 실패해도 mock provider/fallback으로 테스트 가능해야 합니다.
+- 작업 후 py_compile, pytest, git diff --check를 실행하고 결과를 보고하세요.
+```

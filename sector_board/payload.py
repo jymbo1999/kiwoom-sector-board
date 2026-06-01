@@ -17,7 +17,7 @@ def parse_generated_at(value: Any) -> datetime:
 
 def normalize_snapshot_payload(payload: dict[str, Any]) -> dict[str, Any]:
     generated_at = parse_generated_at(payload.get("generated_at"))
-    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
+    summary = dict(payload.get("summary") if isinstance(payload.get("summary"), dict) else {})
     themes = payload.get("themes") if isinstance(payload.get("themes"), list) else []
     leaders = payload.get("leaders") if isinstance(payload.get("leaders"), list) else []
     snapshot_date = payload.get("snapshot_date")
@@ -29,6 +29,12 @@ def normalize_snapshot_payload(payload: dict[str, Any]) -> dict[str, Any]:
         day = generated_at.date()
 
     rise_reasons = payload.get("rise_reasons") if isinstance(payload.get("rise_reasons"), list) else []
+    rank_events = payload.get("rank_events") if isinstance(payload.get("rank_events"), list) else None
+    provider_status = payload.get("provider_status") if isinstance(payload.get("provider_status"), dict) else None
+    if rank_events is not None:
+        summary.setdefault("rank_events", rank_events)
+    if provider_status is not None:
+        summary.setdefault("provider_status", provider_status)
 
     return {
         "generated_at": generated_at,
