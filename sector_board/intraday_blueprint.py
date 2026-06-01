@@ -202,14 +202,15 @@ def create_intraday_blueprint() -> Blueprint:
         listen_seconds = float(_ls) if _ls is not None else _DEFAULT_LISTEN_SECONDS
 
         project_root = Path(__file__).resolve().parent.parent
+        data_dir = _default_data_dir(project_root)
         codes_file = _resolve_data_file(
             _body_value(body, "codes_file", "codes-file", "codesFile"),
-            project_root / "data" / "universe_codes_150.txt",
+            data_dir / "universe_codes_150.txt",
             project_root,
         )
         sector_map_file = _resolve_data_file(
             _body_value(body, "sector_map_file", "sector-map-file", "sectorMapFile"),
-            project_root / "data" / "sector_map.json",
+            data_dir / "sector_map.json",
             project_root,
         )
 
@@ -283,8 +284,8 @@ def create_intraday_blueprint() -> Blueprint:
             "kiwoom_env": kiwoom_env,
             "codes": len(base_codes),
             "sector_map_size": len(sector_map),
-            "codes_file": _display_path(codes_file, project_root),
-            "sector_map_file": _display_path(sector_map_file, project_root),
+            "codes_file": _display_path(codes_file, project_root, data_dir),
+            "sector_map_file": _display_path(sector_map_file, project_root, data_dir),
             "snapshot_interval": snapshot_interval,
             "max_total_realtime_codes": max_total_realtime_codes,
             **response_extra,
@@ -389,10 +390,26 @@ def _resolve_data_file(value, default_path: Path, project_root: Path) -> Path:
     path = Path(str(value))
     if path.is_absolute():
         return path
+    if path.parts and path.parts[0] == "data":
+        return default_path.parent.joinpath(*path.parts[1:])
     return project_root / path
 
 
-def _display_path(path: Path, project_root: Path) -> str:
+def _default_data_dir(project_root: Path) -> Path:
+    try:
+        from src.config import DATA_DIR
+
+        return DATA_DIR
+    except Exception:
+        return project_root / "data"
+
+
+def _display_path(path: Path, project_root: Path, data_dir: Path | None = None) -> str:
+    if data_dir is not None:
+        try:
+            return "data/" + str(path.resolve().relative_to(data_dir.resolve()))
+        except ValueError:
+            pass
     try:
         return str(path.resolve().relative_to(project_root.resolve()))
     except ValueError:

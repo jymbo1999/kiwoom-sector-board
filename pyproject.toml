@@ -29,4 +29,6 @@ sector_board = [
 ]
 src = [
   "data/*.csv",
+  "data/*.json",
+  "data/*.txt",
 ]
