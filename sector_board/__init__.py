@@ -7,6 +7,7 @@ from typing import Any
 from flask import Flask
 
 from .blueprint import create_sector_board_blueprint
+from .intraday_blueprint import create_intraday_blueprint
 from .repository import ensure_schema, resolve_database_url
 
 _log = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ def create_app(config: dict[str, Any] | None = None) -> Flask:
     if config:
         app.config.update(config)
     register_sector_board(app, url_prefix="/sector-board")
+    register_intraday(app, url_prefix="/intraday")
 
     @app.route("/")
     def root():
@@ -64,4 +66,9 @@ def _setup_scheduler(database_url: str) -> None:
         _log.warning("[sector-board] 스케줄러 설정 실패 (무시): %s", exc)
 
 
-__all__ = ["create_app", "register_sector_board"]
+def register_intraday(app: Flask, url_prefix: str = "/intraday") -> None:
+    """장중 리더보드 blueprint 를 등록한다."""
+    app.register_blueprint(create_intraday_blueprint(), url_prefix=url_prefix)
+
+
+__all__ = ["create_app", "register_sector_board", "register_intraday"]

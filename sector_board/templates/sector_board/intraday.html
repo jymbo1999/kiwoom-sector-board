@@ -1,0 +1,376 @@
+{% extends layout_template %}
+
+{% block title %}장중 주도섹터{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('sector_board.static', filename='sector_board.css') }}">
+<style>
+/* ── Intraday page ───────────────────────────────────────── */
+.ib-page {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
+}
+
+/* header */
+.ib-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.ib-kicker {
+  margin: 0 0 5px;
+  color: var(--sector-accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ib-header h1 {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.ib-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ib-back-link {
+  font-size: 0.82rem;
+  color: var(--sector-muted);
+  text-decoration: none;
+}
+.ib-back-link:hover { color: var(--sector-text); }
+
+/* status badge */
+.ib-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.ib-status--empty   { background: #374151; color: #9ca3af; }
+.ib-status--warming { background: #78350f; color: #fbbf24; }
+.ib-status--ready   { background: #064e3b; color: #34d399; }
+.ib-status__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+}
+.ib-status--empty   .ib-status__dot { background: #6b7280; }
+.ib-status--warming .ib-status__dot { background: #f59e0b; animation: ib-pulse 1.4s ease-in-out infinite; }
+.ib-status--ready   .ib-status__dot { background: #10b981; animation: ib-pulse 1.4s ease-in-out infinite; }
+@keyframes ib-pulse {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+}
+
+/* stats bar */
+.ib-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 12px 16px;
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 10px;
+  margin-bottom: 28px;
+}
+.ib-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 0.8rem;
+}
+.ib-stat__label { color: var(--sector-muted); }
+.ib-stat__value { color: var(--sector-text); font-weight: 600; }
+.ib-stat__value--warn { color: #f59e0b; }
+
+/* empty / warming hint */
+.ib-hint {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--sector-muted);
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 12px;
+}
+.ib-hint h2 { font-size: 1.1rem; margin-bottom: 10px; color: var(--sector-text); }
+.ib-hint p  { font-size: 0.85rem; line-height: 1.6; }
+
+/* sector grid */
+.ib-sectors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* sector card */
+.ib-card {
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.ib-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--sector-border);
+  gap: 8px;
+}
+.ib-card__rank {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--sector-muted);
+  min-width: 20px;
+}
+.ib-card__name {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sector-text);
+}
+.ib-card__rate {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.ib-card__meta {
+  padding: 6px 16px 10px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ib-card__meta-item {
+  font-size: 0.75rem;
+  color: var(--sector-muted);
+}
+.ib-card__meta-item span { color: var(--sector-text); font-weight: 600; }
+
+/* leader list */
+.ib-leaders { padding: 0 8px 10px; }
+.ib-leader {
+  display: grid;
+  grid-template-columns: 60px 1fr auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: 7px;
+}
+.ib-leader:hover { background: rgba(255,255,255,0.04); }
+
+.ib-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+}
+.ib-badge--대장  { background: #78350f; color: #fbbf24; }
+.ib-badge--2등주 { background: #1e3a5f; color: #93c5fd; }
+.ib-badge--3등주 { background: #1a2e1e; color: #86efac; }
+.ib-badge--plain { background: #1f2937; color: #6b7280; font-size: 0.65rem; }
+
+.ib-leader__code {
+  font-size: 0.78rem;
+  color: var(--sector-muted);
+  font-family: monospace;
+}
+.ib-leader__price {
+  font-size: 0.82rem;
+  color: var(--sector-text);
+}
+.ib-leader__rate {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: right;
+}
+.ib-leader__tv {
+  font-size: 0.75rem;
+  color: var(--sector-muted);
+  text-align: right;
+}
+
+/* color helpers */
+.ib-pos { color: #ef4444; }
+.ib-neg { color: #3b82f6; }
+.ib-neu { color: var(--sector-muted); }
+
+/* refresh link */
+.ib-refresh {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--sector-muted);
+}
+.ib-refresh a { color: var(--sector-accent); text-decoration: none; }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<main class="ib-page">
+
+  {# ── Header ─────────────────────────────────────────────── #}
+  <section class="ib-header">
+    <div>
+      <p class="ib-kicker">Intraday Board</p>
+      <h1>장중 주도섹터</h1>
+    </div>
+    <div class="ib-header-right">
+      <span class="ib-status ib-status--{{ status }}">
+        <span class="ib-status__dot"></span>
+        {% if status == 'ready' %}LIVE
+        {% elif status == 'warming' %}WARMING
+        {% else %}NO DATA
+        {% endif %}
+      </span>
+      <a class="ib-back-link" href="{{ url_for('sector_board.index') }}">← Morning Board</a>
+    </div>
+  </section>
+
+  {# ── Stats bar ───────────────────────────────────────────── #}
+  <div class="ib-stats">
+    <div class="ib-stat">
+      <span class="ib-stat__label">기준분</span>
+      <span class="ib-stat__value">{{ minute_key or '--' }}</span>
+    </div>
+    <div class="ib-stat">
+      <span class="ib-stat__label">수신종목</span>
+      <span class="ib-stat__value">{{ latest_count }}</span>
+    </div>
+    {% if unmapped_count > 0 %}
+    <div class="ib-stat">
+      <span class="ib-stat__label">미매핑</span>
+      <span class="ib-stat__value ib-stat__value--warn">{{ unmapped_count }}</span>
+    </div>
+    {% endif %}
+    <div class="ib-stat">
+      <span class="ib-stat__label">bucket</span>
+      <span class="ib-stat__value">{{ bucket_count }}</span>
+    </div>
+    <div class="ib-stat">
+      <span class="ib-stat__label">수신rows</span>
+      <span class="ib-stat__value">{{ raw_row_count }}</span>
+    </div>
+    <div class="ib-stat">
+      <span class="ib-stat__label">ignored</span>
+      <span class="ib-stat__value">{{ ignored_row_count }}</span>
+    </div>
+    <div class="ib-stat">
+      <span class="ib-stat__label">섹터</span>
+      <span class="ib-stat__value">{{ sector_count }}</span>
+    </div>
+    {% if generated_at %}
+    <div class="ib-stat">
+      <span class="ib-stat__label">갱신</span>
+      <span class="ib-stat__value">{{ generated_at }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  {# ── Empty / Warming hint ────────────────────────────────── #}
+  {% if not has_data %}
+  <div class="ib-hint">
+    {% if status == 'warming' %}
+    <h2>데이터 수집 중 (Warming)</h2>
+    <p>
+      tick 을 수신하고 있지만 아직 섹터 집계가 시작되지 않았습니다.<br>
+      {% if unmapped_count > 0 %}
+      수신 {{ latest_count }}종목 중 sector_map 미매핑 {{ unmapped_count }}종목이 있습니다.<br>
+      {% endif %}
+      smoke script 가 실행 중인지, sector_map 파일이 올바른지 확인하세요.
+    </p>
+    {% else %}
+    <h2>장중 데이터 없음</h2>
+    <p>
+      <code>logs/intraday_snapshot_*.jsonl</code> 파일이 없습니다.<br>
+      아래 명령으로 smoke script 를 실행하면 snapshot 이 저장됩니다.<br><br>
+      <code style="font-size:0.78rem; color:var(--sector-accent);">
+        .venv/bin/python scripts/run_intraday_snapshot_smoke.py \<br>
+        &nbsp;&nbsp;--provider websocket --kiwoom-env prod --exchange sor \<br>
+        &nbsp;&nbsp;--codes-file data/universe_codes_150.txt \<br>
+        &nbsp;&nbsp;--sector-map-file data/sector_map.json \<br>
+        &nbsp;&nbsp;--listen-seconds 300 --dump-snapshot-jsonl
+      </code>
+    </p>
+    {% endif %}
+  </div>
+
+  {% else %}
+  {# ── Sector cards ────────────────────────────────────────── #}
+  <div class="ib-sectors">
+    {% for sv in sector_views %}
+    <div class="ib-card">
+
+      {# card header #}
+      <div class="ib-card__head">
+        <span class="ib-card__rank">#{{ sv.rank }}</span>
+        <span class="ib-card__name">{{ sv.sector_name }}</span>
+        <span class="ib-card__rate {% if sv.is_positive %}ib-pos{% elif sv.is_negative %}ib-neg{% else %}ib-neu{% endif %}">
+          {{ sv.average_change_rate }}
+        </span>
+      </div>
+
+      {# card meta #}
+      <div class="ib-card__meta">
+        <div class="ib-card__meta-item">1분거래대금 <span>{{ sv.total_minute_trade_fmt }}</span></div>
+        <div class="ib-card__meta-item">상승비율 <span>{{ sv.rising_ratio_fmt }}</span></div>
+        <div class="ib-card__meta-item">활성종목 <span>{{ sv.active_stock_count }}</span></div>
+      </div>
+
+      {# leader stocks #}
+      <div class="ib-leaders">
+        {% for ls in sv.leader_stocks %}
+        <div class="ib-leader">
+          {# badge #}
+          {% if ls.display_badge == '대장' %}
+            <span class="ib-badge ib-badge--대장">대장</span>
+          {% elif ls.display_badge == '2등주' %}
+            <span class="ib-badge ib-badge--2등주">2등주</span>
+          {% elif ls.display_badge == '3등주' %}
+            <span class="ib-badge ib-badge--3등주">3등주</span>
+          {% else %}
+            <span class="ib-badge ib-badge--plain">#{{ ls.rank }}</span>
+          {% endif %}
+
+          {# code #}
+          <span class="ib-leader__code">{{ ls.base_code }}</span>
+
+          {# price #}
+          <span class="ib-leader__price">{{ ls.close_price_fmt }}</span>
+
+          {# right column: rate + 1m trade value #}
+          <div style="text-align:right;">
+            <div class="ib-leader__rate {% if ls.is_positive %}ib-pos{% elif ls.is_negative %}ib-neg{% else %}ib-neu{% endif %}">
+              {{ ls.last_change_rate }}
+            </div>
+            <div class="ib-leader__tv">{{ ls.minute_trade_value_fmt }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <p class="ib-refresh">
+    <a href="{{ url_for('sector_board.intraday') }}">새로고침</a>
+    &nbsp;·&nbsp;
+    smoke script 를 실행하고 <code>--dump-snapshot-jsonl</code> 옵션을 사용하면 자동 반영됩니다.
+  </p>
+
+</main>
+{% endblock content %}
