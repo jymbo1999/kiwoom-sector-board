@@ -1,0 +1,632 @@
+{
+  "nodes": [
+    {
+      "id": "file:scripts/test_kiwoom_ws.py",
+      "type": "file",
+      "name": "test_kiwoom_ws.py",
+      "filePath": "scripts/test_kiwoom_ws.py",
+      "summary": "CLI smoke-test script that connects to the Kiwoom WebSocket, collects raw tick messages for a given set of stock codes, pretty-prints them, and writes a JSONL log file for inspection.",
+      "tags": ["script", "websocket", "debugging", "entry-point"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/test_kiwoom_ws.py:_format_message_block",
+      "type": "function",
+      "name": "_format_message_block",
+      "filePath": "scripts/test_kiwoom_ws.py",
+      "lineRange": [101, 173],
+      "summary": "Formats a single raw WebSocket message into a human-readable multi-line block, decoding tick rows and field maps for console output.",
+      "tags": ["utility", "formatting", "debugging"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/test_kiwoom_ws.py:_run",
+      "type": "function",
+      "name": "_run",
+      "filePath": "scripts/test_kiwoom_ws.py",
+      "lineRange": [176, 253],
+      "summary": "Async entry-point that orchestrates argument parsing, provider construction, message collection, console printing, and JSONL file writing for the WebSocket smoke test.",
+      "tags": ["entry-point", "async", "orchestration"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:scripts/test_kiwoom_ws_bulk.py",
+      "type": "file",
+      "name": "test_kiwoom_ws_bulk.py",
+      "filePath": "scripts/test_kiwoom_ws_bulk.py",
+      "summary": "Comprehensive bulk WebSocket stress-test CLI that subscribes to hundreds of stock codes across multiple exchanges, accumulates tick statistics, and reports throughput metrics in real time.",
+      "tags": ["script", "websocket", "bulk-test", "entry-point"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:scripts/test_kiwoom_ws_bulk.py:BulkTickAccumulator",
+      "type": "class",
+      "name": "BulkTickAccumulator",
+      "filePath": "scripts/test_kiwoom_ws_bulk.py",
+      "lineRange": [184, 216],
+      "summary": "Accumulates tick message statistics during a bulk WebSocket run, tracking total messages, row counts per item and per exchange, and computing throughput metrics.",
+      "tags": ["data-model", "statistics", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/test_kiwoom_ws_bulk.py:_run_websocket",
+      "type": "function",
+      "name": "_run_websocket",
+      "filePath": "scripts/test_kiwoom_ws_bulk.py",
+      "lineRange": [516, 614],
+      "summary": "Async function that manages the live WebSocket session: authenticates, iterates raw messages, classifies login/registration responses, accumulates stats, and writes JSONL records.",
+      "tags": ["websocket", "async", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/test_kiwoom_ws_bulk.py:_run",
+      "type": "function",
+      "name": "_run",
+      "filePath": "scripts/test_kiwoom_ws_bulk.py",
+      "lineRange": [622, 749],
+      "summary": "Top-level async orchestrator: parses args, validates codes, formats exchange-specific codes, builds registration groups, opens JSONL output, and dispatches to WebSocket or mock/REST mode.",
+      "tags": ["entry-point", "async", "orchestration"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/data_providers.py",
+      "type": "file",
+      "name": "data_providers.py",
+      "filePath": "src/data_providers.py",
+      "summary": "Defines the RawMarketDataProvider protocol and three concrete implementations (mock, REST, WebSocket) plus a factory function that selects the provider based on configuration.",
+      "tags": ["service", "factory", "data-model", "api-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/data_providers.py:RawMarketDataProvider",
+      "type": "class",
+      "name": "RawMarketDataProvider",
+      "filePath": "src/data_providers.py",
+      "lineRange": [18, 28],
+      "summary": "Abstract protocol/base class defining the collect_raw_messages interface that all market data provider implementations must satisfy.",
+      "tags": ["type-definition", "interface", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/data_providers.py:MockQuoteProvider",
+      "type": "class",
+      "name": "MockQuoteProvider",
+      "filePath": "src/data_providers.py",
+      "lineRange": [32, 67],
+      "summary": "Generates synthetic random tick messages for offline testing, simulating the KiwoomRawMessage format without requiring a live API connection.",
+      "tags": ["test", "mock", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/data_providers.py:KiwoomRestQuoteProvider",
+      "type": "class",
+      "name": "KiwoomRestQuoteProvider",
+      "filePath": "src/data_providers.py",
+      "lineRange": [71, 106],
+      "summary": "Fetches current stock prices via the Kiwoom REST API (ka10001 endpoint) and wraps results as KiwoomRawMessage objects for downstream processing.",
+      "tags": ["api-handler", "service", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/data_providers.py:KiwoomWebSocketRawProvider",
+      "type": "class",
+      "name": "KiwoomWebSocketRawProvider",
+      "filePath": "src/data_providers.py",
+      "lineRange": [110, 137],
+      "summary": "Collects raw tick messages from the Kiwoom WebSocket stream by delegating to KiwoomWebSocketClient and forwarding results as KiwoomRawMessage objects.",
+      "tags": ["websocket", "service", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/data_providers.py:build_raw_market_data_provider",
+      "type": "function",
+      "name": "build_raw_market_data_provider",
+      "filePath": "src/data_providers.py",
+      "lineRange": [140, 150],
+      "summary": "Factory function that reads provider mode from config and returns the appropriate RawMarketDataProvider implementation (mock, rest, or websocket).",
+      "tags": ["factory", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/kiwoom_auth.py",
+      "type": "file",
+      "name": "kiwoom_auth.py",
+      "filePath": "src/kiwoom_auth.py",
+      "summary": "Handles Kiwoom API authentication: loads credentials from environment variables, constructs a KiwoomApiConfig dataclass, and issues OAuth-style access tokens via HTTP POST.",
+      "tags": ["security", "service", "configuration"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:src/kiwoom_auth.py:KiwoomApiConfig",
+      "type": "class",
+      "name": "KiwoomApiConfig",
+      "filePath": "src/kiwoom_auth.py",
+      "lineRange": [30, 36],
+      "summary": "Dataclass holding resolved Kiwoom API configuration: environment, provider mode, REST host, WebSocket URL, and credentials.",
+      "tags": ["data-model", "configuration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/kiwoom_auth.py:AccessToken",
+      "type": "class",
+      "name": "AccessToken",
+      "filePath": "src/kiwoom_auth.py",
+      "lineRange": [23, 26],
+      "summary": "Dataclass holding a Kiwoom API access token string along with its type and expiry datetime.",
+      "tags": ["data-model", "security"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/kiwoom_auth.py:load_kiwoom_api_config",
+      "type": "function",
+      "name": "load_kiwoom_api_config",
+      "filePath": "src/kiwoom_auth.py",
+      "lineRange": [111, 145],
+      "summary": "Reads and normalizes Kiwoom API configuration from the process environment (or a .env file), resolving the correct credentials for mock vs real trading environments.",
+      "tags": ["configuration", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "function",
+      "name": "issue_access_token",
+      "filePath": "src/kiwoom_auth.py",
+      "lineRange": [148, 189],
+      "summary": "Issues a Kiwoom OAuth access token by posting credentials to the token endpoint and parsing the JSON response into an AccessToken dataclass.",
+      "tags": ["security", "api-handler", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/kiwoom_client.py",
+      "type": "file",
+      "name": "kiwoom_client.py",
+      "filePath": "src/kiwoom_client.py",
+      "summary": "Implements KiwoomRestClient, a synchronous HTTP client for the Kiwoom REST API, including retry/backoff logic, token management, and price data normalization for the ka10001 endpoint.",
+      "tags": ["service", "api-handler", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/kiwoom_client.py:KiwoomRestClient",
+      "type": "class",
+      "name": "KiwoomRestClient",
+      "filePath": "src/kiwoom_client.py",
+      "lineRange": [18, 86],
+      "summary": "Synchronous REST client for the Kiwoom API that handles token acquisition, authenticated POST requests with rate-limit retry/backoff, and bulk current-price fetching.",
+      "tags": ["service", "api-handler", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/kiwoom_client.py:_normalize_ka10001",
+      "type": "function",
+      "name": "_normalize_ka10001",
+      "filePath": "src/kiwoom_client.py",
+      "lineRange": [99, 135],
+      "summary": "Parses and normalizes a raw ka10001 API response payload into a typed dict with numeric price, volume, and change fields.",
+      "tags": ["serialization", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/kiwoom_websocket.py",
+      "type": "file",
+      "name": "kiwoom_websocket.py",
+      "filePath": "src/kiwoom_websocket.py",
+      "summary": "Core async WebSocket client for the Kiwoom real-time trade feed: manages connection lifecycle, login, realtime registration, raw message iteration, and normalization of nested tick data.",
+      "tags": ["websocket", "service", "api-handler", "serialization"],
+      "complexity": "complex",
+      "languageNotes": "Uses Python asyncio with async context manager protocol (__aenter__/__aexit__) and async generators (iter_raw_messages) for streaming tick data."
+    },
+    {
+      "id": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "class",
+      "name": "KiwoomWebSocketClient",
+      "filePath": "src/kiwoom_websocket.py",
+      "lineRange": [348, 517],
+      "summary": "Async WebSocket client that handles the full Kiwoom real-time data lifecycle: connect, login, register stock codes for realtime trades, receive/iterate raw messages, and collect them into a list.",
+      "tags": ["websocket", "service", "async"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/kiwoom_websocket.py:normalize_tick_rows",
+      "type": "function",
+      "name": "normalize_tick_rows",
+      "filePath": "src/kiwoom_websocket.py",
+      "lineRange": [226, 257],
+      "summary": "Parses a raw WebSocket payload (string or dict) and extracts a list of normalized tick row dicts, handling both single-entry and multi-entry data array formats.",
+      "tags": ["serialization", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/kiwoom_websocket.py:normalize_tick_message",
+      "type": "function",
+      "name": "normalize_tick_message",
+      "filePath": "src/kiwoom_websocket.py",
+      "lineRange": [260, 313],
+      "summary": "Converts a raw KiwoomRawMessage or JSON payload into a structured dict with header metadata and a list of normalized tick rows.",
+      "tags": ["serialization", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/kiwoom_websocket.py:_normalize_one_data_entry",
+      "type": "function",
+      "name": "_normalize_one_data_entry",
+      "filePath": "src/kiwoom_websocket.py",
+      "lineRange": [148, 223],
+      "summary": "Normalizes a single raw data entry dict from the Kiwoom WebSocket stream into a typed tick row with item code, prices, volume, and raw field values.",
+      "tags": ["serialization", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/kiwoom_websocket.py:build_realtime_trade_registration",
+      "type": "function",
+      "name": "build_realtime_trade_registration",
+      "filePath": "src/kiwoom_websocket.py",
+      "lineRange": [320, 341],
+      "summary": "Constructs the JSON registration message payload for subscribing to realtime trade data for a batch of stock codes on the Kiwoom WebSocket.",
+      "tags": ["utility", "websocket"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_intraday_data_providers.py",
+      "type": "file",
+      "name": "test_intraday_data_providers.py",
+      "filePath": "tests/test_intraday_data_providers.py",
+      "summary": "Pytest test suite covering Kiwoom API config loading, WebSocket tick normalization, code formatting, signed-value parsing, and mock/WebSocket provider behavior across 46 test cases.",
+      "tags": ["test", "websocket", "serialization"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_kiwoom_bulk_helpers.py",
+      "type": "file",
+      "name": "test_kiwoom_bulk_helpers.py",
+      "filePath": "tests/test_kiwoom_bulk_helpers.py",
+      "summary": "Pytest test suite with 49 test cases for the bulk WebSocket helper functions: code validation, batch group building, code formatting, registration summary formatting, and BulkTickAccumulator statistics.",
+      "tags": ["test", "websocket", "bulk-test"],
+      "complexity": "complex"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:scripts/test_kiwoom_ws.py",
+      "target": "file:src/data_providers.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws_bulk.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws_bulk.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "file:src/kiwoom_client.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/kiwoom_client.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_data_providers.py",
+      "target": "file:src/data_providers.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_data_providers.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_data_providers.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_kiwoom_bulk_helpers.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws.py",
+      "target": "function:scripts/test_kiwoom_ws.py:_format_message_block",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws.py",
+      "target": "function:scripts/test_kiwoom_ws.py:_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws_bulk.py",
+      "target": "class:scripts/test_kiwoom_ws_bulk.py:BulkTickAccumulator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws_bulk.py",
+      "target": "function:scripts/test_kiwoom_ws_bulk.py:_run_websocket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/test_kiwoom_ws_bulk.py",
+      "target": "function:scripts/test_kiwoom_ws_bulk.py:_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:RawMarketDataProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:MockQuoteProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:KiwoomRestQuoteProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:KiwoomWebSocketRawProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "function:src/data_providers.py:build_raw_market_data_provider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "class:src/kiwoom_auth.py:KiwoomApiConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "class:src/kiwoom_auth.py:AccessToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "function:src/kiwoom_auth.py:load_kiwoom_api_config",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_client.py",
+      "target": "class:src/kiwoom_client.py:KiwoomRestClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_client.py",
+      "target": "function:src/kiwoom_client.py:_normalize_ka10001",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:normalize_tick_rows",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:normalize_tick_message",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:_normalize_one_data_entry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:build_realtime_trade_registration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:RawMarketDataProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:MockQuoteProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:KiwoomRestQuoteProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/data_providers.py:KiwoomWebSocketRawProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "function:src/data_providers.py:build_raw_market_data_provider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "class:src/kiwoom_auth.py:KiwoomApiConfig",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "class:src/kiwoom_auth.py:AccessToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "function:src/kiwoom_auth.py:load_kiwoom_api_config",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_client.py",
+      "target": "class:src/kiwoom_client.py:KiwoomRestClient",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:normalize_tick_rows",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:normalize_tick_message",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:build_realtime_trade_registration",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

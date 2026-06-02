@@ -1,0 +1,27 @@
+{
+  "projectRoot": "/Users/haesungjun/VSCODE Library/kiwoom-sector-board",
+  "batchFiles": [
+    {"path": "src/dummy_data.py", "language": "python", "sizeLines": 24, "fileCategory": "code"},
+    {"path": "src/market_data.py", "language": "python", "sizeLines": 557, "fileCategory": "code"},
+    {"path": "src/sector_ranker.py", "language": "python", "sizeLines": 582, "fileCategory": "code"},
+    {"path": "src/theme_loader.py", "language": "python", "sizeLines": 34, "fileCategory": "code"},
+    {"path": "src/universe_builder.py", "language": "python", "sizeLines": 301, "fileCategory": "code"},
+    {"path": "tests/test_intraday_board_integration.py", "language": "python", "sizeLines": 72, "fileCategory": "code"},
+    {"path": "tests/test_intraday_ranker.py", "language": "python", "sizeLines": 121, "fileCategory": "code"},
+    {"path": "tests/test_sector_ranker.py", "language": "python", "sizeLines": 29, "fileCategory": "code"},
+    {"path": "tests/test_theme_loader.py", "language": "python", "sizeLines": 19, "fileCategory": "code"},
+    {"path": "tests/test_universe_builder.py", "language": "python", "sizeLines": 153, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "src/dummy_data.py": [],
+    "src/market_data.py": ["src/config.py", "src/dummy_data.py", "src/kiwoom_auth.py", "src/kiwoom_client.py", "src/sector_ranker.py", "src/theme_loader.py"],
+    "src/sector_ranker.py": ["src/dummy_data.py", "src/theme_loader.py"],
+    "src/theme_loader.py": [],
+    "src/universe_builder.py": ["src/config.py", "src/theme_loader.py"],
+    "tests/test_intraday_board_integration.py": ["sector_board/__init__.py", "sector_board/repository.py", "src/market_data.py", "src/universe_builder.py"],
+    "tests/test_intraday_ranker.py": ["src/sector_ranker.py"],
+    "tests/test_sector_ranker.py": ["src/sector_ranker.py"],
+    "tests/test_theme_loader.py": ["src/theme_loader.py"],
+    "tests/test_universe_builder.py": ["src/universe_builder.py"]
+  }
+}

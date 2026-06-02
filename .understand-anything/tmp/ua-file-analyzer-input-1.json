@@ -1,0 +1,37 @@
+{
+  "projectRoot": "/Users/haesungjun/VSCODE Library/kiwoom-sector-board",
+  "batchFiles": [
+    {"path": "app.py", "language": "python", "sizeLines": 246, "fileCategory": "code"},
+    {"path": "src/config.py", "language": "python", "sizeLines": 162, "fileCategory": "code"},
+    {"path": "src/dart_service.py", "language": "python", "sizeLines": 114, "fileCategory": "code"},
+    {"path": "src/dashboard_components.py", "language": "python", "sizeLines": 1519, "fileCategory": "code"},
+    {"path": "src/evidence_service.py", "language": "python", "sizeLines": 181, "fileCategory": "code"},
+    {"path": "src/news_service.py", "language": "python", "sizeLines": 227, "fileCategory": "code"},
+    {"path": "src/rise_reason_service.py", "language": "python", "sizeLines": 247, "fileCategory": "code"},
+    {"path": "src/snapshot_service.py", "language": "python", "sizeLines": 208, "fileCategory": "code"},
+    {"path": "tests/test_config.py", "language": "python", "sizeLines": 168, "fileCategory": "code"},
+    {"path": "tests/test_dart_service.py", "language": "python", "sizeLines": 30, "fileCategory": "code"},
+    {"path": "tests/test_dashboard_rise_reason_view.py", "language": "python", "sizeLines": 57, "fileCategory": "code"},
+    {"path": "tests/test_evidence_service.py", "language": "python", "sizeLines": 152, "fileCategory": "code"},
+    {"path": "tests/test_market_data_view_models.py", "language": "python", "sizeLines": 142, "fileCategory": "code"},
+    {"path": "tests/test_news_service.py", "language": "python", "sizeLines": 102, "fileCategory": "code"},
+    {"path": "tests/test_rise_reason_service.py", "language": "python", "sizeLines": 114, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "app.py": ["src/config.py", "src/dashboard_components.py", "src/evidence_service.py", "src/market_data.py", "src/rise_reason_service.py", "src/snapshot_service.py"],
+    "src/config.py": [],
+    "src/dart_service.py": ["src/config.py"],
+    "src/dashboard_components.py": [],
+    "src/evidence_service.py": ["src/market_data.py", "src/news_service.py"],
+    "src/news_service.py": ["src/config.py"],
+    "src/rise_reason_service.py": ["src/config.py"],
+    "src/snapshot_service.py": [],
+    "tests/test_config.py": ["src/config.py"],
+    "tests/test_dart_service.py": ["src/dart_service.py"],
+    "tests/test_dashboard_rise_reason_view.py": ["src/dashboard_components.py"],
+    "tests/test_evidence_service.py": ["src/evidence_service.py"],
+    "tests/test_market_data_view_models.py": ["src/config.py", "src/kiwoom_auth.py", "src/market_data.py"],
+    "tests/test_news_service.py": ["src/news_service.py"],
+    "tests/test_rise_reason_service.py": ["src/rise_reason_service.py"]
+  }
+}

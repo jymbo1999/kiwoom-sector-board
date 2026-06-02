@@ -52,6 +52,8 @@ class SectorMinuteSummary:
     total_minute_trade_value: int        # delta None → 0으로 합산
     max_stock_trade_value: int | None
     leader_stocks: list[SectorLeaderStock]
+    strong_riser_count: int = 0          # v3: change_rate >= 10.0 종목 수
+    positive_stock_count: int = 0        # change_rate > 0 종목 수
 
 
 # ---------------------------------------------------------------------------
@@ -67,12 +69,12 @@ def _rank_score(bucket: MinuteBucket) -> float:
 
 
 def _leader_sort_key(stock: SectorLeaderStock) -> tuple:
-    """대장주 정렬: delta 내림 → change_rate 내림 → tick_count 내림."""
+    """v3: change_rate 내림 → delta 내림 → tick_count 내림."""
     return (
-        stock.minute_trade_value_delta is None,
-        -(stock.minute_trade_value_delta or 0),
         stock.last_change_rate is None,
         -(stock.last_change_rate or 0),
+        stock.minute_trade_value_delta is None,
+        -(stock.minute_trade_value_delta or 0),
         -stock.tick_count,
     )
 
@@ -100,6 +102,9 @@ def _make_leader(bucket: MinuteBucket) -> SectorLeaderStock:
     )
 
 
+_STRONG_RISER_THRESHOLD = 10.0
+
+
 def _build_summary(
     sector_name: str,
     minute_key: str,
@@ -115,17 +120,21 @@ def _build_summary(
         sum(b.last_change_rate for b in rated) / len(rated) if rated else None  # type: ignore[misc]
     )
 
-    # 상승 종목 수
+    # 상승/강세 종목 수
     rising = [b for b in rated if b.last_change_rate > 0]  # type: ignore[operator]
     rising_stock_count = len(rising)
     rising_ratio: float | None = len(rising) / len(rated) if rated else None
+    strong_riser_count = sum(
+        1 for b in rated if (b.last_change_rate or 0) >= _STRONG_RISER_THRESHOLD
+    )
+    positive_stock_count = rising_stock_count
 
     # 거래대금 — delta None은 0으로 취급
     total_tv = sum(b.minute_trade_value_delta or 0 for b in buckets)
     tv_vals = [b.minute_trade_value_delta for b in buckets if b.minute_trade_value_delta is not None]
     max_tv: int | None = max(tv_vals) if tv_vals else None
 
-    # 대장주
+    # 대장주 (v3: change_rate 내림차순)
     leaders = sorted([_make_leader(b) for b in buckets], key=_leader_sort_key)[:leader_limit]
 
     return SectorMinuteSummary(
@@ -139,6 +148,8 @@ def _build_summary(
         total_minute_trade_value=total_tv,
         max_stock_trade_value=max_tv,
         leader_stocks=leaders,
+        strong_riser_count=strong_riser_count,
+        positive_stock_count=positive_stock_count,
     )
 
 
@@ -147,20 +158,28 @@ def _build_summary(
 # ---------------------------------------------------------------------------
 
 
+MARKET_CAP_MIN_DEFAULT = 500_000_000_000
+
+
 def aggregate_sector_minutes(
     buckets: list[MinuteBucket],
     sector_map: dict[str, list[str]],
     minute_key: str | None = None,
     leader_limit: int = 5,
+    market_cap_map: dict[str, int] | None = None,
+    market_cap_min: int = MARKET_CAP_MIN_DEFAULT,
 ) -> list[SectorMinuteSummary]:
     """MinuteBucket 리스트와 sector_map을 결합해 섹터별 분 단위 집계를 반환한다.
 
     Args:
-        buckets:     IntradayTickAggregator.get_minute_buckets() 결과.
-        sector_map:  base_code → 섹터명 리스트.
-                     한 종목이 여러 섹터에 속하면 각 섹터에 중복 반영.
-        minute_key:  집계 대상 분(HHMM). None이면 buckets 내 최신 분 자동 선택.
-        leader_limit: 섹터당 대장주 수. 기본 5.
+        buckets:         IntradayTickAggregator.get_minute_buckets() 결과.
+        sector_map:      base_code → 섹터명 리스트.
+                         한 종목이 여러 섹터에 속하면 각 섹터에 중복 반영.
+        minute_key:      집계 대상 분(HHMM). None이면 buckets 내 최신 분 자동 선택.
+        leader_limit:    섹터당 대장주 수. 기본 5.
+        market_cap_map:  base_code → 시가총액(원). 제공 시 market_cap_min 미만 종목 제외.
+                         None 또는 빈 dict이면 필터 없이 전 종목 사용.
+        market_cap_min:  시가총액 하한선. 기본 500_000_000_000(5천억).
 
     Returns:
         total_minute_trade_value 내림차순으로 정렬된 SectorMinuteSummary 리스트.
@@ -172,6 +191,15 @@ def aggregate_sector_minutes(
     target = minute_key if minute_key is not None else max(b.minute_key for b in buckets)
 
     filtered = [b for b in buckets if b.minute_key == target]
+    if not filtered:
+        return []
+
+    # v3: market_cap_map이 있으면 시가총액 기준 필터 적용
+    if market_cap_map:
+        filtered = [
+            b for b in filtered
+            if (market_cap_map.get(b.base_code) or 0) >= market_cap_min
+        ]
     if not filtered:
         return []
 

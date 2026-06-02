@@ -1,0 +1,889 @@
+{
+  "nodes": [
+    {
+      "id": "file:scripts/run_intraday_snapshot_smoke.py",
+      "type": "file",
+      "name": "run_intraday_snapshot_smoke.py",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "summary": "CLI smoke-test driver that exercises IntradaySnapshotService end-to-end, supporting both a synthetic mock provider and a live Kiwoom WebSocket provider, then prints a formatted summary and writes snapshots to JSONL.",
+      "tags": ["entry-point", "script", "smoke-test", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/run_intraday_snapshot_smoke.py:_run",
+      "type": "function",
+      "name": "_run",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "lineRange": [499, 632],
+      "summary": "Main async orchestrator that parses arguments, builds the snapshot service, opens the JSONL output file, and dispatches to the mock or WebSocket provider.",
+      "tags": ["entry-point", "orchestration", "async"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/run_intraday_snapshot_smoke.py:_run_mock_provider",
+      "type": "function",
+      "name": "_run_mock_provider",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "lineRange": [319, 370],
+      "summary": "Drives the snapshot service with synthetic random tick messages, logging periodic summaries and writing JSONL output.",
+      "tags": ["mock", "service", "async"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/run_intraday_snapshot_smoke.py:_run_websocket_provider",
+      "type": "function",
+      "name": "_run_websocket_provider",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "lineRange": [373, 445],
+      "summary": "Drives the snapshot service from a live Kiwoom WebSocket stream, parsing incoming messages and writing periodic JSONL snapshots.",
+      "tags": ["websocket", "service", "async"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/run_intraday_snapshot_smoke.py:format_snapshot_summary",
+      "type": "function",
+      "name": "format_snapshot_summary",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "lineRange": [198, 259],
+      "summary": "Formats a human-readable multi-line summary of the current intraday snapshot including sector counts, freshness, and top leaders.",
+      "tags": ["utility", "formatting", "reporting"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/run_intraday_snapshot_smoke.py:format_final_summary",
+      "type": "function",
+      "name": "format_final_summary",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "lineRange": [262, 300],
+      "summary": "Produces a final run statistics summary string showing message counts, durations, and snapshot metrics.",
+      "tags": ["utility", "formatting", "reporting"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/run_intraday_snapshot_smoke.py:load_sector_map_file",
+      "type": "function",
+      "name": "load_sector_map_file",
+      "filePath": "scripts/run_intraday_snapshot_smoke.py",
+      "lineRange": [133, 150],
+      "summary": "Loads a sector map from a JSON file path, returning None on missing file or invalid format.",
+      "tags": ["utility", "file-io", "config"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:sector_board/payload.py",
+      "type": "file",
+      "name": "payload.py",
+      "filePath": "sector_board/payload.py",
+      "summary": "Provides normalization utilities for snapshot payloads consumed by the Flask sector_board package, parsing timestamp fields and coercing numeric values to proper Python types.",
+      "tags": ["utility", "serialization", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/payload.py:normalize_snapshot_payload",
+      "type": "function",
+      "name": "normalize_snapshot_payload",
+      "filePath": "sector_board/payload.py",
+      "lineRange": [18, 46],
+      "summary": "Normalizes a raw snapshot payload dict, coercing numeric fields and parsing ISO timestamps into Python objects.",
+      "tags": ["utility", "serialization", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/intraday_leader_ranker.py",
+      "type": "file",
+      "name": "intraday_leader_ranker.py",
+      "filePath": "src/intraday_leader_ranker.py",
+      "summary": "Ranks intraday sector leaders by computing composite scores from sector minute summaries and producing ranked view objects for display.",
+      "tags": ["service", "ranking", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/intraday_leader_ranker.py:IntradayLeaderStockView",
+      "type": "class",
+      "name": "IntradayLeaderStockView",
+      "filePath": "src/intraday_leader_ranker.py",
+      "lineRange": [22, 35],
+      "summary": "Dataclass view representing a ranked leader stock within an intraday sector, including price, change rate, trade value delta, and display badge.",
+      "tags": ["data-model", "view"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/intraday_leader_ranker.py:IntradaySectorLeaderView",
+      "type": "class",
+      "name": "IntradaySectorLeaderView",
+      "filePath": "src/intraday_leader_ranker.py",
+      "lineRange": [39, 54],
+      "summary": "Dataclass view representing a ranked intraday sector with aggregate metrics such as rising ratio, average change rate, total trade value, and its top leader stocks.",
+      "tags": ["data-model", "view"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/intraday_leader_ranker.py:rank_intraday_leaders",
+      "type": "function",
+      "name": "rank_intraday_leaders",
+      "filePath": "src/intraday_leader_ranker.py",
+      "lineRange": [123, 179],
+      "summary": "Filters and ranks sector minute summaries by composite score, returning a list of IntradaySectorLeaderView objects sorted by score with 1-based rank assignment.",
+      "tags": ["ranking", "service", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/intraday_runtime.py",
+      "type": "file",
+      "name": "intraday_runtime.py",
+      "filePath": "src/intraday_runtime.py",
+      "summary": "Implements IntradayRuntime, a thread-based runtime that runs an async message ingestion loop in a background thread and provides thread-safe snapshot access; also exports factory functions for mock and WebSocket message sources.",
+      "tags": ["service", "async", "singleton"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:src/intraday_runtime.py:IntradayRuntime",
+      "type": "class",
+      "name": "IntradayRuntime",
+      "filePath": "src/intraday_runtime.py",
+      "lineRange": [186, 367],
+      "summary": "Thread-based runtime that manages an async event loop in a daemon thread, ingesting tick messages from a configurable source factory into IntradaySnapshotService and exposing thread-safe snapshot retrieval.",
+      "tags": ["service", "async", "singleton"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/intraday_runtime.py:make_mock_source",
+      "type": "function",
+      "name": "make_mock_source",
+      "filePath": "src/intraday_runtime.py",
+      "lineRange": [62, 115],
+      "summary": "Returns a message source factory that generates synthetic tick messages at a configurable interval, suitable for testing and demos.",
+      "tags": ["factory", "mock", "async"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/intraday_runtime.py:make_websocket_source",
+      "type": "function",
+      "name": "make_websocket_source",
+      "filePath": "src/intraday_runtime.py",
+      "lineRange": [123, 178],
+      "summary": "Returns a message source factory that connects to the Kiwoom WebSocket and yields raw tick messages for the given stock codes and exchange.",
+      "tags": ["factory", "websocket", "async"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/intraday_sector_aggregator.py",
+      "type": "file",
+      "name": "intraday_sector_aggregator.py",
+      "filePath": "src/intraday_sector_aggregator.py",
+      "summary": "Aggregates per-stock minute buckets by sector using a sector map, computing sector-level statistics such as average change rate, rising ratio, and total trade value, then returning sorted SectorMinuteSummary objects.",
+      "tags": ["service", "aggregation", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/intraday_sector_aggregator.py:SectorLeaderStock",
+      "type": "class",
+      "name": "SectorLeaderStock",
+      "filePath": "src/intraday_sector_aggregator.py",
+      "lineRange": [22, 34],
+      "summary": "Dataclass representing a top leader stock within a sector for a given minute, holding price, change rate, trade value delta, and a computed rank score.",
+      "tags": ["data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/intraday_sector_aggregator.py:SectorMinuteSummary",
+      "type": "class",
+      "name": "SectorMinuteSummary",
+      "filePath": "src/intraday_sector_aggregator.py",
+      "lineRange": [38, 54],
+      "summary": "Dataclass summarizing a sector's activity for a given minute key, including stock counts, rising ratio, average change rate, total trade value, and the top leader stocks.",
+      "tags": ["data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/intraday_sector_aggregator.py:aggregate_sector_minutes",
+      "type": "function",
+      "name": "aggregate_sector_minutes",
+      "filePath": "src/intraday_sector_aggregator.py",
+      "lineRange": [150, 195],
+      "summary": "Groups minute buckets by sector according to a sector map, builds SectorMinuteSummary for each sector at the given (or latest) minute key, and returns results sorted by total trade value.",
+      "tags": ["aggregation", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/intraday_snapshot_serialization.py",
+      "type": "file",
+      "name": "intraday_snapshot_serialization.py",
+      "filePath": "src/intraday_snapshot_serialization.py",
+      "summary": "Provides snapshot_to_dict, a single serialization function that converts an IntradaySnapshot into a JSON-serializable dictionary.",
+      "tags": ["serialization", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/intraday_snapshot_serialization.py:snapshot_to_dict",
+      "type": "function",
+      "name": "snapshot_to_dict",
+      "filePath": "src/intraday_snapshot_serialization.py",
+      "lineRange": [14, 54],
+      "summary": "Serializes an IntradaySnapshot dataclass to a JSON-serializable dictionary, converting datetime fields to ISO strings and preserving all sector view records.",
+      "tags": ["serialization", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/intraday_snapshot_service.py",
+      "type": "file",
+      "name": "intraday_snapshot_service.py",
+      "filePath": "src/intraday_snapshot_service.py",
+      "summary": "Core snapshot service that ingests raw Kiwoom tick messages, aggregates them into sector minute summaries, ranks intraday sector leaders, and produces IntradaySnapshot objects with theme and leader views.",
+      "tags": ["service", "data-model", "aggregation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:src/intraday_snapshot_service.py:IntradaySnapshot",
+      "type": "class",
+      "name": "IntradaySnapshot",
+      "filePath": "src/intraday_snapshot_service.py",
+      "lineRange": [200, 220],
+      "summary": "Dataclass representing a point-in-time intraday snapshot including sector views, leader rankings, tick counts, and diagnostic metadata.",
+      "tags": ["data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/intraday_snapshot_service.py:IntradaySnapshotService",
+      "type": "class",
+      "name": "IntradaySnapshotService",
+      "filePath": "src/intraday_snapshot_service.py",
+      "lineRange": [223, 362],
+      "summary": "Stateful service that accepts raw tick messages via ingest_raw_message, maintains an IntradayTickAggregator, and exposes get_snapshot to produce the latest ranked sector snapshot.",
+      "tags": ["service", "singleton"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/intraday_snapshot_service.py:build_intraday_snapshot_payload",
+      "type": "function",
+      "name": "build_intraday_snapshot_payload",
+      "filePath": "src/intraday_snapshot_service.py",
+      "lineRange": [12, 65],
+      "summary": "Builds the final JSON-serializable snapshot payload dict from ranked sector leaders, theme views, and universe data for consumption by the Streamlit dashboard.",
+      "tags": ["serialization", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/intraday_tick_aggregator.py",
+      "type": "file",
+      "name": "intraday_tick_aggregator.py",
+      "filePath": "src/intraday_tick_aggregator.py",
+      "summary": "Maintains per-stock latest tick state and per-(stock, minute) bucket aggregations from raw intraday tick rows, computing minute-level OHLC, trade value deltas, and change rates.",
+      "tags": ["aggregation", "data-model", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/intraday_tick_aggregator.py:LatestTickState",
+      "type": "class",
+      "name": "LatestTickState",
+      "filePath": "src/intraday_tick_aggregator.py",
+      "lineRange": [15, 28],
+      "summary": "Dataclass tracking the most recent tick state for a stock, including latest price, accumulated volume, trade value, and tick count.",
+      "tags": ["data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/intraday_tick_aggregator.py:MinuteBucket",
+      "type": "class",
+      "name": "MinuteBucket",
+      "filePath": "src/intraday_tick_aggregator.py",
+      "lineRange": [32, 54],
+      "summary": "Dataclass representing OHLC and trade value aggregation for a single stock over one minute, tracking open/high/low/close prices, tick count, trade value delta, and change rate.",
+      "tags": ["data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/intraday_tick_aggregator.py:IntradayTickAggregator",
+      "type": "class",
+      "name": "IntradayTickAggregator",
+      "filePath": "src/intraday_tick_aggregator.py",
+      "lineRange": [94, 227],
+      "summary": "Stateful aggregator that processes raw tick rows to maintain LatestTickState and MinuteBucket dictionaries, providing access to per-stock snapshots and per-minute sorted buckets.",
+      "tags": ["aggregation", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_intraday_leader_ranker.py",
+      "type": "file",
+      "name": "test_intraday_leader_ranker.py",
+      "filePath": "tests/test_intraday_leader_ranker.py",
+      "summary": "Pytest test suite covering rank_intraday_leaders and _compute_sector_score, testing filtering, sorting, rank assignment, badge assignment, tiebreaking, and edge cases with None values.",
+      "tags": ["test", "ranking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_intraday_runtime.py",
+      "type": "file",
+      "name": "test_intraday_runtime.py",
+      "filePath": "tests/test_intraday_runtime.py",
+      "summary": "Pytest test suite for IntradayRuntime covering lifecycle (start/stop/wait), idempotency, sync and async message ingestion, thread safety, exception handling, and integration with make_mock_source.",
+      "tags": ["test", "async", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_intraday_sector_aggregator.py",
+      "type": "file",
+      "name": "test_intraday_sector_aggregator.py",
+      "filePath": "tests/test_intraday_sector_aggregator.py",
+      "summary": "Pytest test suite for aggregate_sector_minutes, verifying sector grouping, minute filtering, trade value summation, rising ratio calculation, leader stock sorting, and rank score computation.",
+      "tags": ["test", "aggregation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_intraday_snapshot_serialization.py",
+      "type": "file",
+      "name": "test_intraday_snapshot_serialization.py",
+      "filePath": "tests/test_intraday_snapshot_serialization.py",
+      "summary": "Pytest test suite verifying snapshot_to_dict produces a correct JSON-serializable dictionary from IntradaySnapshot, checking field presence, types, and round-trip consistency.",
+      "tags": ["test", "serialization"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_intraday_snapshot_service.py",
+      "type": "file",
+      "name": "test_intraday_snapshot_service.py",
+      "filePath": "tests/test_intraday_snapshot_service.py",
+      "summary": "Comprehensive pytest test suite for IntradaySnapshotService covering message ingestion, snapshot structure, sector aggregation, leader ranking, reset behavior, and normalize_snapshot_payload integration.",
+      "tags": ["test", "service", "integration"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_intraday_snapshot_smoke.py",
+      "type": "file",
+      "name": "test_intraday_snapshot_smoke.py",
+      "filePath": "tests/test_intraday_snapshot_smoke.py",
+      "summary": "Smoke-level pytest tests for IntradaySnapshotService and KiwoomWebSocketClient integration, verifying end-to-end message flow with mocked websocket connections.",
+      "tags": ["test", "smoke-test", "integration"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_intraday_tick_aggregator.py",
+      "type": "file",
+      "name": "test_intraday_tick_aggregator.py",
+      "filePath": "tests/test_intraday_tick_aggregator.py",
+      "summary": "Pytest test suite for IntradayTickAggregator covering tick ingestion, OHLC bucket construction, trade value delta calculation, minute key parsing, and top-by-trade-value sorting.",
+      "tags": ["test", "aggregation"],
+      "complexity": "complex"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "function:scripts/run_intraday_snapshot_smoke.py:_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "function:scripts/run_intraday_snapshot_smoke.py:_run_mock_provider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "function:scripts/run_intraday_snapshot_smoke.py:_run_websocket_provider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "function:scripts/run_intraday_snapshot_smoke.py:format_snapshot_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "function:scripts/run_intraday_snapshot_smoke.py:format_final_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "function:scripts/run_intraday_snapshot_smoke.py:load_sector_map_file",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "file:src/intraday_snapshot_serialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "file:src/intraday_snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:scripts/run_intraday_snapshot_smoke.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:scripts/run_intraday_snapshot_smoke.py:_run_websocket_provider",
+      "target": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/payload.py",
+      "target": "function:sector_board/payload.py:normalize_snapshot_payload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/payload.py",
+      "target": "function:sector_board/payload.py:normalize_snapshot_payload",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "class:src/intraday_leader_ranker.py:IntradayLeaderStockView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "class:src/intraday_leader_ranker.py:IntradaySectorLeaderView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "function:src/intraday_leader_ranker.py:rank_intraday_leaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "class:src/intraday_leader_ranker.py:IntradayLeaderStockView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "class:src/intraday_leader_ranker.py:IntradaySectorLeaderView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "function:src/intraday_leader_ranker.py:rank_intraday_leaders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "file:src/intraday_sector_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "class:src/intraday_runtime.py:IntradayRuntime",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "function:src/intraday_runtime.py:make_mock_source",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "function:src/intraday_runtime.py:make_websocket_source",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "class:src/intraday_runtime.py:IntradayRuntime",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "function:src/intraday_runtime.py:make_mock_source",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "function:src/intraday_runtime.py:make_websocket_source",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "file:src/intraday_snapshot_serialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "file:src/intraday_snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "class:src/intraday_sector_aggregator.py:SectorLeaderStock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "class:src/intraday_sector_aggregator.py:SectorMinuteSummary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "function:src/intraday_sector_aggregator.py:aggregate_sector_minutes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "class:src/intraday_sector_aggregator.py:SectorLeaderStock",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "class:src/intraday_sector_aggregator.py:SectorMinuteSummary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "function:src/intraday_sector_aggregator.py:aggregate_sector_minutes",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "file:src/intraday_tick_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_serialization.py",
+      "target": "function:src/intraday_snapshot_serialization.py:snapshot_to_dict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_snapshot_serialization.py",
+      "target": "function:src/intraday_snapshot_serialization.py:snapshot_to_dict",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "class:src/intraday_snapshot_service.py:IntradaySnapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "class:src/intraday_snapshot_service.py:IntradaySnapshotService",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "function:src/intraday_snapshot_service.py:build_intraday_snapshot_payload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "class:src/intraday_snapshot_service.py:IntradaySnapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "class:src/intraday_snapshot_service.py:IntradaySnapshotService",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "function:src/intraday_snapshot_service.py:build_intraday_snapshot_payload",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "file:src/intraday_leader_ranker.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "file:src/intraday_sector_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "file:src/intraday_tick_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "file:src/sector_ranker.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "function:src/intraday_leader_ranker.py:rank_intraday_leaders",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "function:src/intraday_sector_aggregator.py:aggregate_sector_minutes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "class:src/intraday_tick_aggregator.py:LatestTickState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "class:src/intraday_tick_aggregator.py:MinuteBucket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "class:src/intraday_tick_aggregator.py:IntradayTickAggregator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "class:src/intraday_tick_aggregator.py:LatestTickState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "class:src/intraday_tick_aggregator.py:MinuteBucket",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "class:src/intraday_tick_aggregator.py:IntradayTickAggregator",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_intraday_leader_ranker.py",
+      "target": "file:src/intraday_leader_ranker.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_leader_ranker.py",
+      "target": "file:src/intraday_sector_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_leader_ranker.py",
+      "target": "file:tests/test_intraday_leader_ranker.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_intraday_runtime.py",
+      "target": "file:src/intraday_runtime.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_runtime.py",
+      "target": "file:src/intraday_snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_runtime.py",
+      "target": "file:tests/test_intraday_runtime.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_intraday_sector_aggregator.py",
+      "target": "file:src/intraday_sector_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_sector_aggregator.py",
+      "target": "file:src/intraday_tick_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_sector_aggregator.py",
+      "target": "file:tests/test_intraday_sector_aggregator.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_intraday_snapshot_serialization.py",
+      "target": "file:src/intraday_snapshot_serialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_snapshot_serialization.py",
+      "target": "file:src/intraday_snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_serialization.py",
+      "target": "file:tests/test_intraday_snapshot_serialization.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_intraday_snapshot_service.py",
+      "target": "file:sector_board/payload.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_snapshot_service.py",
+      "target": "file:src/intraday_snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_snapshot_service.py",
+      "target": "file:tests/test_intraday_snapshot_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_intraday_snapshot_smoke.py",
+      "target": "file:src/intraday_snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_snapshot_smoke.py",
+      "target": "file:src/kiwoom_websocket.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_tick_aggregator.py",
+      "target": "file:src/intraday_tick_aggregator.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/intraday_tick_aggregator.py",
+      "target": "file:tests/test_intraday_tick_aggregator.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

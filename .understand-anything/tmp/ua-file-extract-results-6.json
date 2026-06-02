@@ -1,0 +1,531 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 6,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".env.example",
+      "language": "config",
+      "fileCategory": "config",
+      "totalLines": 40,
+      "nonEmptyLines": 38,
+      "definitions": [
+        {
+          "name": "KIWOOM_MOCK_APP_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 5,
+          "endLine": 5
+        },
+        {
+          "name": "KIWOOM_MOCK_SECRET_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 6,
+          "endLine": 6
+        },
+        {
+          "name": "KIWOOM_REAL_APP_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 10,
+          "endLine": 10
+        },
+        {
+          "name": "KIWOOM_REAL_SECRET_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 11,
+          "endLine": 11
+        },
+        {
+          "name": "KIWOOM_APP_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 14,
+          "endLine": 14
+        },
+        {
+          "name": "KIWOOM_APP_SECRET",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 15,
+          "endLine": 15
+        },
+        {
+          "name": "KIWOOM_SECRET_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 16,
+          "endLine": 16
+        },
+        {
+          "name": "KIWOOM_ENV",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 19,
+          "endLine": 19
+        },
+        {
+          "name": "INTRADAY_PROVIDER",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 21,
+          "endLine": 21
+        },
+        {
+          "name": "INTRADAY_BOARD_ENABLED",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 22,
+          "endLine": 22
+        },
+        {
+          "name": "INTRADAY_POLL_SECONDS",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 23,
+          "endLine": 23
+        },
+        {
+          "name": "INTRADAY_MAX_CODES",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 24,
+          "endLine": 24
+        },
+        {
+          "name": "INTRADAY_EVIDENCE_ENABLED",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 25,
+          "endLine": 25
+        },
+        {
+          "name": "INTRADAY_EVIDENCE_LIMIT",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 26,
+          "endLine": 26
+        },
+        {
+          "name": "UNIVERSE_MIN_MARKET_CAP",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 27,
+          "endLine": 27
+        },
+        {
+          "name": "UNIVERSE_MIN_TRADE_VALUE",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 28,
+          "endLine": 28
+        },
+        {
+          "name": "UNIVERSE_EXCLUDE_ETF",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 29,
+          "endLine": 29
+        },
+        {
+          "name": "UNIVERSE_EXCLUDE_SPAC",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 30,
+          "endLine": 30
+        },
+        {
+          "name": "UNIVERSE_EXCLUDE_PREFERRED",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 31,
+          "endLine": 31
+        },
+        {
+          "name": "UNIVERSE_EXCLUDE_MANAGED",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 32,
+          "endLine": 32
+        },
+        {
+          "name": "KIWOOM_BASE_URL",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 33,
+          "endLine": 33
+        },
+        {
+          "name": "KIWOOM_ACCOUNT_NO",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 34,
+          "endLine": 34
+        },
+        {
+          "name": "USE_DUMMY_DATA",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 35,
+          "endLine": 35
+        },
+        {
+          "name": "KIWOOM_USE_MOCK",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 36,
+          "endLine": 36
+        },
+        {
+          "name": "NAVER_CLIENT_ID",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 37,
+          "endLine": 37
+        },
+        {
+          "name": "NAVER_CLIENT_SECRET",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 38,
+          "endLine": 38
+        },
+        {
+          "name": "OPENDART_API_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 39,
+          "endLine": 39
+        },
+        {
+          "name": "OPENAI_API_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 40,
+          "endLine": 40
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "definitionCount": 28
+      }
+    },
+    {
+      "path": "AGENTS.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 267,
+      "nonEmptyLines": 176,
+      "sections": [
+        {
+          "heading": "AGENTS.md",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Project Overview",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Core Goal",
+          "level": 2,
+          "line": 27
+        },
+        {
+          "heading": "Hard Rules",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "Do Not Break Existing Morning Board",
+          "level": 3,
+          "line": 54
+        },
+        {
+          "heading": "No Trading or Order APIs",
+          "level": 3,
+          "line": 69
+        },
+        {
+          "heading": "Avoid DB Migration Unless Explicitly Requested",
+          "level": 3,
+          "line": 86
+        },
+        {
+          "heading": "Preserve Existing Public Routes",
+          "level": 3,
+          "line": 100
+        },
+        {
+          "heading": "Preferred Implementation Pattern",
+          "level": 2,
+          "line": 112
+        },
+        {
+          "heading": "Intraday Snapshot Contract",
+          "level": 2,
+          "line": 143
+        },
+        {
+          "heading": "Environment Variables",
+          "level": 2,
+          "line": 173
+        },
+        {
+          "heading": "Kiwoom Notes",
+          "level": 2,
+          "line": 202
+        },
+        {
+          "heading": "Testing Rules",
+          "level": 2,
+          "line": 214
+        },
+        {
+          "heading": "Reporting Format",
+          "level": 2,
+          "line": 233
+        },
+        {
+          "heading": "6. Codex 단계별 프롬프트 앞에 붙일 공통 헤더",
+          "level": 2,
+          "line": 247
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 15
+      }
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 148,
+      "nonEmptyLines": 105,
+      "sections": [
+        {
+          "heading": "kiwoom-sector-board",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "주요 기능",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "macOS Apple Silicon 설치",
+          "level": 2,
+          "line": 18
+        },
+        {
+          "heading": "Render 배포 설정",
+          "level": 2,
+          "line": 30
+        },
+        {
+          "heading": ".env / Render 환경변수",
+          "level": 2,
+          "line": 48
+        },
+        {
+          "heading": "Dummy/Mock 모드 실행",
+          "level": 2,
+          "line": 84
+        },
+        {
+          "heading": "실제 API 모드 전환",
+          "level": 2,
+          "line": 94
+        },
+        {
+          "heading": "키움 REST API 구현 메모",
+          "level": 2,
+          "line": 107
+        },
+        {
+          "heading": "섹터 점수",
+          "level": 2,
+          "line": 113
+        },
+        {
+          "heading": "향후 WebSocket 실시간화 계획",
+          "level": 2,
+          "line": 137
+        },
+        {
+          "heading": "검증",
+          "level": 2,
+          "line": 141
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 11
+      }
+    },
+    {
+      "path": "REQUEST_migration.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 263,
+      "nonEmptyLines": 193,
+      "sections": [
+        {
+          "heading": "REQUEST_migration.md",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "목표",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "현재 확인한 사실",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "핵심 설계 결정",
+          "level": 2,
+          "line": 19
+        },
+        {
+          "heading": "선택한 아키텍처",
+          "level": 2,
+          "line": 30
+        },
+        {
+          "heading": "DB 설계",
+          "level": 2,
+          "line": 56
+        },
+        {
+          "heading": "단계별 진행 계획",
+          "level": 2,
+          "line": 80
+        },
+        {
+          "heading": "Phase 0. 경계 확정 및 안전장치",
+          "level": 3,
+          "line": 82
+        },
+        {
+          "heading": "Phase 1. 독립 `sector_board` 패키지 골격 생성",
+          "level": 3,
+          "line": 93
+        },
+        {
+          "heading": "Phase 2. DB 저장 연결",
+          "level": 3,
+          "line": 109
+        },
+        {
+          "heading": "Phase 3. Flask/Jinja 화면 제작",
+          "level": 3,
+          "line": 123
+        },
+        {
+          "heading": "Phase 4. iChart에 mount",
+          "level": 3,
+          "line": 142
+        },
+        {
+          "heading": "Phase 5. Schema 반영 전략",
+          "level": 3,
+          "line": 156
+        },
+        {
+          "heading": "Phase 6. 독립 배포 준비",
+          "level": 3,
+          "line": 170
+        },
+        {
+          "heading": "구현 시 건드릴 파일 예상",
+          "level": 2,
+          "line": 183
+        },
+        {
+          "heading": "검증 계획",
+          "level": 2,
+          "line": 208
+        },
+        {
+          "heading": "리스크와 대응",
+          "level": 2,
+          "line": 238
+        },
+        {
+          "heading": "구현 상태",
+          "level": 2,
+          "line": 246
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 18
+      }
+    },
+    {
+      "path": "pyproject.toml",
+      "language": "toml",
+      "fileCategory": "config",
+      "totalLines": 35,
+      "nonEmptyLines": 32,
+      "sections": [
+        {
+          "heading": "build-system",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "project",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "tool.setuptools",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "tool.setuptools.package-data",
+          "level": 3,
+          "line": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": "requirements.txt",
+      "language": "txt",
+      "fileCategory": "docs",
+      "totalLines": 17,
+      "nonEmptyLines": 17,
+      "metrics": {}
+    }
+  ]
+}

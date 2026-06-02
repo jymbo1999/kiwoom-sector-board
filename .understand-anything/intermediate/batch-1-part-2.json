@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": "file:tests/test_config.py",
+      "type": "file",
+      "name": "test_config.py",
+      "filePath": "tests/test_config.py",
+      "summary": "Pytest test suite for src/config.py covering load_settings env alias handling, KIWOOM_ENV precedence rules, intraday defaults, and API key accessor functions.",
+      "tags": ["test", "configuration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_dart_service.py",
+      "type": "file",
+      "name": "test_dart_service.py",
+      "filePath": "tests/test_dart_service.py",
+      "summary": "Pytest tests for search_dart_disclosures verifying graceful empty-list return and no network calls when the OpenDart API key is absent.",
+      "tags": ["test", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_dashboard_rise_reason_view.py",
+      "type": "file",
+      "name": "test_dashboard_rise_reason_view.py",
+      "filePath": "tests/test_dashboard_rise_reason_view.py",
+      "summary": "Pytest tests for the _rise_reason_rows dashboard component function, verifying required UI column output and correct handling of embedded evidence item lists.",
+      "tags": ["test", "component"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_evidence_service.py",
+      "type": "file",
+      "name": "test_evidence_service.py",
+      "filePath": "tests/test_evidence_service.py",
+      "summary": "Pytest tests for evidence_service covering bundle structure validation, limit enforcement, Naver-news-only collection, intraday leader mapping, and fail-open error handling.",
+      "tags": ["test", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_market_data_view_models.py",
+      "type": "file",
+      "name": "test_market_data_view_models.py",
+      "filePath": "tests/test_market_data_view_models.py",
+      "summary": "Pytest tests for market_data view model functions: market summary keys, market movers sorting, theme heatmap columns/badges/leader labels, auth fallback behavior, and intraday board payload.",
+      "tags": ["test", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_news_service.py",
+      "type": "file",
+      "name": "test_news_service.py",
+      "filePath": "tests/test_news_service.py",
+      "summary": "Pytest tests for news_service covering graceful empty return without credentials, HTML stripping, query generation, and stock-relevance filtering of Naver news results.",
+      "tags": ["test", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_rise_reason_service.py",
+      "type": "file",
+      "name": "test_rise_reason_service.py",
+      "filePath": "tests/test_rise_reason_service.py",
+      "summary": "Pytest tests for rise_reason_service verifying required output schema, unknown-confidence fallback when evidence is absent, non-news evidence filtering, and list output from summarize_rise_reasons.",
+      "tags": ["test", "service"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:tests/test_config.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_dart_service.py",
+      "target": "file:src/dart_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_dashboard_rise_reason_view.py",
+      "target": "file:src/dashboard_components.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_evidence_service.py",
+      "target": "file:src/evidence_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_market_data_view_models.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_market_data_view_models.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_market_data_view_models.py",
+      "target": "file:src/market_data.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_news_service.py",
+      "target": "file:src/news_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_rise_reason_service.py",
+      "target": "file:src/rise_reason_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/config.py",
+      "target": "file:tests/test_config.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/dart_service.py",
+      "target": "file:tests/test_dart_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "file:tests/test_dashboard_rise_reason_view.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "file:tests/test_evidence_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:tests/test_market_data_view_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/news_service.py",
+      "target": "file:tests/test_news_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "file:tests/test_rise_reason_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

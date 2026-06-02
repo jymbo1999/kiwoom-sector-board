@@ -1,0 +1,173 @@
+{
+  "nodes": [],
+  "edges": [
+    {
+      "source": "file:src/data_providers.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/kiwoom_client.py:KiwoomRestClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_client.py",
+      "target": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/test_kiwoom_ws.py:_run",
+      "target": "function:src/kiwoom_auth.py:load_kiwoom_api_config",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/test_kiwoom_ws.py:_run",
+      "target": "function:src/data_providers.py:build_raw_market_data_provider",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/test_kiwoom_ws_bulk.py:_run_websocket",
+      "target": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/test_kiwoom_ws_bulk.py:_run_websocket",
+      "target": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/test_kiwoom_ws_bulk.py:_run",
+      "target": "function:src/kiwoom_auth.py:load_kiwoom_api_config",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/test_kiwoom_ws_bulk.py:_run",
+      "target": "function:src/data_providers.py:build_raw_market_data_provider",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/kiwoom_client.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/data_providers.py",
+      "target": "file:tests/test_intraday_data_providers.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/kiwoom_auth.py",
+      "target": "file:tests/test_intraday_data_providers.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "file:tests/test_intraday_data_providers.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "file:tests/test_kiwoom_bulk_helpers.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/kiwoom_websocket.py",
+      "target": "function:src/kiwoom_websocket.py:normalize_tick_rows",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "function:src/kiwoom_websocket.py:normalize_tick_message",
+      "target": "function:src/kiwoom_websocket.py:normalize_tick_rows",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/kiwoom_websocket.py:normalize_tick_rows",
+      "target": "function:src/kiwoom_websocket.py:_normalize_one_data_entry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/kiwoom_client.py:KiwoomRestClient",
+      "target": "function:src/kiwoom_auth.py:issue_access_token",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/data_providers.py:KiwoomWebSocketRawProvider",
+      "target": "class:src/kiwoom_websocket.py:KiwoomWebSocketClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/data_providers.py:KiwoomRestQuoteProvider",
+      "target": "class:src/kiwoom_client.py:KiwoomRestClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

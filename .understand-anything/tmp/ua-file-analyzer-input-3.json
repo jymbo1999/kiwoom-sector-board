@@ -1,0 +1,29 @@
+{
+  "projectRoot": "/Users/haesungjun/VSCODE Library/kiwoom-sector-board",
+  "batchFiles": [
+    {"path": "sector_board/__init__.py", "language": "python", "sizeLines": 74, "fileCategory": "code"},
+    {"path": "sector_board/auth.py", "language": "python", "sizeLines": 22, "fileCategory": "code"},
+    {"path": "sector_board/blueprint.py", "language": "python", "sizeLines": 517, "fileCategory": "code"},
+    {"path": "sector_board/intraday_blueprint.py", "language": "python", "sizeLines": 447, "fileCategory": "code"},
+    {"path": "sector_board/repository.py", "language": "python", "sizeLines": 334, "fileCategory": "code"},
+    {"path": "sector_board/schema.py", "language": "python", "sizeLines": 24, "fileCategory": "code"},
+    {"path": "standalone.py", "language": "python", "sizeLines": 10, "fileCategory": "code"},
+    {"path": "tests/test_intraday_live_route.py", "language": "python", "sizeLines": 544, "fileCategory": "code"},
+    {"path": "tests/test_sector_board_blueprint.py", "language": "python", "sizeLines": 221, "fileCategory": "code"},
+    {"path": "tests/test_sector_board_intraday_route.py", "language": "python", "sizeLines": 344, "fileCategory": "code"},
+    {"path": "tests/test_sector_board_repository.py", "language": "python", "sizeLines": 65, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "sector_board/__init__.py": ["sector_board/blueprint.py", "sector_board/intraday_blueprint.py", "sector_board/repository.py"],
+    "sector_board/auth.py": [],
+    "sector_board/blueprint.py": ["sector_board/auth.py", "sector_board/repository.py"],
+    "sector_board/intraday_blueprint.py": ["sector_board/auth.py"],
+    "sector_board/repository.py": ["sector_board/payload.py", "sector_board/schema.py"],
+    "sector_board/schema.py": [],
+    "standalone.py": ["sector_board/__init__.py"],
+    "tests/test_intraday_live_route.py": ["sector_board/__init__.py"],
+    "tests/test_sector_board_blueprint.py": ["sector_board/__init__.py", "sector_board/repository.py"],
+    "tests/test_sector_board_intraday_route.py": ["sector_board/__init__.py"],
+    "tests/test_sector_board_repository.py": ["sector_board/repository.py", "sector_board/schema.py"]
+  }
+}

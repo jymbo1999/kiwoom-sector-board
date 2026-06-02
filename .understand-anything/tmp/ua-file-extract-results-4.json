@@ -1,0 +1,4612 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 10,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/dummy_data.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 18,
+      "functions": [
+        {
+          "name": "load_sample_prices",
+          "startLine": 19,
+          "endLine": 24,
+          "params": [
+            "path"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "load_sample_prices",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "load_sample_prices",
+          "callee": "pd.read_csv",
+          "lineNumber": 20
+        },
+        {
+          "caller": "load_sample_prices",
+          "callee": "set",
+          "lineNumber": 21
+        },
+        {
+          "caller": "load_sample_prices",
+          "callee": "set",
+          "lineNumber": 21
+        },
+        {
+          "caller": "load_sample_prices",
+          "callee": "ValueError",
+          "lineNumber": 23
+        },
+        {
+          "caller": "load_sample_prices",
+          "callee": "sorted",
+          "lineNumber": 23
+        },
+        {
+          "caller": "load_sample_prices",
+          "callee": "df[REQUIRED_PRICE_COLUMNS].copy",
+          "lineNumber": 24
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/market_data.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 557,
+      "nonEmptyLines": 480,
+      "functions": [
+        {
+          "name": "load_market_prices",
+          "startLine": 196,
+          "endLine": 216,
+          "params": [
+            "settings",
+            "codes",
+            "on_progress"
+          ]
+        },
+        {
+          "name": "_empty_dataframe",
+          "startLine": 219,
+          "endLine": 220,
+          "params": [
+            "columns"
+          ]
+        },
+        {
+          "name": "_mock_intraday_universe",
+          "startLine": 223,
+          "endLine": 239,
+          "params": []
+        },
+        {
+          "name": "_mock_intraday_quotes",
+          "startLine": 242,
+          "endLine": 264,
+          "params": [
+            "reference_time"
+          ]
+        },
+        {
+          "name": "_get_market_phase",
+          "startLine": 270,
+          "endLine": 279,
+          "params": [
+            "reference_time"
+          ]
+        },
+        {
+          "name": "get_refresh_schedule",
+          "startLine": 282,
+          "endLine": 307,
+          "params": [
+            "now"
+          ]
+        },
+        {
+          "name": "_load_ranked_snapshot",
+          "startLine": 310,
+          "endLine": 320,
+          "params": [
+            "on_progress"
+          ]
+        },
+        {
+          "name": "_load_krx_snapshot",
+          "startLine": 323,
+          "endLine": 337,
+          "params": [
+            "trade_date"
+          ]
+        },
+        {
+          "name": "_data_mode",
+          "startLine": 340,
+          "endLine": 347,
+          "params": [
+            "settings",
+            "effective_mock"
+          ]
+        },
+        {
+          "name": "_build_market_summary",
+          "startLine": 350,
+          "endLine": 374,
+          "params": [
+            "settings",
+            "theme_map",
+            "prices",
+            "sectors",
+            "error_message",
+            "effective_mock"
+          ]
+        },
+        {
+          "name": "_build_theme_heatmap",
+          "startLine": 377,
+          "endLine": 419,
+          "params": [
+            "sectors",
+            "leaders"
+          ]
+        },
+        {
+          "name": "_build_leader_view",
+          "startLine": 422,
+          "endLine": 428,
+          "params": [
+            "leaders"
+          ]
+        },
+        {
+          "name": "get_morning_board_view_models",
+          "startLine": 431,
+          "endLine": 462,
+          "params": [
+            "on_progress",
+            "trade_date"
+          ]
+        },
+        {
+          "name": "get_intraday_board_view_models",
+          "startLine": 465,
+          "endLine": 503,
+          "params": [
+            "previous_snapshot",
+            "quotes",
+            "universe",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "get_market_summary",
+          "startLine": 506,
+          "endLine": 510,
+          "params": []
+        },
+        {
+          "name": "get_market_movers",
+          "startLine": 513,
+          "endLine": 533,
+          "params": [
+            "date",
+            "limit"
+          ]
+        },
+        {
+          "name": "get_theme_heatmap",
+          "startLine": 536,
+          "endLine": 540,
+          "params": []
+        },
+        {
+          "name": "get_theme_leaders",
+          "startLine": 543,
+          "endLine": 557,
+          "params": [
+            "theme_id"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "load_market_prices",
+          "line": 196,
+          "isDefault": false
+        },
+        {
+          "name": "_empty_dataframe",
+          "line": 219,
+          "isDefault": false
+        },
+        {
+          "name": "_mock_intraday_universe",
+          "line": 223,
+          "isDefault": false
+        },
+        {
+          "name": "_mock_intraday_quotes",
+          "line": 242,
+          "isDefault": false
+        },
+        {
+          "name": "_get_market_phase",
+          "line": 270,
+          "isDefault": false
+        },
+        {
+          "name": "get_refresh_schedule",
+          "line": 282,
+          "isDefault": false
+        },
+        {
+          "name": "_load_ranked_snapshot",
+          "line": 310,
+          "isDefault": false
+        },
+        {
+          "name": "_load_krx_snapshot",
+          "line": 323,
+          "isDefault": false
+        },
+        {
+          "name": "_data_mode",
+          "line": 340,
+          "isDefault": false
+        },
+        {
+          "name": "_build_market_summary",
+          "line": 350,
+          "isDefault": false
+        },
+        {
+          "name": "_build_theme_heatmap",
+          "line": 377,
+          "isDefault": false
+        },
+        {
+          "name": "_build_leader_view",
+          "line": 422,
+          "isDefault": false
+        },
+        {
+          "name": "get_morning_board_view_models",
+          "line": 431,
+          "isDefault": false
+        },
+        {
+          "name": "get_intraday_board_view_models",
+          "line": 465,
+          "isDefault": false
+        },
+        {
+          "name": "get_market_summary",
+          "line": 506,
+          "isDefault": false
+        },
+        {
+          "name": "get_market_movers",
+          "line": 513,
+          "isDefault": false
+        },
+        {
+          "name": "get_theme_heatmap",
+          "line": 536,
+          "isDefault": false
+        },
+        {
+          "name": "get_theme_leaders",
+          "line": 543,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "load_market_prices",
+          "callee": "load_sample_prices",
+          "lineNumber": 202
+        },
+        {
+          "caller": "load_market_prices",
+          "callee": "KiwoomRestClient",
+          "lineNumber": 204
+        },
+        {
+          "caller": "load_market_prices",
+          "callee": "client.fetch_current_prices",
+          "lineNumber": 213
+        },
+        {
+          "caller": "load_market_prices",
+          "callee": "load_sample_prices",
+          "lineNumber": 215
+        },
+        {
+          "caller": "_empty_dataframe",
+          "callee": "pd.DataFrame",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "enumerate",
+          "lineNumber": 225
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "str(mover[\"ticker\"]).zfill",
+          "lineNumber": 226
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "str",
+          "lineNumber": 226
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "str",
+          "lineNumber": 227
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "rows.append",
+          "lineNumber": 228
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "str",
+          "lineNumber": 231
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "str",
+          "lineNumber": 234
+        },
+        {
+          "caller": "_mock_intraday_universe",
+          "callee": "pd.DataFrame",
+          "lineNumber": 239
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "(reference_time or datetime.now()).isoformat",
+          "lineNumber": 243
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "datetime.now",
+          "lineNumber": 243
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "enumerate",
+          "lineNumber": 245
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "float",
+          "lineNumber": 246
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "rows.append",
+          "lineNumber": 249
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "str(mover[\"ticker\"]).zfill",
+          "lineNumber": 251
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "str",
+          "lineNumber": 251
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "str",
+          "lineNumber": 252
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "max",
+          "lineNumber": 257
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "int",
+          "lineNumber": 257
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "float",
+          "lineNumber": 257
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "max",
+          "lineNumber": 257
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "float",
+          "lineNumber": 258
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "float",
+          "lineNumber": 259
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "float",
+          "lineNumber": 260
+        },
+        {
+          "caller": "_mock_intraday_quotes",
+          "callee": "pd.DataFrame",
+          "lineNumber": 264
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "datetime.now",
+          "lineNumber": 271
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "current.time",
+          "lineNumber": 272
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "time",
+          "lineNumber": 273
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "time",
+          "lineNumber": 273
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "time",
+          "lineNumber": 275
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "time",
+          "lineNumber": 275
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "time",
+          "lineNumber": 277
+        },
+        {
+          "caller": "_get_market_phase",
+          "callee": "time",
+          "lineNumber": 277
+        },
+        {
+          "caller": "get_refresh_schedule",
+          "callee": "datetime.now",
+          "lineNumber": 291
+        },
+        {
+          "caller": "get_refresh_schedule",
+          "callee": "current.date",
+          "lineNumber": 292
+        },
+        {
+          "caller": "get_refresh_schedule",
+          "callee": "datetime.combine",
+          "lineNumber": 293
+        },
+        {
+          "caller": "get_refresh_schedule",
+          "callee": "int",
+          "lineNumber": 300
+        },
+        {
+          "caller": "get_refresh_schedule",
+          "callee": "(next_cp - current).total_seconds",
+          "lineNumber": 300
+        },
+        {
+          "caller": "get_refresh_schedule",
+          "callee": "_get_market_phase",
+          "lineNumber": 306
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "load_settings",
+          "lineNumber": 313
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "load_theme_map",
+          "lineNumber": 314
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "theme_map[\"code\"].dropna().astype(str).drop_duplicates().tolist",
+          "lineNumber": 315
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "theme_map[\"code\"].dropna().astype(str).drop_duplicates",
+          "lineNumber": 315
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "theme_map[\"code\"].dropna().astype",
+          "lineNumber": 315
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "theme_map[\"code\"].dropna",
+          "lineNumber": 315
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "load_market_prices",
+          "lineNumber": 318
+        },
+        {
+          "caller": "_load_ranked_snapshot",
+          "callee": "rank_sectors",
+          "lineNumber": 319
+        },
+        {
+          "caller": "_load_krx_snapshot",
+          "callee": "get_last_trading_date",
+          "lineNumber": 334
+        },
+        {
+          "caller": "_load_krx_snapshot",
+          "callee": "fetch_krx_snapshot",
+          "lineNumber": 335
+        },
+        {
+          "caller": "_load_krx_snapshot",
+          "callee": "rank_sectors_krx",
+          "lineNumber": 336
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "datetime.now().isoformat",
+          "lineNumber": 361
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "datetime.now",
+          "lineNumber": 361
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "_get_market_phase",
+          "lineNumber": 362
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "_data_mode",
+          "lineNumber": 363
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "bool",
+          "lineNumber": 364
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "int",
+          "lineNumber": 366
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "sectors[\"sector\"].nunique",
+          "lineNumber": 366
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "int",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "prices[\"code\"].dropna().astype(str).nunique",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "prices[\"code\"].dropna().astype",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "prices[\"code\"].dropna",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "str",
+          "lineNumber": 368
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "float",
+          "lineNumber": 369
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "float",
+          "lineNumber": 370
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "pd.to_numeric(prices[\"change_rate\"], errors=\"coerce\").mean",
+          "lineNumber": 370
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "pd.to_numeric",
+          "lineNumber": 370
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "float",
+          "lineNumber": 371
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "(pd.to_numeric(prices[\"change_rate\"], errors=\"coerce\") > 0).mean",
+          "lineNumber": 371
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "pd.to_numeric",
+          "lineNumber": 371
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "float",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "pd.to_numeric(prices[\"trade_value\"], errors=\"coerce\").fillna(0).sum",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "pd.to_numeric(prices[\"trade_value\"], errors=\"coerce\").fillna",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_build_market_summary",
+          "callee": "pd.to_numeric",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "_empty_dataframe",
+          "lineNumber": 379
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "sectors.copy",
+          "lineNumber": 381
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[\"sector\"].astype",
+          "lineNumber": 382
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[\"sector\"].astype",
+          "lineNumber": 383
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric(heatmap[\"sector_score\"], errors=\"coerce\").fillna",
+          "lineNumber": 384
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric",
+          "lineNumber": 384
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric(heatmap[\"trade_value_sum\"], errors=\"coerce\").fillna",
+          "lineNumber": 385
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric",
+          "lineNumber": 385
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric(heatmap[\"theme_score\"], errors=\"coerce\").fillna(1.0).clip",
+          "lineNumber": 388
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric(heatmap[\"theme_score\"], errors=\"coerce\").fillna",
+          "lineNumber": 388
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric",
+          "lineNumber": 388
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric(heatmap[\"stock_count\"], errors=\"coerce\").fillna",
+          "lineNumber": 389
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric",
+          "lineNumber": 389
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "(_ts * _sc * 100_000_000_000).round",
+          "lineNumber": 390
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "leaders.sort_values([\"sector\", \"rank\"])\n        .groupby(\"sector\")[\"name\"]\n        .apply",
+          "lineNumber": 393
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "leaders.sort_values([\"sector\", \"rank\"])\n        .groupby",
+          "lineNumber": 393
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "leaders.sort_values",
+          "lineNumber": 393
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "\", \".join",
+          "lineNumber": 395
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "names.astype(str).head",
+          "lineNumber": 395
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "names.astype",
+          "lineNumber": 395
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[\"sector\"].map(leader_names).fillna",
+          "lineNumber": 397
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[\"sector\"].map",
+          "lineNumber": 397
+        },
+        {
+          "caller": "_format_leader_labels",
+          "callee": "group.sort_values(\"rank\").head(5).itertuples",
+          "lineNumber": 401
+        },
+        {
+          "caller": "_format_leader_labels",
+          "callee": "group.sort_values(\"rank\").head",
+          "lineNumber": 401
+        },
+        {
+          "caller": "_format_leader_labels",
+          "callee": "group.sort_values",
+          "lineNumber": 401
+        },
+        {
+          "caller": "_format_leader_labels",
+          "callee": "labels.append",
+          "lineNumber": 402
+        },
+        {
+          "caller": "_format_leader_labels",
+          "callee": "float",
+          "lineNumber": 402
+        },
+        {
+          "caller": "_format_leader_labels",
+          "callee": "\", \".join",
+          "lineNumber": 403
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "leaders.groupby(\"sector\").apply",
+          "lineNumber": 405
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "leaders.groupby",
+          "lineNumber": 405
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[\"sector\"].map(leader_labels).fillna",
+          "lineNumber": 406
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[\"sector\"].map",
+          "lineNumber": 406
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric(heatmap[\"top5_change_rate_mean\"], errors=\"coerce\").fillna",
+          "lineNumber": 408
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "pd.to_numeric",
+          "lineNumber": 408
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "float",
+          "lineNumber": 410
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "_tv.quantile",
+          "lineNumber": 410
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "len",
+          "lineNumber": 410
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "\",\".join",
+          "lineNumber": 412
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "float",
+          "lineNumber": 414
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "range",
+          "lineNumber": 416
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "len",
+          "lineNumber": 416
+        },
+        {
+          "caller": "_build_theme_heatmap",
+          "callee": "heatmap[THEME_HEATMAP_COLUMNS].reset_index",
+          "lineNumber": 419
+        },
+        {
+          "caller": "_build_leader_view",
+          "callee": "_empty_dataframe",
+          "lineNumber": 424
+        },
+        {
+          "caller": "_build_leader_view",
+          "callee": "leaders.copy",
+          "lineNumber": 425
+        },
+        {
+          "caller": "_build_leader_view",
+          "callee": "view[\"sector\"].astype",
+          "lineNumber": 426
+        },
+        {
+          "caller": "_build_leader_view",
+          "callee": "view[\"sector\"].astype",
+          "lineNumber": 427
+        },
+        {
+          "caller": "_build_leader_view",
+          "callee": "view[THEME_LEADER_COLUMNS].reset_index",
+          "lineNumber": 428
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "load_settings",
+          "lineNumber": 440
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_load_krx_snapshot",
+          "lineNumber": 444
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_log.warning",
+          "lineNumber": 449
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_load_ranked_snapshot",
+          "lineNumber": 451
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_load_ranked_snapshot",
+          "lineNumber": 455
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_build_market_summary",
+          "lineNumber": 459
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_build_theme_heatmap",
+          "lineNumber": 460
+        },
+        {
+          "caller": "get_morning_board_view_models",
+          "callee": "_build_leader_view",
+          "lineNumber": 461
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "load_settings",
+          "lineNumber": 478
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "_mock_intraday_quotes",
+          "lineNumber": 486
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "_mock_intraday_universe",
+          "lineNumber": 487
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "build_intraday_snapshot_payload",
+          "lineNumber": 488
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "int",
+          "lineNumber": 496
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "active_universe[\"code\"].dropna().astype(str).nunique",
+          "lineNumber": 496
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "active_universe[\"code\"].dropna().astype",
+          "lineNumber": 496
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "active_universe[\"code\"].dropna",
+          "lineNumber": 496
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "payload.setdefault",
+          "lineNumber": 501
+        },
+        {
+          "caller": "get_intraday_board_view_models",
+          "callee": "payload.setdefault",
+          "lineNumber": 502
+        },
+        {
+          "caller": "get_market_summary",
+          "callee": "_load_ranked_snapshot",
+          "lineNumber": 509
+        },
+        {
+          "caller": "get_market_summary",
+          "callee": "_build_market_summary",
+          "lineNumber": 510
+        },
+        {
+          "caller": "get_market_movers",
+          "callee": "max",
+          "lineNumber": 521
+        },
+        {
+          "caller": "get_market_movers",
+          "callee": "int",
+          "lineNumber": 521
+        },
+        {
+          "caller": "get_market_movers",
+          "callee": "sorted",
+          "lineNumber": 525
+        },
+        {
+          "caller": "get_market_movers",
+          "callee": "float",
+          "lineNumber": 527
+        },
+        {
+          "caller": "get_market_movers",
+          "callee": "item.get",
+          "lineNumber": 527
+        },
+        {
+          "caller": "get_theme_heatmap",
+          "callee": "_load_ranked_snapshot",
+          "lineNumber": 539
+        },
+        {
+          "caller": "get_theme_heatmap",
+          "callee": "_build_theme_heatmap",
+          "lineNumber": 540
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "_empty_dataframe",
+          "lineNumber": 547
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "_load_ranked_snapshot",
+          "lineNumber": 549
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "_empty_dataframe",
+          "lineNumber": 551
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "leaders[leaders[\"sector\"].astype(str) == str(theme_id)].sort_values(\"rank\").head(5).copy",
+          "lineNumber": 553
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "leaders[leaders[\"sector\"].astype(str) == str(theme_id)].sort_values(\"rank\").head",
+          "lineNumber": 553
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "leaders[leaders[\"sector\"].astype(str) == str(theme_id)].sort_values",
+          "lineNumber": 553
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "leaders[\"sector\"].astype",
+          "lineNumber": 553
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "str",
+          "lineNumber": 553
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "_empty_dataframe",
+          "lineNumber": 555
+        },
+        {
+          "caller": "get_theme_leaders",
+          "callee": "_build_leader_view",
+          "lineNumber": 557
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 18,
+        "functionCount": 18,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/sector_ranker.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 582,
+      "nonEmptyLines": 504,
+      "functions": [
+        {
+          "name": "_min_max_to_10",
+          "startLine": 39,
+          "endLine": 45,
+          "params": [
+            "series"
+          ]
+        },
+        {
+          "name": "_rank_score",
+          "startLine": 48,
+          "endLine": 52,
+          "params": [
+            "series"
+          ]
+        },
+        {
+          "name": "build_sector_universe",
+          "startLine": 55,
+          "endLine": 75,
+          "params": [
+            "prices",
+            "theme_map"
+          ]
+        },
+        {
+          "name": "add_leader_scores",
+          "startLine": 78,
+          "endLine": 88,
+          "params": [
+            "universe"
+          ]
+        },
+        {
+          "name": "rank_sectors",
+          "startLine": 91,
+          "endLine": 130,
+          "params": [
+            "prices",
+            "theme_map",
+            "top_n"
+          ]
+        },
+        {
+          "name": "rank_sectors_krx",
+          "startLine": 133,
+          "endLine": 202,
+          "params": [
+            "prices",
+            "top_n"
+          ]
+        },
+        {
+          "name": "rank_intraday_leaders",
+          "startLine": 205,
+          "endLine": 252,
+          "params": [
+            "quotes",
+            "universe",
+            "previous_snapshot",
+            "previous_rank_state",
+            "theme_limit",
+            "leader_limit",
+            "weights",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "_build_intraday_frame",
+          "startLine": 255,
+          "endLine": 315,
+          "params": [
+            "quotes",
+            "universe"
+          ]
+        },
+        {
+          "name": "_add_intraday_leader_scores",
+          "startLine": 318,
+          "endLine": 340,
+          "params": [
+            "frame",
+            "weights"
+          ]
+        },
+        {
+          "name": "_rank_intraday_theme_frames",
+          "startLine": 343,
+          "endLine": 441,
+          "params": [
+            "scored",
+            "previous_snapshot",
+            "previous_rank_state",
+            "theme_limit",
+            "leader_limit",
+            "weights"
+          ]
+        },
+        {
+          "name": "_build_rank_events",
+          "startLine": 444,
+          "endLine": 478,
+          "params": [
+            "previous_ranks",
+            "current_themes",
+            "limit"
+          ]
+        },
+        {
+          "name": "_extract_previous_ranks",
+          "startLine": 481,
+          "endLine": 505,
+          "params": [
+            "previous_snapshot",
+            "previous_rank_state"
+          ]
+        },
+        {
+          "name": "_intraday_summary",
+          "startLine": 508,
+          "endLine": 520,
+          "params": [
+            "frame",
+            "themes",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "_provider_status",
+          "startLine": 523,
+          "endLine": 535,
+          "params": [
+            "quotes",
+            "universe",
+            "matched",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "_stability_score",
+          "startLine": 538,
+          "endLine": 542,
+          "params": [
+            "theme",
+            "previous_ranks"
+          ]
+        },
+        {
+          "name": "_records",
+          "startLine": 545,
+          "endLine": 552,
+          "params": [
+            "frame"
+          ]
+        },
+        {
+          "name": "_to_numeric",
+          "startLine": 555,
+          "endLine": 557,
+          "params": [
+            "series"
+          ]
+        },
+        {
+          "name": "_normalize_code",
+          "startLine": 560,
+          "endLine": 564,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "_prefer_text",
+          "startLine": 567,
+          "endLine": 574,
+          "params": [
+            "frame",
+            "default"
+          ]
+        },
+        {
+          "name": "_dominant_text",
+          "startLine": 577,
+          "endLine": 582,
+          "params": [
+            "series"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "IntradayRankingWeights",
+          "startLine": 22,
+          "endLine": 33,
+          "methods": [],
+          "properties": [
+            "leader_change_rank",
+            "leader_trade_rank",
+            "leader_open_strength",
+            "leader_trade_contribution",
+            "leader_surge",
+            "theme_top_change",
+            "theme_trade_value",
+            "theme_excess_return",
+            "theme_rising_ratio",
+            "theme_trade_concentration",
+            "theme_stability"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "IntradayRankingWeights",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "_min_max_to_10",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "_rank_score",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "build_sector_universe",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "add_leader_scores",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "rank_sectors",
+          "line": 91,
+          "isDefault": false
+        },
+        {
+          "name": "rank_sectors_krx",
+          "line": 133,
+          "isDefault": false
+        },
+        {
+          "name": "rank_intraday_leaders",
+          "line": 205,
+          "isDefault": false
+        },
+        {
+          "name": "_build_intraday_frame",
+          "line": 255,
+          "isDefault": false
+        },
+        {
+          "name": "_add_intraday_leader_scores",
+          "line": 318,
+          "isDefault": false
+        },
+        {
+          "name": "_rank_intraday_theme_frames",
+          "line": 343,
+          "isDefault": false
+        },
+        {
+          "name": "_build_rank_events",
+          "line": 444,
+          "isDefault": false
+        },
+        {
+          "name": "_extract_previous_ranks",
+          "line": 481,
+          "isDefault": false
+        },
+        {
+          "name": "_intraday_summary",
+          "line": 508,
+          "isDefault": false
+        },
+        {
+          "name": "_provider_status",
+          "line": 523,
+          "isDefault": false
+        },
+        {
+          "name": "_stability_score",
+          "line": 538,
+          "isDefault": false
+        },
+        {
+          "name": "_records",
+          "line": 545,
+          "isDefault": false
+        },
+        {
+          "name": "_to_numeric",
+          "line": 555,
+          "isDefault": false
+        },
+        {
+          "name": "_normalize_code",
+          "line": 560,
+          "isDefault": false
+        },
+        {
+          "name": "_prefer_text",
+          "line": 567,
+          "isDefault": false
+        },
+        {
+          "name": "_dominant_text",
+          "line": 577,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_min_max_to_10",
+          "callee": "pd.to_numeric(series, errors=\"coerce\").fillna",
+          "lineNumber": 40
+        },
+        {
+          "caller": "_min_max_to_10",
+          "callee": "pd.to_numeric",
+          "lineNumber": 40
+        },
+        {
+          "caller": "_min_max_to_10",
+          "callee": "numeric.min",
+          "lineNumber": 41
+        },
+        {
+          "caller": "_min_max_to_10",
+          "callee": "numeric.max",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_min_max_to_10",
+          "callee": "pd.Series",
+          "lineNumber": 44
+        },
+        {
+          "caller": "_rank_score",
+          "callee": "pd.to_numeric(series, errors=\"coerce\").fillna",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_rank_score",
+          "callee": "pd.to_numeric",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_rank_score",
+          "callee": "len",
+          "lineNumber": 50
+        },
+        {
+          "caller": "_rank_score",
+          "callee": "pd.Series",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_rank_score",
+          "callee": "numeric.rank",
+          "lineNumber": 52
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "set",
+          "lineNumber": 56
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "set",
+          "lineNumber": 56
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "ValueError",
+          "lineNumber": 58
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "sorted",
+          "lineNumber": 58
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "themes_to_long",
+          "lineNumber": 60
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "long_theme.merge",
+          "lineNumber": 61
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "ValueError",
+          "lineNumber": 63
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "pd.to_numeric(merged[column], errors=\"coerce\").fillna",
+          "lineNumber": 67
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "pd.to_numeric",
+          "lineNumber": 67
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "merged[\"open_price\"].replace",
+          "lineNumber": 69
+        },
+        {
+          "caller": "build_sector_universe",
+          "callee": "(\n        (merged[\"current_price\"] - merged[\"open_price\"]) / open_price * 10.0\n    ).fillna",
+          "lineNumber": 70
+        },
+        {
+          "caller": "add_leader_scores",
+          "callee": "universe.copy",
+          "lineNumber": 79
+        },
+        {
+          "caller": "add_leader_scores",
+          "callee": "scored.groupby(\"sector\")[\"change_rate\"].transform",
+          "lineNumber": 80
+        },
+        {
+          "caller": "add_leader_scores",
+          "callee": "scored.groupby",
+          "lineNumber": 80
+        },
+        {
+          "caller": "add_leader_scores",
+          "callee": "scored.groupby(\"sector\")[\"trade_value\"].transform",
+          "lineNumber": 81
+        },
+        {
+          "caller": "add_leader_scores",
+          "callee": "scored.groupby",
+          "lineNumber": 81
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "add_leader_scores",
+          "lineNumber": 92
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "build_sector_universe",
+          "lineNumber": 92
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "universe.groupby",
+          "lineNumber": 96
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "group.nlargest",
+          "lineNumber": 97
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "min",
+          "lineNumber": 97
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "len",
+          "lineNumber": 97
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "group.sort_values(\n            [\"leader_score\", \"change_rate\", \"trade_value\"],\n            ascending=[False, False, False],\n        ).head",
+          "lineNumber": 98
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "group.sort_values",
+          "lineNumber": 98
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "sector_rows.append",
+          "lineNumber": 103
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "top_by_change[\"change_rate\"].mean",
+          "lineNumber": 106
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "group[\"trade_value\"].sum",
+          "lineNumber": 107
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "(group[\"change_rate\"] > 0).mean",
+          "lineNumber": 108
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "int",
+          "lineNumber": 109
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "(group[\"change_rate\"] >= 29.5).sum",
+          "lineNumber": 109
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "len",
+          "lineNumber": 110
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "leader_rows.append",
+          "lineNumber": 113
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "leaders.assign",
+          "lineNumber": 113
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "range",
+          "lineNumber": 113
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "len",
+          "lineNumber": 113
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "pd.DataFrame",
+          "lineNumber": 115
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "_min_max_to_10",
+          "lineNumber": 116
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "sectors.sort_values(\n        [\"sector_score\", \"trade_value_sum\"],\n        ascending=[False, False],\n    ).reset_index",
+          "lineNumber": 123
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "sectors.sort_values",
+          "lineNumber": 123
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "pd.concat",
+          "lineNumber": 128
+        },
+        {
+          "caller": "rank_sectors",
+          "callee": "leaders[\"rank\"].astype",
+          "lineNumber": 129
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "set",
+          "lineNumber": 139
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "ValueError",
+          "lineNumber": 141
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "sorted",
+          "lineNumber": 141
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "prices.copy",
+          "lineNumber": 143
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "pd.to_numeric(df[col], errors=\"coerce\").fillna",
+          "lineNumber": 145
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "pd.to_numeric",
+          "lineNumber": 145
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "df[\"open_price\"].replace",
+          "lineNumber": 147
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "(\n        (df[\"current_price\"] - df[\"open_price\"]) / open_nonzero * 10.0\n    ).fillna",
+          "lineNumber": 148
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "df.groupby(\"sector\")[\"change_rate\"].transform",
+          "lineNumber": 153
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "df.groupby",
+          "lineNumber": 153
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "df.groupby(\"sector\")[\"trade_value\"].transform",
+          "lineNumber": 154
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "df.groupby",
+          "lineNumber": 154
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "df.groupby",
+          "lineNumber": 164
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "group.nlargest",
+          "lineNumber": 167
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "min",
+          "lineNumber": 167
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "len",
+          "lineNumber": 167
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "group.sort_values(\n            [\"leader_score\", \"change_rate\", \"trade_value\"],\n            ascending=[False, False, False],\n        ).head",
+          "lineNumber": 168
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "group.sort_values",
+          "lineNumber": 168
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "sector_rows.append",
+          "lineNumber": 172
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "float",
+          "lineNumber": 175
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "top_by_change[\"change_rate\"].mean",
+          "lineNumber": 175
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "float",
+          "lineNumber": 176
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "group[\"trade_value\"].sum",
+          "lineNumber": 176
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "float",
+          "lineNumber": 177
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "(group[\"change_rate\"] > 0).mean",
+          "lineNumber": 177
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "int",
+          "lineNumber": 178
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "(group[\"change_rate\"] >= 29.5).sum",
+          "lineNumber": 178
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "len",
+          "lineNumber": 179
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "leader_rows.append",
+          "lineNumber": 182
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "leaders.assign",
+          "lineNumber": 182
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "range",
+          "lineNumber": 182
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "len",
+          "lineNumber": 182
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "pd.DataFrame",
+          "lineNumber": 185
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "pd.DataFrame",
+          "lineNumber": 185
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "pd.DataFrame",
+          "lineNumber": 187
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "_min_max_to_10",
+          "lineNumber": 188
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "sectors.sort_values(\n        [\"sector_score\", \"trade_value_sum\"],\n        ascending=[False, False],\n    ).reset_index",
+          "lineNumber": 195
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "sectors.sort_values",
+          "lineNumber": 195
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "pd.concat",
+          "lineNumber": 200
+        },
+        {
+          "caller": "rank_sectors_krx",
+          "callee": "leaders_df[\"rank\"].astype",
+          "lineNumber": 201
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_build_intraday_frame",
+          "lineNumber": 221
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "datetime.now",
+          "lineNumber": 222
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_intraday_summary",
+          "lineNumber": 225
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "pd.DataFrame",
+          "lineNumber": 225
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_provider_status",
+          "lineNumber": 229
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_add_intraday_leader_scores",
+          "lineNumber": 232
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_rank_intraday_theme_frames",
+          "lineNumber": 233
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "max",
+          "lineNumber": 237
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "int",
+          "lineNumber": 237
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "max",
+          "lineNumber": 238
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "int",
+          "lineNumber": 238
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_build_rank_events",
+          "lineNumber": 241
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_extract_previous_ranks",
+          "lineNumber": 242
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "max",
+          "lineNumber": 244
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "int",
+          "lineNumber": 244
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_intraday_summary",
+          "lineNumber": 247
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_records",
+          "lineNumber": 248
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_records",
+          "lineNumber": 249
+        },
+        {
+          "caller": "rank_intraday_leaders",
+          "callee": "_provider_status",
+          "lineNumber": 251
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "pd.DataFrame",
+          "lineNumber": 257
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "quotes.copy",
+          "lineNumber": 258
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe.copy",
+          "lineNumber": 259
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "ValueError",
+          "lineNumber": 261
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "quote_df[\"code\"].map",
+          "lineNumber": 263
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df[\"code\"].map",
+          "lineNumber": 264
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "quote_df.drop_duplicates",
+          "lineNumber": 265
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df[\"theme\"].fillna(\"\").astype(str).str.strip().eq(\"\").all",
+          "lineNumber": 270
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df[\"theme\"].fillna(\"\").astype(str).str.strip().eq",
+          "lineNumber": 270
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df[\"theme\"].fillna(\"\").astype(str).str.strip",
+          "lineNumber": 270
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df[\"theme\"].fillna(\"\").astype",
+          "lineNumber": 270
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df[\"theme\"].fillna",
+          "lineNumber": 270
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df.get",
+          "lineNumber": 271
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "universe_df.merge",
+          "lineNumber": 273
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "pd.DataFrame",
+          "lineNumber": 275
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "_prefer_text",
+          "lineNumber": 277
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "_prefer_text",
+          "lineNumber": 278
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "_prefer_text",
+          "lineNumber": 279
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "_prefer_text",
+          "lineNumber": 280
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "_prefer_text",
+          "lineNumber": 281
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "_to_numeric",
+          "lineNumber": 296
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "merged[\"change_rate\"].isna",
+          "lineNumber": 306
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "merged[\"prev_close\"].replace",
+          "lineNumber": 307
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "((merged[\"current_price\"] - merged[\"prev_close\"]) / prev_close * 100.0).fillna",
+          "lineNumber": 308
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "merged[\"open_price\"].replace",
+          "lineNumber": 311
+        },
+        {
+          "caller": "_build_intraday_frame",
+          "callee": "(\n        (merged[\"current_price\"] - merged[\"open_price\"]) / open_price * 100.0\n    ).fillna",
+          "lineNumber": 312
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "frame.copy",
+          "lineNumber": 322
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "_rank_score",
+          "lineNumber": 323
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "_rank_score",
+          "lineNumber": 324
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "_min_max_to_10",
+          "lineNumber": 325
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "scored.groupby(\"theme\")[\"effective_trade_value\"].transform(\"sum\").replace",
+          "lineNumber": 326
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "scored.groupby(\"theme\")[\"effective_trade_value\"].transform",
+          "lineNumber": 326
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "scored.groupby",
+          "lineNumber": 326
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "(\n        scored[\"effective_trade_value\"] / theme_trade_sum * 10.0\n    ).fillna(0.0).clip",
+          "lineNumber": 327
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "(\n        scored[\"effective_trade_value\"] / theme_trade_sum * 10.0\n    ).fillna",
+          "lineNumber": 327
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "_rank_score",
+          "lineNumber": 330
+        },
+        {
+          "caller": "_add_intraday_leader_scores",
+          "callee": "(scored[\"change_rate\"] > 0).astype",
+          "lineNumber": 331
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 351
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "scored[\"change_rate\"].mean",
+          "lineNumber": 351
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "_extract_previous_ranks",
+          "lineNumber": 352
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "scored.groupby",
+          "lineNumber": 356
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "group.sort_values(\n            [\"leader_score\", \"change_rate\", \"effective_trade_value\"],\n            ascending=[False, False, False],\n        ).head",
+          "lineNumber": 357
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "group.sort_values",
+          "lineNumber": 357
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "max",
+          "lineNumber": 360
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "min",
+          "lineNumber": 360
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "len",
+          "lineNumber": 360
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 361
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders[\"change_rate\"].mean",
+          "lineNumber": 361
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 362
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "group[\"effective_trade_value\"].sum",
+          "lineNumber": 362
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 363
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders[\"effective_trade_value\"].sum",
+          "lineNumber": 363
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 365
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "max",
+          "lineNumber": 366
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "min",
+          "lineNumber": 366
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "max",
+          "lineNumber": 366
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "int",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "group[\"code\"].nunique",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 368
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "(group[\"change_rate\"] > 0).mean",
+          "lineNumber": 368
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "len",
+          "lineNumber": 368
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "min",
+          "lineNumber": 369
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "_stability_score",
+          "lineNumber": 370
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "str",
+          "lineNumber": 370
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders.assign",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "range",
+          "lineNumber": 373
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "len",
+          "lineNumber": 373
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "str",
+          "lineNumber": 374
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "str",
+          "lineNumber": 375
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leader_rows.append",
+          "lineNumber": 378
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "theme_rows.append",
+          "lineNumber": 379
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "str",
+          "lineNumber": 381
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "str",
+          "lineNumber": 382
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "_dominant_text",
+          "lineNumber": 383
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "float",
+          "lineNumber": 388
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "group[\"change_rate\"].mean",
+          "lineNumber": 388
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "pd.DataFrame",
+          "lineNumber": 396
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "pd.DataFrame",
+          "lineNumber": 398
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "pd.DataFrame",
+          "lineNumber": 398
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "_rank_score",
+          "lineNumber": 399
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "_rank_score",
+          "lineNumber": 400
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "_rank_score",
+          "lineNumber": 401
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "themes.sort_values(\n        [\"theme_score\", \"total_trading_value\", \"top_leader_change_rate_mean\"],\n        ascending=[False, False, False],\n    ).head(theme_limit).reset_index",
+          "lineNumber": 411
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "themes.sort_values(\n        [\"theme_score\", \"total_trading_value\", \"top_leader_change_rate_mean\"],\n        ascending=[False, False, False],\n    ).head",
+          "lineNumber": 411
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "themes.sort_values",
+          "lineNumber": 411
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "range",
+          "lineNumber": 415
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "len",
+          "lineNumber": 415
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "set",
+          "lineNumber": 417
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "pd.concat",
+          "lineNumber": 418
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "pd.DataFrame",
+          "lineNumber": 418
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders[leaders[\"theme_id\"].isin(top_theme_ids)].copy",
+          "lineNumber": 421
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders[\"theme_id\"].isin",
+          "lineNumber": 421
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders[keep_columns].sort_values([\"theme_id\", \"rank\"]).reset_index",
+          "lineNumber": 441
+        },
+        {
+          "caller": "_rank_intraday_theme_frames",
+          "callee": "leaders[keep_columns].sort_values",
+          "lineNumber": 441
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "str",
+          "lineNumber": 452
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "int",
+          "lineNumber": 452
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "current_themes.itertuples",
+          "lineNumber": 452
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "current.items",
+          "lineNumber": 454
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "events.append",
+          "lineNumber": 456
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "events.append",
+          "lineNumber": 460
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "events.append",
+          "lineNumber": 468
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "previous_ranks.items",
+          "lineNumber": 475
+        },
+        {
+          "caller": "_build_rank_events",
+          "callee": "events.append",
+          "lineNumber": 477
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "isinstance",
+          "lineNumber": 486
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "isinstance",
+          "lineNumber": 488
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "source.get",
+          "lineNumber": 488
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "str",
+          "lineNumber": 489
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "int",
+          "lineNumber": 489
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "source[\"theme_ranks\"].items",
+          "lineNumber": 489
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "source.get",
+          "lineNumber": 490
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "isinstance",
+          "lineNumber": 491
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "enumerate",
+          "lineNumber": 494
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "isinstance",
+          "lineNumber": 495
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "str(row.get(\"theme_name\") or row.get(\"theme\") or row.get(\"theme_id\") or \"\").strip",
+          "lineNumber": 497
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "str",
+          "lineNumber": 497
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "row.get",
+          "lineNumber": 497
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "row.get",
+          "lineNumber": 497
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "row.get",
+          "lineNumber": 497
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "int",
+          "lineNumber": 501
+        },
+        {
+          "caller": "_extract_previous_ranks",
+          "callee": "row.get",
+          "lineNumber": 501
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "generated_at.isoformat",
+          "lineNumber": 512
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "int",
+          "lineNumber": 513
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "themes[\"theme_id\"].nunique",
+          "lineNumber": 513
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "int",
+          "lineNumber": 514
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "frame[\"code\"].nunique",
+          "lineNumber": 514
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "str",
+          "lineNumber": 515
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "float",
+          "lineNumber": 516
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "float",
+          "lineNumber": 517
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "frame[\"change_rate\"].mean",
+          "lineNumber": 517
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "float",
+          "lineNumber": 518
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "(frame[\"change_rate\"] > 0).mean",
+          "lineNumber": 518
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "float",
+          "lineNumber": 519
+        },
+        {
+          "caller": "_intraday_summary",
+          "callee": "frame[\"effective_trade_value\"].sum",
+          "lineNumber": 519
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "int",
+          "lineNumber": 531
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "quotes[\"code\"].nunique",
+          "lineNumber": 531
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "int",
+          "lineNumber": 532
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "universe[\"code\"].nunique",
+          "lineNumber": 532
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "int",
+          "lineNumber": 533
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "matched[\"code\"].nunique",
+          "lineNumber": 533
+        },
+        {
+          "caller": "_provider_status",
+          "callee": "generated_at.isoformat",
+          "lineNumber": 534
+        },
+        {
+          "caller": "_stability_score",
+          "callee": "previous_ranks.get",
+          "lineNumber": 539
+        },
+        {
+          "caller": "_stability_score",
+          "callee": "max",
+          "lineNumber": 542
+        },
+        {
+          "caller": "_stability_score",
+          "callee": "max",
+          "lineNumber": 542
+        },
+        {
+          "caller": "_records",
+          "callee": "frame.copy",
+          "lineNumber": 548
+        },
+        {
+          "caller": "_records",
+          "callee": "pd.api.types.is_numeric_dtype",
+          "lineNumber": 550
+        },
+        {
+          "caller": "_records",
+          "callee": "safe[column].astype",
+          "lineNumber": 551
+        },
+        {
+          "caller": "_records",
+          "callee": "safe.where(pd.notna(safe), None).to_dict",
+          "lineNumber": 552
+        },
+        {
+          "caller": "_records",
+          "callee": "safe.where",
+          "lineNumber": 552
+        },
+        {
+          "caller": "_records",
+          "callee": "pd.notna",
+          "lineNumber": 552
+        },
+        {
+          "caller": "_to_numeric",
+          "callee": "series.astype(str).str.replace(\",\", \"\", regex=False).str.replace(\"+\", \"\", regex=False).str.strip",
+          "lineNumber": 556
+        },
+        {
+          "caller": "_to_numeric",
+          "callee": "series.astype(str).str.replace(\",\", \"\", regex=False).str.replace",
+          "lineNumber": 556
+        },
+        {
+          "caller": "_to_numeric",
+          "callee": "series.astype(str).str.replace",
+          "lineNumber": 556
+        },
+        {
+          "caller": "_to_numeric",
+          "callee": "series.astype",
+          "lineNumber": 556
+        },
+        {
+          "caller": "_to_numeric",
+          "callee": "pd.to_numeric(cleaned, errors=\"coerce\").fillna",
+          "lineNumber": 557
+        },
+        {
+          "caller": "_to_numeric",
+          "callee": "pd.to_numeric",
+          "lineNumber": 557
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "str(value or \"\").strip",
+          "lineNumber": 561
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "str",
+          "lineNumber": 561
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "text.endswith",
+          "lineNumber": 562
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "text.zfill",
+          "lineNumber": 564
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "pd.Series",
+          "lineNumber": 568
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "frame[column].fillna(\"\").astype(str).str.strip",
+          "lineNumber": 572
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "frame[column].fillna(\"\").astype",
+          "lineNumber": 572
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "frame[column].fillna",
+          "lineNumber": 572
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "result.mask",
+          "lineNumber": 573
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "result.astype(str).str.strip",
+          "lineNumber": 573
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "result.astype",
+          "lineNumber": 573
+        },
+        {
+          "caller": "_prefer_text",
+          "callee": "result.replace",
+          "lineNumber": 574
+        },
+        {
+          "caller": "_dominant_text",
+          "callee": "series.fillna(\"\").astype",
+          "lineNumber": 578
+        },
+        {
+          "caller": "_dominant_text",
+          "callee": "series.fillna",
+          "lineNumber": 578
+        },
+        {
+          "caller": "_dominant_text",
+          "callee": "values.str.strip",
+          "lineNumber": 579
+        },
+        {
+          "caller": "_dominant_text",
+          "callee": "str",
+          "lineNumber": 582
+        },
+        {
+          "caller": "_dominant_text",
+          "callee": "values.mode",
+          "lineNumber": 582
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 21,
+        "functionCount": 20,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/theme_loader.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 25,
+      "functions": [
+        {
+          "name": "load_theme_map",
+          "startLine": 12,
+          "endLine": 17,
+          "params": [
+            "path"
+          ]
+        },
+        {
+          "name": "themes_to_long",
+          "startLine": 20,
+          "endLine": 34,
+          "params": [
+            "theme_map"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "load_theme_map",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "themes_to_long",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "load_theme_map",
+          "callee": "pd.read_csv",
+          "lineNumber": 13
+        },
+        {
+          "caller": "load_theme_map",
+          "callee": "set",
+          "lineNumber": 14
+        },
+        {
+          "caller": "load_theme_map",
+          "callee": "set",
+          "lineNumber": 14
+        },
+        {
+          "caller": "load_theme_map",
+          "callee": "ValueError",
+          "lineNumber": 16
+        },
+        {
+          "caller": "load_theme_map",
+          "callee": "sorted",
+          "lineNumber": 16
+        },
+        {
+          "caller": "load_theme_map",
+          "callee": "df[REQUIRED_COLUMNS].copy",
+          "lineNumber": 17
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "set",
+          "lineNumber": 21
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "set",
+          "lineNumber": 21
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "ValueError",
+          "lineNumber": 23
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "sorted",
+          "lineNumber": 23
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "theme_map.melt",
+          "lineNumber": 25
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "long_df[\"sector\"].astype(\"string\").str.strip",
+          "lineNumber": 31
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "long_df[\"sector\"].astype",
+          "lineNumber": 31
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "long_df.dropna",
+          "lineNumber": 32
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "long_df[[\"code\", \"name\", \"sector\"]].drop_duplicates().reset_index",
+          "lineNumber": 34
+        },
+        {
+          "caller": "themes_to_long",
+          "callee": "long_df[[\"code\", \"name\", \"sector\"]].drop_duplicates",
+          "lineNumber": 34
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/universe_builder.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 301,
+      "nonEmptyLines": 251,
+      "functions": [
+        {
+          "name": "config_from_settings",
+          "startLine": 63,
+          "endLine": 73,
+          "params": [
+            "settings"
+          ]
+        },
+        {
+          "name": "build_universe",
+          "startLine": 76,
+          "endLine": 129,
+          "params": [
+            "krx_data",
+            "theme_map",
+            "config",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "normalize_krx_frame",
+          "startLine": 132,
+          "endLine": 182,
+          "params": [
+            "krx_data"
+          ]
+        },
+        {
+          "name": "_attach_themes",
+          "startLine": 185,
+          "endLine": 194,
+          "params": [
+            "selected",
+            "theme_map"
+          ]
+        },
+        {
+          "name": "_build_exclusion_flags",
+          "startLine": 197,
+          "endLine": 214,
+          "params": [
+            "normalized",
+            "config"
+          ]
+        },
+        {
+          "name": "_excluded_by_reason",
+          "startLine": 217,
+          "endLine": 220,
+          "params": [
+            "flags"
+          ]
+        },
+        {
+          "name": "_with_max_code_exclusion",
+          "startLine": 223,
+          "endLine": 228,
+          "params": [
+            "reasons",
+            "count"
+          ]
+        },
+        {
+          "name": "_metadata",
+          "startLine": 231,
+          "endLine": 248,
+          "params": [
+            "normalized",
+            "selected_codes",
+            "excluded_by_reason",
+            "config",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "_find_column",
+          "startLine": 251,
+          "endLine": 257,
+          "params": [
+            "columns",
+            "aliases"
+          ]
+        },
+        {
+          "name": "_normalize_code",
+          "startLine": 260,
+          "endLine": 264,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "_as_bool_series",
+          "startLine": 267,
+          "endLine": 281,
+          "params": [
+            "values",
+            "index"
+          ]
+        },
+        {
+          "name": "_infer_flag",
+          "startLine": 284,
+          "endLine": 297,
+          "params": [
+            "flag",
+            "frame"
+          ]
+        },
+        {
+          "name": "_empty_universe_frame",
+          "startLine": 300,
+          "endLine": 301,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "UniverseBuildConfig",
+          "startLine": 47,
+          "endLine": 54,
+          "methods": [],
+          "properties": [
+            "min_market_cap",
+            "min_trade_value",
+            "exclude_etf",
+            "exclude_spac",
+            "exclude_preferred",
+            "exclude_managed",
+            "max_codes"
+          ]
+        },
+        {
+          "name": "UniverseBuildResult",
+          "startLine": 58,
+          "endLine": 60,
+          "methods": [],
+          "properties": [
+            "universe",
+            "metadata"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "UniverseBuildConfig",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "UniverseBuildResult",
+          "line": 57,
+          "isDefault": false
+        },
+        {
+          "name": "config_from_settings",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "build_universe",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "normalize_krx_frame",
+          "line": 132,
+          "isDefault": false
+        },
+        {
+          "name": "_attach_themes",
+          "line": 185,
+          "isDefault": false
+        },
+        {
+          "name": "_build_exclusion_flags",
+          "line": 197,
+          "isDefault": false
+        },
+        {
+          "name": "_excluded_by_reason",
+          "line": 217,
+          "isDefault": false
+        },
+        {
+          "name": "_with_max_code_exclusion",
+          "line": 223,
+          "isDefault": false
+        },
+        {
+          "name": "_metadata",
+          "line": 231,
+          "isDefault": false
+        },
+        {
+          "name": "_find_column",
+          "line": 251,
+          "isDefault": false
+        },
+        {
+          "name": "_normalize_code",
+          "line": 260,
+          "isDefault": false
+        },
+        {
+          "name": "_as_bool_series",
+          "line": 267,
+          "isDefault": false
+        },
+        {
+          "name": "_infer_flag",
+          "line": 284,
+          "isDefault": false
+        },
+        {
+          "name": "_empty_universe_frame",
+          "line": 300,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "config_from_settings",
+          "callee": "load_settings",
+          "lineNumber": 64
+        },
+        {
+          "caller": "config_from_settings",
+          "callee": "UniverseBuildConfig",
+          "lineNumber": 65
+        },
+        {
+          "caller": "build_universe",
+          "callee": "config_from_settings",
+          "lineNumber": 89
+        },
+        {
+          "caller": "build_universe",
+          "callee": "normalize_krx_frame",
+          "lineNumber": 90
+        },
+        {
+          "caller": "build_universe",
+          "callee": "UniverseBuildResult",
+          "lineNumber": 92
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_empty_universe_frame",
+          "lineNumber": 93
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_metadata",
+          "lineNumber": 94
+        },
+        {
+          "caller": "build_universe",
+          "callee": "pd.Series",
+          "lineNumber": 96
+        },
+        {
+          "caller": "build_universe",
+          "callee": "normalized.drop_duplicates(subset=[\"code\"], keep=\"first\").reset_index",
+          "lineNumber": 103
+        },
+        {
+          "caller": "build_universe",
+          "callee": "normalized.drop_duplicates",
+          "lineNumber": 103
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_build_exclusion_flags",
+          "lineNumber": 104
+        },
+        {
+          "caller": "build_universe",
+          "callee": "exclusions.any",
+          "lineNumber": 105
+        },
+        {
+          "caller": "build_universe",
+          "callee": "pd.Series",
+          "lineNumber": 105
+        },
+        {
+          "caller": "build_universe",
+          "callee": "normalized.loc[~excluded_mask].copy",
+          "lineNumber": 107
+        },
+        {
+          "caller": "build_universe",
+          "callee": "int",
+          "lineNumber": 108
+        },
+        {
+          "caller": "build_universe",
+          "callee": "selected[\"code\"].nunique",
+          "lineNumber": 108
+        },
+        {
+          "caller": "build_universe",
+          "callee": "selected.sort_values",
+          "lineNumber": 111
+        },
+        {
+          "caller": "build_universe",
+          "callee": "selected.head(active_config.max_codes).copy",
+          "lineNumber": 112
+        },
+        {
+          "caller": "build_universe",
+          "callee": "selected.head",
+          "lineNumber": 112
+        },
+        {
+          "caller": "build_universe",
+          "callee": "max",
+          "lineNumber": 113
+        },
+        {
+          "caller": "build_universe",
+          "callee": "int",
+          "lineNumber": 113
+        },
+        {
+          "caller": "build_universe",
+          "callee": "selected[\"code\"].nunique",
+          "lineNumber": 113
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_attach_themes",
+          "lineNumber": 115
+        },
+        {
+          "caller": "build_universe",
+          "callee": "universe[UNIVERSE_COLUMNS].reset_index",
+          "lineNumber": 118
+        },
+        {
+          "caller": "build_universe",
+          "callee": "UniverseBuildResult",
+          "lineNumber": 120
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_metadata",
+          "lineNumber": 122
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_with_max_code_exclusion",
+          "lineNumber": 125
+        },
+        {
+          "caller": "build_universe",
+          "callee": "_excluded_by_reason",
+          "lineNumber": 125
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.DataFrame",
+          "lineNumber": 135
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.DataFrame",
+          "lineNumber": 137
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "_COLUMN_ALIASES.items",
+          "lineNumber": 138
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "_find_column",
+          "lineNumber": 139
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "ValueError",
+          "lineNumber": 144
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"code\"].map",
+          "lineNumber": 156
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"name\"].astype(str).str.strip",
+          "lineNumber": 157
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"name\"].astype",
+          "lineNumber": 157
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"sector\"].fillna(\"기타\").astype(str).str.strip",
+          "lineNumber": 158
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"sector\"].fillna(\"기타\").astype",
+          "lineNumber": 158
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"sector\"].fillna",
+          "lineNumber": 158
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"market\"].fillna(\"\").astype(str).str.strip",
+          "lineNumber": 160
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"market\"].fillna(\"\").astype",
+          "lineNumber": 160
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\"market\"].fillna",
+          "lineNumber": 160
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.to_numeric(normalized[\"market_cap\"], errors=\"coerce\").fillna(0).astype",
+          "lineNumber": 161
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.to_numeric(normalized[\"market_cap\"], errors=\"coerce\").fillna",
+          "lineNumber": 161
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.to_numeric",
+          "lineNumber": 161
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.to_numeric(normalized[\"trade_value\"], errors=\"coerce\").fillna(0).astype",
+          "lineNumber": 162
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.to_numeric(normalized[\"trade_value\"], errors=\"coerce\").fillna",
+          "lineNumber": 162
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "pd.to_numeric",
+          "lineNumber": 162
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "_as_bool_series",
+          "lineNumber": 165
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "_infer_flag",
+          "lineNumber": 166
+        },
+        {
+          "caller": "normalize_krx_frame",
+          "callee": "normalized[\n        [\n            \"code\",\n            \"name\",\n            \"sector\",\n            \"market\",\n            \"market_cap\",\n            \"trade_value\",\n            \"is_etf\",\n            \"is_spac\",\n            \"is_preferred\",\n            \"is_managed\",\n        ]\n    ].reset_index",
+          "lineNumber": 169
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "_empty_universe_frame",
+          "lineNumber": 187
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "themes_to_long(theme_map).rename",
+          "lineNumber": 189
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "themes_to_long",
+          "lineNumber": 189
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "themes[\"code\"].map",
+          "lineNumber": 190
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "selected.merge",
+          "lineNumber": 191
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "merged[\"theme\"].fillna(merged[\"sector\"]).astype(str).str.strip",
+          "lineNumber": 192
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "merged[\"theme\"].fillna(merged[\"sector\"]).astype",
+          "lineNumber": 192
+        },
+        {
+          "caller": "_attach_themes",
+          "callee": "merged[\"theme\"].fillna",
+          "lineNumber": 192
+        },
+        {
+          "caller": "_build_exclusion_flags",
+          "callee": "pd.DataFrame",
+          "lineNumber": 201
+        },
+        {
+          "caller": "_build_exclusion_flags",
+          "callee": "flags.fillna",
+          "lineNumber": 214
+        },
+        {
+          "caller": "_excluded_by_reason",
+          "callee": "int",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_excluded_by_reason",
+          "callee": "flags[reason].sum",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_excluded_by_reason",
+          "callee": "int",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_excluded_by_reason",
+          "callee": "flags[reason].sum",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_with_max_code_exclusion",
+          "callee": "dict",
+          "lineNumber": 225
+        },
+        {
+          "caller": "_with_max_code_exclusion",
+          "callee": "int",
+          "lineNumber": 226
+        },
+        {
+          "caller": "_metadata",
+          "callee": "int",
+          "lineNumber": 238
+        },
+        {
+          "caller": "_metadata",
+          "callee": "normalized[\"code\"].nunique",
+          "lineNumber": 238
+        },
+        {
+          "caller": "_metadata",
+          "callee": "int",
+          "lineNumber": 239
+        },
+        {
+          "caller": "_metadata",
+          "callee": "pd.Series(selected_codes).dropna().astype(str).nunique",
+          "lineNumber": 239
+        },
+        {
+          "caller": "_metadata",
+          "callee": "pd.Series(selected_codes).dropna().astype",
+          "lineNumber": 239
+        },
+        {
+          "caller": "_metadata",
+          "callee": "pd.Series(selected_codes).dropna",
+          "lineNumber": 239
+        },
+        {
+          "caller": "_metadata",
+          "callee": "pd.Series",
+          "lineNumber": 239
+        },
+        {
+          "caller": "_metadata",
+          "callee": "max",
+          "lineNumber": 243
+        },
+        {
+          "caller": "_metadata",
+          "callee": "dict",
+          "lineNumber": 244
+        },
+        {
+          "caller": "_metadata",
+          "callee": "int",
+          "lineNumber": 245
+        },
+        {
+          "caller": "_metadata",
+          "callee": "int",
+          "lineNumber": 246
+        },
+        {
+          "caller": "_metadata",
+          "callee": "(generated_at or datetime.now()).isoformat",
+          "lineNumber": 247
+        },
+        {
+          "caller": "_metadata",
+          "callee": "datetime.now",
+          "lineNumber": 247
+        },
+        {
+          "caller": "_find_column",
+          "callee": "str(column).strip().lower",
+          "lineNumber": 252
+        },
+        {
+          "caller": "_find_column",
+          "callee": "str(column).strip",
+          "lineNumber": 252
+        },
+        {
+          "caller": "_find_column",
+          "callee": "str",
+          "lineNumber": 252
+        },
+        {
+          "caller": "_find_column",
+          "callee": "str",
+          "lineNumber": 252
+        },
+        {
+          "caller": "_find_column",
+          "callee": "lookup.get",
+          "lineNumber": 254
+        },
+        {
+          "caller": "_find_column",
+          "callee": "alias.strip().lower",
+          "lineNumber": 254
+        },
+        {
+          "caller": "_find_column",
+          "callee": "alias.strip",
+          "lineNumber": 254
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "str(value or \"\").strip",
+          "lineNumber": 261
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "str",
+          "lineNumber": 261
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "text.endswith",
+          "lineNumber": 262
+        },
+        {
+          "caller": "_normalize_code",
+          "callee": "text.zfill",
+          "lineNumber": 264
+        },
+        {
+          "caller": "_coerce",
+          "callee": "isinstance",
+          "lineNumber": 272
+        },
+        {
+          "caller": "_coerce",
+          "callee": "str(value).strip().lower",
+          "lineNumber": 274
+        },
+        {
+          "caller": "_coerce",
+          "callee": "str(value).strip",
+          "lineNumber": 274
+        },
+        {
+          "caller": "_coerce",
+          "callee": "str",
+          "lineNumber": 274
+        },
+        {
+          "caller": "_as_bool_series",
+          "callee": "values.reindex(index).map(_coerce).fillna(False).astype",
+          "lineNumber": 281
+        },
+        {
+          "caller": "_as_bool_series",
+          "callee": "values.reindex(index).map(_coerce).fillna",
+          "lineNumber": 281
+        },
+        {
+          "caller": "_as_bool_series",
+          "callee": "values.reindex(index).map",
+          "lineNumber": 281
+        },
+        {
+          "caller": "_as_bool_series",
+          "callee": "values.reindex",
+          "lineNumber": 281
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "frame[\"name\"].fillna(\"\").astype",
+          "lineNumber": 285
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "frame[\"name\"].fillna",
+          "lineNumber": 285
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "frame[\"sector\"].fillna(\"\").astype",
+          "lineNumber": 286
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "frame[\"sector\"].fillna",
+          "lineNumber": 286
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "frame[\"market\"].fillna(\"\").astype",
+          "lineNumber": 287
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "frame[\"market\"].fillna",
+          "lineNumber": 287
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "(name + \" \" + sector + \" \" + market).str.upper",
+          "lineNumber": 288
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "combined.str.contains",
+          "lineNumber": 290
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "combined.str.contains",
+          "lineNumber": 292
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "name.str.contains",
+          "lineNumber": 294
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "combined.str.contains",
+          "lineNumber": 296
+        },
+        {
+          "caller": "_infer_flag",
+          "callee": "pd.Series",
+          "lineNumber": 297
+        },
+        {
+          "caller": "_empty_universe_frame",
+          "callee": "pd.DataFrame",
+          "lineNumber": 301
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 15,
+        "functionCount": 13,
+        "classCount": 2
+      }
+    },
+    {
+      "path": "tests/test_intraday_board_integration.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 72,
+      "nonEmptyLines": 65,
+      "functions": [
+        {
+          "name": "test_mock_intraday_pipeline_renders_flask_board",
+          "startLine": 14,
+          "endLine": 72,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "test_mock_intraday_pipeline_renders_flask_board",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 15
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 16
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 17
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 18
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 19
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "create_app",
+          "lineNumber": 21
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "pd.DataFrame",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "pd.DataFrame",
+          "lineNumber": 36
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "build_universe",
+          "lineNumber": 44
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "UniverseBuildConfig",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "datetime",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "pd.DataFrame",
+          "lineNumber": 50
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "get_intraday_board_view_models",
+          "lineNumber": 58
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "datetime",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "upsert_snapshot",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "app.test_client().get",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "app.test_client",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "\"오늘의 주도섹터 Top 5\".encode",
+          "lineNumber": 69
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "\"반도체\".encode",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_mock_intraday_pipeline_renders_flask_board",
+          "callee": "\"삼성전자\".encode",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_intraday_ranker.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 121,
+      "nonEmptyLines": 90,
+      "functions": [
+        {
+          "name": "_universe",
+          "startLine": 8,
+          "endLine": 22,
+          "params": []
+        },
+        {
+          "name": "_quotes",
+          "startLine": 25,
+          "endLine": 39,
+          "params": []
+        },
+        {
+          "name": "test_existing_rank_sectors_still_works",
+          "startLine": 42,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "test_high_change_and_trade_stock_becomes_top_leader",
+          "startLine": 62,
+          "endLine": 68,
+          "params": []
+        },
+        {
+          "name": "test_broad_rally_scores_above_single_low_trade_spike",
+          "startLine": 71,
+          "endLine": 75,
+          "params": []
+        },
+        {
+          "name": "test_low_trade_spike_does_not_become_first_theme",
+          "startLine": 78,
+          "endLine": 81,
+          "params": []
+        },
+        {
+          "name": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "startLine": 84,
+          "endLine": 90,
+          "params": []
+        },
+        {
+          "name": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+          "startLine": 93,
+          "endLine": 108,
+          "params": []
+        },
+        {
+          "name": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+          "startLine": 111,
+          "endLine": 121,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_universe",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "_quotes",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "test_existing_rank_sectors_still_works",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "test_high_change_and_trade_stock_becomes_top_leader",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "test_broad_rally_scores_above_single_low_trade_spike",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "test_low_trade_spike_does_not_become_first_theme",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+          "line": 111,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_universe",
+          "callee": "pd.DataFrame",
+          "lineNumber": 9
+        },
+        {
+          "caller": "_quotes",
+          "callee": "pd.DataFrame",
+          "lineNumber": 26
+        },
+        {
+          "caller": "test_existing_rank_sectors_still_works",
+          "callee": "pd.DataFrame",
+          "lineNumber": 43
+        },
+        {
+          "caller": "test_existing_rank_sectors_still_works",
+          "callee": "pd.DataFrame",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_existing_rank_sectors_still_works",
+          "callee": "rank_sectors",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_existing_rank_sectors_still_works",
+          "callee": "leaders.sort_values",
+          "lineNumber": 59
+        },
+        {
+          "caller": "test_high_change_and_trade_stock_becomes_top_leader",
+          "callee": "rank_intraday_leaders",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_high_change_and_trade_stock_becomes_top_leader",
+          "callee": "_quotes",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_high_change_and_trade_stock_becomes_top_leader",
+          "callee": "_universe",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_broad_rally_scores_above_single_low_trade_spike",
+          "callee": "rank_intraday_leaders",
+          "lineNumber": 72
+        },
+        {
+          "caller": "test_broad_rally_scores_above_single_low_trade_spike",
+          "callee": "_quotes",
+          "lineNumber": 72
+        },
+        {
+          "caller": "test_broad_rally_scores_above_single_low_trade_spike",
+          "callee": "_universe",
+          "lineNumber": 72
+        },
+        {
+          "caller": "test_low_trade_spike_does_not_become_first_theme",
+          "callee": "rank_intraday_leaders",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_low_trade_spike_does_not_become_first_theme",
+          "callee": "_quotes",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_low_trade_spike_does_not_become_first_theme",
+          "callee": "_universe",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "rank_intraday_leaders",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "_quotes",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "_universe",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "len",
+          "lineNumber": 87
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "pd.DataFrame(result[\"leaders\"]).groupby(\"theme_name\")[\"code\"].count",
+          "lineNumber": 89
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "pd.DataFrame(result[\"leaders\"]).groupby",
+          "lineNumber": 89
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "pd.DataFrame",
+          "lineNumber": 89
+        },
+        {
+          "caller": "test_top_five_sector_limit_and_leader_limit_are_enforced",
+          "callee": "per_theme_counts.max",
+          "lineNumber": 90
+        },
+        {
+          "caller": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+          "callee": "rank_intraday_leaders",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+          "callee": "_quotes",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+          "callee": "_universe",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+          "callee": "any",
+          "lineNumber": 108
+        },
+        {
+          "caller": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+          "callee": "pd.DataFrame",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+          "callee": "rank_intraday_leaders",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+          "callee": "_universe().head",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+          "callee": "_universe",
+          "lineNumber": 118
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 9,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_sector_ranker.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 29,
+      "nonEmptyLines": 23,
+      "functions": [
+        {
+          "name": "test_rank_sectors_scores_and_leaders",
+          "startLine": 8,
+          "endLine": 29,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "test_rank_sectors_scores_and_leaders",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_rank_sectors_scores_and_leaders",
+          "callee": "pd.DataFrame",
+          "lineNumber": 9
+        },
+        {
+          "caller": "test_rank_sectors_scores_and_leaders",
+          "callee": "pd.DataFrame",
+          "lineNumber": 16
+        },
+        {
+          "caller": "test_rank_sectors_scores_and_leaders",
+          "callee": "rank_sectors",
+          "lineNumber": 24
+        },
+        {
+          "caller": "test_rank_sectors_scores_and_leaders",
+          "callee": "set",
+          "lineNumber": 26
+        },
+        {
+          "caller": "test_rank_sectors_scores_and_leaders",
+          "callee": "leaders[leaders[\"sector\"] == \"AI\"].sort_values",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_theme_loader.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 19,
+      "nonEmptyLines": 13,
+      "functions": [
+        {
+          "name": "test_themes_to_long_removes_empty_values",
+          "startLine": 8,
+          "endLine": 19,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "test_themes_to_long_removes_empty_values",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_themes_to_long_removes_empty_values",
+          "callee": "pd.DataFrame",
+          "lineNumber": 9
+        },
+        {
+          "caller": "test_themes_to_long_removes_empty_values",
+          "callee": "themes_to_long",
+          "lineNumber": 16
+        },
+        {
+          "caller": "test_themes_to_long_removes_empty_values",
+          "callee": "set",
+          "lineNumber": 18
+        },
+        {
+          "caller": "test_themes_to_long_removes_empty_values",
+          "callee": "len",
+          "lineNumber": 19
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_universe_builder.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 153,
+      "nonEmptyLines": 124,
+      "functions": [
+        {
+          "name": "_theme_map",
+          "startLine": 16,
+          "endLine": 23,
+          "params": []
+        },
+        {
+          "name": "_krx_rows",
+          "startLine": 26,
+          "endLine": 38,
+          "params": []
+        },
+        {
+          "name": "test_config_from_settings_reads_universe_defaults",
+          "startLine": 41,
+          "endLine": 50,
+          "params": []
+        },
+        {
+          "name": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "startLine": 53,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "startLine": 65,
+          "endLine": 94,
+          "params": []
+        },
+        {
+          "name": "test_build_universe_preserves_multi_theme_long_format",
+          "startLine": 97,
+          "endLine": 111,
+          "params": []
+        },
+        {
+          "name": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "startLine": 114,
+          "endLine": 136,
+          "params": []
+        },
+        {
+          "name": "test_build_universe_can_disable_type_exclusions",
+          "startLine": 139,
+          "endLine": 153,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_theme_map",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "_krx_rows",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "test_config_from_settings_reads_universe_defaults",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "test_build_universe_preserves_multi_theme_long_format",
+          "line": 97,
+          "isDefault": false
+        },
+        {
+          "name": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "line": 114,
+          "isDefault": false
+        },
+        {
+          "name": "test_build_universe_can_disable_type_exclusions",
+          "line": 139,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_theme_map",
+          "callee": "pd.DataFrame",
+          "lineNumber": 17
+        },
+        {
+          "caller": "_krx_rows",
+          "callee": "pd.DataFrame",
+          "lineNumber": 27
+        },
+        {
+          "caller": "test_config_from_settings_reads_universe_defaults",
+          "callee": "config_from_settings",
+          "lineNumber": 42
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "normalize_krx_frame",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "_krx_rows",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "list",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "normalized[\"code\"].head",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "bool",
+          "lineNumber": 59
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "bool",
+          "lineNumber": 60
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "bool",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+          "callee": "bool",
+          "lineNumber": 62
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "UniverseBuildConfig",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "build_universe",
+          "lineNumber": 72
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "_krx_rows",
+          "lineNumber": 73
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "_theme_map",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "datetime",
+          "lineNumber": 76
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "list",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+          "callee": "set",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "UniverseBuildConfig",
+          "lineNumber": 98
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "build_universe",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "_krx_rows().head",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "_krx_rows",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "_theme_map",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "result.universe[\"code\"].tolist",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "set",
+          "lineNumber": 108
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "set",
+          "lineNumber": 109
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "set",
+          "lineNumber": 110
+        },
+        {
+          "caller": "test_build_universe_preserves_multi_theme_long_format",
+          "callee": "set",
+          "lineNumber": 111
+        },
+        {
+          "caller": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "callee": "pd.DataFrame",
+          "lineNumber": 115
+        },
+        {
+          "caller": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "callee": "pd.DataFrame",
+          "lineNumber": 122
+        },
+        {
+          "caller": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "callee": "UniverseBuildConfig",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "callee": "build_universe",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+          "callee": "result.universe[\"code\"].tolist",
+          "lineNumber": 133
+        },
+        {
+          "caller": "test_build_universe_can_disable_type_exclusions",
+          "callee": "UniverseBuildConfig",
+          "lineNumber": 140
+        },
+        {
+          "caller": "test_build_universe_can_disable_type_exclusions",
+          "callee": "build_universe",
+          "lineNumber": 150
+        },
+        {
+          "caller": "test_build_universe_can_disable_type_exclusions",
+          "callee": "_krx_rows",
+          "lineNumber": 150
+        },
+        {
+          "caller": "test_build_universe_can_disable_type_exclusions",
+          "callee": "_theme_map",
+          "lineNumber": 150
+        },
+        {
+          "caller": "test_build_universe_can_disable_type_exclusions",
+          "callee": "{\"333333\", \"444444\", \"555555\", \"666666\"}.issubset",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_build_universe_can_disable_type_exclusions",
+          "callee": "set",
+          "lineNumber": 152
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 8,
+        "functionCount": 8,
+        "classCount": 0
+      }
+    }
+  ]
+}

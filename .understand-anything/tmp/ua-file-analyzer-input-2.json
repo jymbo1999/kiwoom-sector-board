@@ -1,0 +1,37 @@
+{
+  "projectRoot": "/Users/haesungjun/VSCODE Library/kiwoom-sector-board",
+  "batchFiles": [
+    {"path": "scripts/run_intraday_snapshot_smoke.py", "language": "python", "sizeLines": 640, "fileCategory": "code"},
+    {"path": "sector_board/payload.py", "language": "python", "sizeLines": 46, "fileCategory": "code"},
+    {"path": "src/intraday_leader_ranker.py", "language": "python", "sizeLines": 179, "fileCategory": "code"},
+    {"path": "src/intraday_runtime.py", "language": "python", "sizeLines": 367, "fileCategory": "code"},
+    {"path": "src/intraday_sector_aggregator.py", "language": "python", "sizeLines": 195, "fileCategory": "code"},
+    {"path": "src/intraday_snapshot_serialization.py", "language": "python", "sizeLines": 54, "fileCategory": "code"},
+    {"path": "src/intraday_snapshot_service.py", "language": "python", "sizeLines": 362, "fileCategory": "code"},
+    {"path": "src/intraday_tick_aggregator.py", "language": "python", "sizeLines": 227, "fileCategory": "code"},
+    {"path": "tests/test_intraday_leader_ranker.py", "language": "python", "sizeLines": 351, "fileCategory": "code"},
+    {"path": "tests/test_intraday_runtime.py", "language": "python", "sizeLines": 282, "fileCategory": "code"},
+    {"path": "tests/test_intraday_sector_aggregator.py", "language": "python", "sizeLines": 407, "fileCategory": "code"},
+    {"path": "tests/test_intraday_snapshot_serialization.py", "language": "python", "sizeLines": 133, "fileCategory": "code"},
+    {"path": "tests/test_intraday_snapshot_service.py", "language": "python", "sizeLines": 542, "fileCategory": "code"},
+    {"path": "tests/test_intraday_snapshot_smoke.py", "language": "python", "sizeLines": 561, "fileCategory": "code"},
+    {"path": "tests/test_intraday_tick_aggregator.py", "language": "python", "sizeLines": 397, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "scripts/run_intraday_snapshot_smoke.py": ["src/intraday_snapshot_serialization.py", "src/intraday_snapshot_service.py", "src/kiwoom_websocket.py"],
+    "sector_board/payload.py": [],
+    "src/intraday_leader_ranker.py": ["src/intraday_sector_aggregator.py"],
+    "src/intraday_runtime.py": ["src/intraday_snapshot_serialization.py", "src/intraday_snapshot_service.py"],
+    "src/intraday_sector_aggregator.py": ["src/intraday_tick_aggregator.py"],
+    "src/intraday_snapshot_serialization.py": [],
+    "src/intraday_snapshot_service.py": ["src/intraday_leader_ranker.py", "src/intraday_sector_aggregator.py", "src/intraday_tick_aggregator.py", "src/kiwoom_websocket.py", "src/sector_ranker.py"],
+    "src/intraday_tick_aggregator.py": [],
+    "tests/test_intraday_leader_ranker.py": ["src/intraday_leader_ranker.py", "src/intraday_sector_aggregator.py"],
+    "tests/test_intraday_runtime.py": ["src/intraday_runtime.py", "src/intraday_snapshot_service.py"],
+    "tests/test_intraday_sector_aggregator.py": ["src/intraday_sector_aggregator.py", "src/intraday_tick_aggregator.py"],
+    "tests/test_intraday_snapshot_serialization.py": ["src/intraday_snapshot_serialization.py", "src/intraday_snapshot_service.py"],
+    "tests/test_intraday_snapshot_service.py": ["sector_board/payload.py", "src/intraday_snapshot_service.py"],
+    "tests/test_intraday_snapshot_smoke.py": ["src/intraday_snapshot_service.py", "src/kiwoom_websocket.py"],
+    "tests/test_intraday_tick_aggregator.py": ["src/intraday_tick_aggregator.py"]
+  }
+}

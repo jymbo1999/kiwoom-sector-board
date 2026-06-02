@@ -237,6 +237,8 @@ class IntradaySnapshotService:
         min_total_trade_value: int = 0,
         min_active_stock_count: int = 1,
         name_map: "dict[str, str] | None" = None,
+        market_cap_map: "dict[str, int] | None" = None,
+        min_strong_riser_count: int = 0,
     ) -> None:
         self.sector_map = sector_map
         self.sector_limit = sector_limit
@@ -244,6 +246,8 @@ class IntradaySnapshotService:
         self.min_total_trade_value = min_total_trade_value
         self.min_active_stock_count = min_active_stock_count
         self.name_map: dict[str, str] = name_map or {}
+        self.market_cap_map: dict[str, int] = market_cap_map or {}
+        self.min_strong_riser_count = min_strong_riser_count
         self.tick_aggregator = _IntradayTickAggregator()
         self.raw_row_count: int = 0
         self.ignored_row_count: int = 0
@@ -308,6 +312,12 @@ class IntradaySnapshotService:
             buckets,
             self.sector_map,
             minute_key=minute_key,
+            market_cap_map=self.market_cap_map or None,
+        )
+        leadership_rule = (
+            "market_cap>=500B_and_3_stocks_up_10pct"
+            if self.market_cap_map and self.min_strong_riser_count >= 3
+            else ""
         )
         sector_views = _rank_intraday_leaders_v2(
             summaries,
@@ -315,6 +325,9 @@ class IntradaySnapshotService:
             stock_limit=self.stock_limit,
             min_total_trade_value=self.min_total_trade_value,
             min_active_stock_count=self.min_active_stock_count,
+            min_strong_riser_count=self.min_strong_riser_count,
+            market_cap_filter_min=500_000_000_000 if self.market_cap_map else 0,
+            leadership_rule=leadership_rule,
         )
         if self.name_map:
             for sv in sector_views:

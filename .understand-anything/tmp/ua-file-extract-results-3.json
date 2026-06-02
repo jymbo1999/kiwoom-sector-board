@@ -1,0 +1,6367 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 11,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "sector_board/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 74,
+      "nonEmptyLines": 55,
+      "functions": [
+        {
+          "name": "create_app",
+          "startLine": 16,
+          "endLine": 38,
+          "params": [
+            "config"
+          ]
+        },
+        {
+          "name": "register_sector_board",
+          "startLine": 41,
+          "endLine": 51,
+          "params": [
+            "app",
+            "url_prefix"
+          ]
+        },
+        {
+          "name": "_setup_scheduler",
+          "startLine": 54,
+          "endLine": 66,
+          "params": [
+            "database_url"
+          ]
+        },
+        {
+          "name": "register_intraday",
+          "startLine": 69,
+          "endLine": 71,
+          "params": [
+            "app",
+            "url_prefix"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "create_app",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "register_sector_board",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "_setup_scheduler",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "register_intraday",
+          "line": 69,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "create_app",
+          "callee": "Flask",
+          "lineNumber": 17
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.config.update",
+          "lineNumber": 22
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.config.update",
+          "lineNumber": 28
+        },
+        {
+          "caller": "create_app",
+          "callee": "register_sector_board",
+          "lineNumber": 29
+        },
+        {
+          "caller": "create_app",
+          "callee": "register_intraday",
+          "lineNumber": 30
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.route",
+          "lineNumber": 32
+        },
+        {
+          "caller": "root",
+          "callee": "redirect",
+          "lineNumber": 36
+        },
+        {
+          "caller": "root",
+          "callee": "url_for",
+          "lineNumber": 36
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "app.register_blueprint",
+          "lineNumber": 42
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "create_sector_board_blueprint",
+          "lineNumber": 42
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "resolve_database_url",
+          "lineNumber": 43
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "app.config.get",
+          "lineNumber": 44
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "os.getenv(\"SECTOR_BOARD_AUTO_CREATE_TABLE\", \"\").strip().lower",
+          "lineNumber": 45
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "os.getenv(\"SECTOR_BOARD_AUTO_CREATE_TABLE\", \"\").strip",
+          "lineNumber": 45
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "os.getenv",
+          "lineNumber": 45
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "ensure_schema",
+          "lineNumber": 48
+        },
+        {
+          "caller": "register_sector_board",
+          "callee": "_setup_scheduler",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_setup_scheduler",
+          "callee": "load_settings",
+          "lineNumber": 58
+        },
+        {
+          "caller": "_setup_scheduler",
+          "callee": "setup_daily_scheduler",
+          "lineNumber": 63
+        },
+        {
+          "caller": "_setup_scheduler",
+          "callee": "trigger_startup_collect_if_needed",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_setup_scheduler",
+          "callee": "_log.warning",
+          "lineNumber": 66
+        },
+        {
+          "caller": "register_intraday",
+          "callee": "app.register_blueprint",
+          "lineNumber": 71
+        },
+        {
+          "caller": "register_intraday",
+          "callee": "create_intraday_blueprint",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "sector_board/auth.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 22,
+      "nonEmptyLines": 16,
+      "functions": [
+        {
+          "name": "auth_gate",
+          "startLine": 6,
+          "endLine": 22,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "auth_gate",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "auth_gate",
+          "callee": "current_app.config.get",
+          "lineNumber": 7
+        },
+        {
+          "caller": "auth_gate",
+          "callee": "getattr",
+          "lineNumber": 15
+        },
+        {
+          "caller": "auth_gate",
+          "callee": "url_for",
+          "lineNumber": 19
+        },
+        {
+          "caller": "auth_gate",
+          "callee": "redirect",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "sector_board/blueprint.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 517,
+      "nonEmptyLines": 457,
+      "functions": [
+        {
+          "name": "_to_float",
+          "startLine": 15,
+          "endLine": 20,
+          "params": [
+            "value",
+            "default"
+          ]
+        },
+        {
+          "name": "_format_pct",
+          "startLine": 23,
+          "endLine": 24,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "_format_krw",
+          "startLine": 27,
+          "endLine": 33,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "_format_number",
+          "startLine": 36,
+          "endLine": 37,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "_compute_rank_changes",
+          "startLine": 40,
+          "endLine": 69,
+          "params": [
+            "today_themes",
+            "yesterday_themes",
+            "limit"
+          ]
+        },
+        {
+          "name": "_build_sector_rows",
+          "startLine": 72,
+          "endLine": 121,
+          "params": [
+            "themes",
+            "leaders",
+            "rank_changes",
+            "limit"
+          ]
+        },
+        {
+          "name": "_is_intraday_snapshot",
+          "startLine": 124,
+          "endLine": 127,
+          "params": [
+            "snapshot"
+          ]
+        },
+        {
+          "name": "_get_intraday_stale_seconds",
+          "startLine": 130,
+          "endLine": 134,
+          "params": []
+        },
+        {
+          "name": "_build_intraday_leaderboard_context",
+          "startLine": 137,
+          "endLine": 237,
+          "params": [
+            "snapshot",
+            "limit",
+            "leader_limit"
+          ]
+        },
+        {
+          "name": "_build_weekly_table",
+          "startLine": 243,
+          "endLine": 271,
+          "params": [
+            "snapshots",
+            "top_n"
+          ]
+        },
+        {
+          "name": "_get_max_age_seconds",
+          "startLine": 274,
+          "endLine": 278,
+          "params": []
+        },
+        {
+          "name": "_is_snapshot_stale",
+          "startLine": 281,
+          "endLine": 290,
+          "params": [
+            "snapshot"
+          ]
+        },
+        {
+          "name": "create_sector_board_blueprint",
+          "startLine": 293,
+          "endLine": 517,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_to_float",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "_format_pct",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "_format_krw",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "_format_number",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "_compute_rank_changes",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "_build_sector_rows",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "_is_intraday_snapshot",
+          "line": 124,
+          "isDefault": false
+        },
+        {
+          "name": "_get_intraday_stale_seconds",
+          "line": 130,
+          "isDefault": false
+        },
+        {
+          "name": "_build_intraday_leaderboard_context",
+          "line": 137,
+          "isDefault": false
+        },
+        {
+          "name": "_build_weekly_table",
+          "line": 243,
+          "isDefault": false
+        },
+        {
+          "name": "_get_max_age_seconds",
+          "line": 274,
+          "isDefault": false
+        },
+        {
+          "name": "_is_snapshot_stale",
+          "line": 281,
+          "isDefault": false
+        },
+        {
+          "name": "create_sector_board_blueprint",
+          "line": 293,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_to_float",
+          "callee": "float",
+          "lineNumber": 17
+        },
+        {
+          "caller": "_to_float",
+          "callee": "isfinite",
+          "lineNumber": 20
+        },
+        {
+          "caller": "_format_pct",
+          "callee": "_to_float",
+          "lineNumber": 24
+        },
+        {
+          "caller": "_format_krw",
+          "callee": "_to_float",
+          "lineNumber": 28
+        },
+        {
+          "caller": "_format_number",
+          "callee": "_to_float",
+          "lineNumber": 37
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "sorted",
+          "lineNumber": 43
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "_to_float",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "t.get",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "_to_float",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "t.get",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "str",
+          "lineNumber": 48
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "t.get",
+          "lineNumber": 48
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "enumerate",
+          "lineNumber": 48
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "sorted",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "_to_float",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "t.get",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "_to_float",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "t.get",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "str",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "t.get",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "enumerate",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "today_ranks.items",
+          "lineNumber": 58
+        },
+        {
+          "caller": "_compute_rank_changes",
+          "callee": "abs",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leaders_by_theme.setdefault(theme_id, []).append",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leaders_by_theme.setdefault",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "sorted",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "row.get",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "row.get",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "enumerate",
+          "lineNumber": 87
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "sorted",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leaders_by_theme.get",
+          "lineNumber": 91
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "int",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "item.get",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "rows.append",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_format_pct",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_format_krw",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 105
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "theme.get",
+          "lineNumber": 105
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "b.strip",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "badges_raw.split",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "b.strip",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "(rank_changes or {}).get",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "int",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "str",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_format_pct",
+          "lineNumber": 113
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 113
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_to_float",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "_format_krw",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "leader.get",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_build_sector_rows",
+          "callee": "enumerate",
+          "lineNumber": 117
+        },
+        {
+          "caller": "_is_intraday_snapshot",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 125
+        },
+        {
+          "caller": "_is_intraday_snapshot",
+          "callee": "str(summary.get(\"board_type\") or \"\").lower",
+          "lineNumber": 126
+        },
+        {
+          "caller": "_is_intraday_snapshot",
+          "callee": "str",
+          "lineNumber": 126
+        },
+        {
+          "caller": "_is_intraday_snapshot",
+          "callee": "summary.get",
+          "lineNumber": 126
+        },
+        {
+          "caller": "_get_intraday_stale_seconds",
+          "callee": "max",
+          "lineNumber": 132
+        },
+        {
+          "caller": "_get_intraday_stale_seconds",
+          "callee": "int",
+          "lineNumber": 132
+        },
+        {
+          "caller": "_get_intraday_stale_seconds",
+          "callee": "os.environ.get",
+          "lineNumber": 132
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_is_intraday_snapshot",
+          "lineNumber": 138
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 141
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 142
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 143
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leaders_by_theme.setdefault(theme_id, []).append",
+          "lineNumber": 148
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leaders_by_theme.setdefault",
+          "lineNumber": 148
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "any",
+          "lineNumber": 150
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "row.get",
+          "lineNumber": 150
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "sorted",
+          "lineNumber": 152
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "int",
+          "lineNumber": 154
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 154
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "row.get",
+          "lineNumber": 154
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "sorted",
+          "lineNumber": 157
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "row.get",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "row.get",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "enumerate",
+          "lineNumber": 164
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 165
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 165
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 165
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 165
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 166
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 166
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "sorted",
+          "lineNumber": 167
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leaders_by_theme.get",
+          "lineNumber": 168
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "int",
+          "lineNumber": 169
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 169
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "item.get",
+          "lineNumber": 169
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "rows.append",
+          "lineNumber": 171
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "int",
+          "lineNumber": 173
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 173
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 173
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 176
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 176
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_pct",
+          "lineNumber": 177
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 177
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 177
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 178
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 178
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 178
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_krw",
+          "lineNumber": 179
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 179
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_pct",
+          "lineNumber": 180
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 180
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 181
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 181
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 182
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "theme.get",
+          "lineNumber": 182
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "int",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 186
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 186
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 187
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 187
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_krw",
+          "lineNumber": 188
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 188
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_pct",
+          "lineNumber": 189
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 189
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 190
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 190
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_krw",
+          "lineNumber": 191
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 191
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 192
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "leader.get",
+          "lineNumber": 192
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "enumerate",
+          "lineNumber": 194
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "dict",
+          "lineNumber": 199
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 199
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "summary.get",
+          "lineNumber": 199
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "summary.get",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 209
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event.get",
+          "lineNumber": 209
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event_labels.get",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event.get",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 211
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event.get",
+          "lineNumber": 211
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event.get",
+          "lineNumber": 212
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event.get",
+          "lineNumber": 213
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "event.get",
+          "lineNumber": 214
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "isinstance",
+          "lineNumber": 217
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "int",
+          "lineNumber": 219
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_to_float",
+          "lineNumber": 219
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "summary.get",
+          "lineNumber": 219
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str(summary.get(\"data_mode\") or \"\").lower",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "summary.get",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "str",
+          "lineNumber": 221
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "summary.get",
+          "lineNumber": 221
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "provider_status.get",
+          "lineNumber": 221
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "provider_status.setdefault",
+          "lineNumber": 222
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "provider_status.setdefault",
+          "lineNumber": 223
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "summary.get",
+          "lineNumber": 232
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 232
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_format_number",
+          "lineNumber": 234
+        },
+        {
+          "caller": "_build_intraday_leaderboard_context",
+          "callee": "_get_intraday_stale_seconds",
+          "lineNumber": 235
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "snap.get",
+          "lineNumber": 246
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "snap.get",
+          "lineNumber": 247
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "sorted",
+          "lineNumber": 248
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "_to_float",
+          "lineNumber": 250
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "t.get",
+          "lineNumber": 250
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "_to_float",
+          "lineNumber": 250
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "t.get",
+          "lineNumber": 250
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "date.fromisoformat",
+          "lineNumber": 255
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "dt.weekday",
+          "lineNumber": 256
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "rows.append",
+          "lineNumber": 259
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "str",
+          "lineNumber": 264
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "t.get",
+          "lineNumber": 264
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "_format_pct",
+          "lineNumber": 265
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "t.get",
+          "lineNumber": 265
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "_to_float",
+          "lineNumber": 266
+        },
+        {
+          "caller": "_build_weekly_table",
+          "callee": "t.get",
+          "lineNumber": 266
+        },
+        {
+          "caller": "_get_max_age_seconds",
+          "callee": "max",
+          "lineNumber": 276
+        },
+        {
+          "caller": "_get_max_age_seconds",
+          "callee": "int",
+          "lineNumber": 276
+        },
+        {
+          "caller": "_get_max_age_seconds",
+          "callee": "os.environ.get",
+          "lineNumber": 276
+        },
+        {
+          "caller": "_is_snapshot_stale",
+          "callee": "snapshot.get",
+          "lineNumber": 283
+        },
+        {
+          "caller": "_is_snapshot_stale",
+          "callee": "datetime.fromisoformat",
+          "lineNumber": 287
+        },
+        {
+          "caller": "_is_snapshot_stale",
+          "callee": "(datetime.now() - generated_at).total_seconds",
+          "lineNumber": 288
+        },
+        {
+          "caller": "_is_snapshot_stale",
+          "callee": "datetime.now",
+          "lineNumber": 288
+        },
+        {
+          "caller": "_is_snapshot_stale",
+          "callee": "_get_max_age_seconds",
+          "lineNumber": 288
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "Blueprint",
+          "lineNumber": 294
+        },
+        {
+          "caller": "require_auth",
+          "callee": "auth_gate",
+          "lineNumber": 304
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 306
+        },
+        {
+          "caller": "index",
+          "callee": "resolve_database_url",
+          "lineNumber": 308
+        },
+        {
+          "caller": "index",
+          "callee": "fetch_snapshot",
+          "lineNumber": 319
+        },
+        {
+          "caller": "index",
+          "callee": "str",
+          "lineNumber": 321
+        },
+        {
+          "caller": "index",
+          "callee": "snapshot.get",
+          "lineNumber": 324
+        },
+        {
+          "caller": "index",
+          "callee": "snapshot.get",
+          "lineNumber": 325
+        },
+        {
+          "caller": "index",
+          "callee": "snapshot.get",
+          "lineNumber": 331
+        },
+        {
+          "caller": "index",
+          "callee": "schedule_background_collect",
+          "lineNumber": 336
+        },
+        {
+          "caller": "index",
+          "callee": "bool",
+          "lineNumber": 346
+        },
+        {
+          "caller": "index",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 346
+        },
+        {
+          "caller": "index",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 349
+        },
+        {
+          "caller": "index",
+          "callee": "snapshot.get",
+          "lineNumber": 351
+        },
+        {
+          "caller": "index",
+          "callee": "_date_cls.fromisoformat",
+          "lineNumber": 354
+        },
+        {
+          "caller": "index",
+          "callee": "fetch_previous_snapshot",
+          "lineNumber": 355
+        },
+        {
+          "caller": "index",
+          "callee": "_compute_rank_changes",
+          "lineNumber": 361
+        },
+        {
+          "caller": "index",
+          "callee": "(yesterday_snapshot or {}).get",
+          "lineNumber": 363
+        },
+        {
+          "caller": "index",
+          "callee": "_build_intraday_leaderboard_context",
+          "lineNumber": 365
+        },
+        {
+          "caller": "index",
+          "callee": "json.dumps",
+          "lineNumber": 366
+        },
+        {
+          "caller": "index",
+          "callee": "_build_weekly_table",
+          "lineNumber": 371
+        },
+        {
+          "caller": "index",
+          "callee": "fetch_recent_snapshots",
+          "lineNumber": 372
+        },
+        {
+          "caller": "index",
+          "callee": "render_template",
+          "lineNumber": 377
+        },
+        {
+          "caller": "index",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 381
+        },
+        {
+          "caller": "index",
+          "callee": "_build_sector_rows",
+          "lineNumber": 382
+        },
+        {
+          "caller": "index",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 384
+        },
+        {
+          "caller": "index",
+          "callee": "(snapshot or {}).get",
+          "lineNumber": 390
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 396
+        },
+        {
+          "caller": "refresh",
+          "callee": "resolve_database_url",
+          "lineNumber": 398
+        },
+        {
+          "caller": "refresh",
+          "callee": "schedule_background_collect",
+          "lineNumber": 402
+        },
+        {
+          "caller": "refresh",
+          "callee": "redirect",
+          "lineNumber": 405
+        },
+        {
+          "caller": "refresh",
+          "callee": "url_for",
+          "lineNumber": 405
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 407
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "resolve_database_url",
+          "lineNumber": 409
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "jsonify",
+          "lineNumber": 411
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "fetch_snapshot",
+          "lineNumber": 412
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "jsonify",
+          "lineNumber": 414
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "jsonify",
+          "lineNumber": 415
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 417
+        },
+        {
+          "caller": "debug",
+          "callee": "platform.platform",
+          "lineNumber": 422
+        },
+        {
+          "caller": "debug",
+          "callee": "getattr",
+          "lineNumber": 429
+        },
+        {
+          "caller": "debug",
+          "callee": "hasattr",
+          "lineNumber": 430
+        },
+        {
+          "caller": "debug",
+          "callee": "dir",
+          "lineNumber": 432
+        },
+        {
+          "caller": "debug",
+          "callee": "k.startswith",
+          "lineNumber": 432
+        },
+        {
+          "caller": "debug",
+          "callee": "tb.format_exc",
+          "lineNumber": 435
+        },
+        {
+          "caller": "debug",
+          "callee": "str",
+          "lineNumber": 440
+        },
+        {
+          "caller": "debug",
+          "callee": "DATA_DIR.exists",
+          "lineNumber": 441
+        },
+        {
+          "caller": "debug",
+          "callee": "DATA_DIR.iterdir",
+          "lineNumber": 442
+        },
+        {
+          "caller": "debug",
+          "callee": "DATA_DIR.exists",
+          "lineNumber": 442
+        },
+        {
+          "caller": "debug",
+          "callee": "load_settings",
+          "lineNumber": 443
+        },
+        {
+          "caller": "debug",
+          "callee": "str",
+          "lineNumber": 445
+        },
+        {
+          "caller": "debug",
+          "callee": "s.theme_map_path.exists",
+          "lineNumber": 446
+        },
+        {
+          "caller": "debug",
+          "callee": "str",
+          "lineNumber": 447
+        },
+        {
+          "caller": "debug",
+          "callee": "s.sample_prices_path.exists",
+          "lineNumber": 448
+        },
+        {
+          "caller": "debug",
+          "callee": "tb.format_exc",
+          "lineNumber": 450
+        },
+        {
+          "caller": "debug",
+          "callee": "resolve_database_url",
+          "lineNumber": 453
+        },
+        {
+          "caller": "debug",
+          "callee": "bool",
+          "lineNumber": 454
+        },
+        {
+          "caller": "debug",
+          "callee": "fetch_snapshot",
+          "lineNumber": 458
+        },
+        {
+          "caller": "debug",
+          "callee": "snap.get",
+          "lineNumber": 459
+        },
+        {
+          "caller": "debug",
+          "callee": "snap.get",
+          "lineNumber": 460
+        },
+        {
+          "caller": "debug",
+          "callee": "str",
+          "lineNumber": 462
+        },
+        {
+          "caller": "debug",
+          "callee": "os.getenv",
+          "lineNumber": 466
+        },
+        {
+          "caller": "debug",
+          "callee": "os.getenv",
+          "lineNumber": 467
+        },
+        {
+          "caller": "debug",
+          "callee": "os.getenv",
+          "lineNumber": 468
+        },
+        {
+          "caller": "debug",
+          "callee": "os.getenv",
+          "lineNumber": 469
+        },
+        {
+          "caller": "debug",
+          "callee": "os.getenv",
+          "lineNumber": 470
+        },
+        {
+          "caller": "debug",
+          "callee": "jsonify",
+          "lineNumber": 473
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 475
+        },
+        {
+          "caller": "intraday",
+          "callee": "current_app.config.get",
+          "lineNumber": 481
+        },
+        {
+          "caller": "intraday",
+          "callee": "Path",
+          "lineNumber": 483
+        },
+        {
+          "caller": "intraday",
+          "callee": "Path(__file__).resolve",
+          "lineNumber": 485
+        },
+        {
+          "caller": "intraday",
+          "callee": "Path",
+          "lineNumber": 485
+        },
+        {
+          "caller": "intraday",
+          "callee": "load_latest_intraday_snapshot",
+          "lineNumber": 487
+        },
+        {
+          "caller": "intraday",
+          "callee": "build_intraday_view",
+          "lineNumber": 488
+        },
+        {
+          "caller": "intraday",
+          "callee": "current_app.config.get",
+          "lineNumber": 489
+        },
+        {
+          "caller": "intraday",
+          "callee": "render_template",
+          "lineNumber": 492
+        },
+        {
+          "caller": "create_sector_board_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 498
+        },
+        {
+          "caller": "health",
+          "callee": "resolve_database_url",
+          "lineNumber": 500
+        },
+        {
+          "caller": "health",
+          "callee": "jsonify",
+          "lineNumber": 502
+        },
+        {
+          "caller": "health",
+          "callee": "fetch_snapshot",
+          "lineNumber": 504
+        },
+        {
+          "caller": "health",
+          "callee": "jsonify",
+          "lineNumber": 506
+        },
+        {
+          "caller": "health",
+          "callee": "str",
+          "lineNumber": 506
+        },
+        {
+          "caller": "health",
+          "callee": "jsonify",
+          "lineNumber": 507
+        },
+        {
+          "caller": "health",
+          "callee": "snapshot.get",
+          "lineNumber": 511
+        },
+        {
+          "caller": "health",
+          "callee": "snapshot.get",
+          "lineNumber": 512
+        },
+        {
+          "caller": "health",
+          "callee": "snapshot.get",
+          "lineNumber": 513
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 13,
+        "functionCount": 13,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "sector_board/intraday_blueprint.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 447,
+      "nonEmptyLines": 378,
+      "functions": [
+        {
+          "name": "create_intraday_blueprint",
+          "startLine": 41,
+          "endLine": 316,
+          "params": []
+        },
+        {
+          "name": "_get_runtime",
+          "startLine": 324,
+          "endLine": 325,
+          "params": []
+        },
+        {
+          "name": "_set_runtime",
+          "startLine": 328,
+          "endLine": 330,
+          "params": [
+            "rt",
+            "metadata"
+          ]
+        },
+        {
+          "name": "_get_runtime_meta",
+          "startLine": 333,
+          "endLine": 345,
+          "params": []
+        },
+        {
+          "name": "_load_sector_map",
+          "startLine": 353,
+          "endLine": 365,
+          "params": [
+            "path"
+          ]
+        },
+        {
+          "name": "_load_name_map",
+          "startLine": 368,
+          "endLine": 383,
+          "params": [
+            "data_dir"
+          ]
+        },
+        {
+          "name": "_load_codes",
+          "startLine": 386,
+          "endLine": 396,
+          "params": [
+            "path"
+          ]
+        },
+        {
+          "name": "_body_value",
+          "startLine": 399,
+          "endLine": 403,
+          "params": [
+            "body"
+          ]
+        },
+        {
+          "name": "_resolve_data_file",
+          "startLine": 406,
+          "endLine": 414,
+          "params": [
+            "value",
+            "default_path",
+            "project_root"
+          ]
+        },
+        {
+          "name": "_default_data_dir",
+          "startLine": 417,
+          "endLine": 423,
+          "params": [
+            "project_root"
+          ]
+        },
+        {
+          "name": "_display_path",
+          "startLine": 426,
+          "endLine": 435,
+          "params": [
+            "path",
+            "project_root",
+            "data_dir"
+          ]
+        },
+        {
+          "name": "_redact_sensitive_text",
+          "startLine": 438,
+          "endLine": 447,
+          "params": [
+            "value"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "create_intraday_blueprint",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "_get_runtime",
+          "line": 324,
+          "isDefault": false
+        },
+        {
+          "name": "_set_runtime",
+          "line": 328,
+          "isDefault": false
+        },
+        {
+          "name": "_get_runtime_meta",
+          "line": 333,
+          "isDefault": false
+        },
+        {
+          "name": "_load_sector_map",
+          "line": 353,
+          "isDefault": false
+        },
+        {
+          "name": "_load_name_map",
+          "line": 368,
+          "isDefault": false
+        },
+        {
+          "name": "_load_codes",
+          "line": 386,
+          "isDefault": false
+        },
+        {
+          "name": "_body_value",
+          "line": 399,
+          "isDefault": false
+        },
+        {
+          "name": "_resolve_data_file",
+          "line": 406,
+          "isDefault": false
+        },
+        {
+          "name": "_default_data_dir",
+          "line": 417,
+          "isDefault": false
+        },
+        {
+          "name": "_display_path",
+          "line": 426,
+          "isDefault": false
+        },
+        {
+          "name": "_redact_sensitive_text",
+          "line": 438,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "create_intraday_blueprint",
+          "callee": "Blueprint",
+          "lineNumber": 42
+        },
+        {
+          "caller": "require_auth",
+          "callee": "auth_gate",
+          "lineNumber": 52
+        },
+        {
+          "caller": "create_intraday_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 58
+        },
+        {
+          "caller": "index",
+          "callee": "current_app.config.get",
+          "lineNumber": 61
+        },
+        {
+          "caller": "index",
+          "callee": "_get_runtime",
+          "lineNumber": 64
+        },
+        {
+          "caller": "index",
+          "callee": "runtime.get_status",
+          "lineNumber": 65
+        },
+        {
+          "caller": "index",
+          "callee": "render_template",
+          "lineNumber": 66
+        },
+        {
+          "caller": "create_intraday_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 76
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "_get_runtime",
+          "lineNumber": 83
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "jsonify",
+          "lineNumber": 86
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "runtime.get_latest_snapshot",
+          "lineNumber": 106
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "runtime.get_status",
+          "lineNumber": 107
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "_get_runtime_meta",
+          "lineNumber": 108
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "_redact_sensitive_text",
+          "lineNumber": 109
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "rt.get",
+          "lineNumber": 109
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "_redact_sensitive_text",
+          "lineNumber": 110
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "rt.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "rt.get",
+          "lineNumber": 119
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "jsonify",
+          "lineNumber": 124
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "snap.get",
+          "lineNumber": 138
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "snap.get",
+          "lineNumber": 141
+        },
+        {
+          "caller": "api_snapshot",
+          "callee": "jsonify",
+          "lineNumber": 142
+        },
+        {
+          "caller": "create_intraday_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 155
+        },
+        {
+          "caller": "api_start",
+          "callee": "_get_runtime",
+          "lineNumber": 170
+        },
+        {
+          "caller": "api_start",
+          "callee": "existing.is_running",
+          "lineNumber": 171
+        },
+        {
+          "caller": "api_start",
+          "callee": "jsonify",
+          "lineNumber": 172
+        },
+        {
+          "caller": "api_start",
+          "callee": "_get_runtime_meta",
+          "lineNumber": 175
+        },
+        {
+          "caller": "api_start",
+          "callee": "request.get_json",
+          "lineNumber": 180
+        },
+        {
+          "caller": "api_start",
+          "callee": "str(_body_value(body, \"provider\") or \"mock\").lower",
+          "lineNumber": 184
+        },
+        {
+          "caller": "api_start",
+          "callee": "str",
+          "lineNumber": 184
+        },
+        {
+          "caller": "api_start",
+          "callee": "_body_value",
+          "lineNumber": 184
+        },
+        {
+          "caller": "api_start",
+          "callee": "str(_body_value(body, \"exchange\") or \"sor\").lower",
+          "lineNumber": 185
+        },
+        {
+          "caller": "api_start",
+          "callee": "str",
+          "lineNumber": 185
+        },
+        {
+          "caller": "api_start",
+          "callee": "_body_value",
+          "lineNumber": 185
+        },
+        {
+          "caller": "api_start",
+          "callee": "jsonify",
+          "lineNumber": 187
+        },
+        {
+          "caller": "api_start",
+          "callee": "body.get",
+          "lineNumber": 195
+        },
+        {
+          "caller": "api_start",
+          "callee": "float",
+          "lineNumber": 196
+        },
+        {
+          "caller": "api_start",
+          "callee": "body.get",
+          "lineNumber": 197
+        },
+        {
+          "caller": "api_start",
+          "callee": "int",
+          "lineNumber": 198
+        },
+        {
+          "caller": "api_start",
+          "callee": "body.get",
+          "lineNumber": 199
+        },
+        {
+          "caller": "api_start",
+          "callee": "int",
+          "lineNumber": 200
+        },
+        {
+          "caller": "api_start",
+          "callee": "body.get",
+          "lineNumber": 201
+        },
+        {
+          "caller": "api_start",
+          "callee": "float",
+          "lineNumber": 202
+        },
+        {
+          "caller": "api_start",
+          "callee": "Path(__file__).resolve",
+          "lineNumber": 204
+        },
+        {
+          "caller": "api_start",
+          "callee": "Path",
+          "lineNumber": 204
+        },
+        {
+          "caller": "api_start",
+          "callee": "_default_data_dir",
+          "lineNumber": 205
+        },
+        {
+          "caller": "api_start",
+          "callee": "_resolve_data_file",
+          "lineNumber": 206
+        },
+        {
+          "caller": "api_start",
+          "callee": "_body_value",
+          "lineNumber": 207
+        },
+        {
+          "caller": "api_start",
+          "callee": "_resolve_data_file",
+          "lineNumber": 211
+        },
+        {
+          "caller": "api_start",
+          "callee": "_body_value",
+          "lineNumber": 212
+        },
+        {
+          "caller": "api_start",
+          "callee": "_load_sector_map",
+          "lineNumber": 218
+        },
+        {
+          "caller": "api_start",
+          "callee": "_load_codes",
+          "lineNumber": 219
+        },
+        {
+          "caller": "api_start",
+          "callee": "jsonify",
+          "lineNumber": 223
+        },
+        {
+          "caller": "api_start",
+          "callee": "make_mock_source",
+          "lineNumber": 231
+        },
+        {
+          "caller": "api_start",
+          "callee": "len",
+          "lineNumber": 237
+        },
+        {
+          "caller": "api_start",
+          "callee": "jsonify",
+          "lineNumber": 239
+        },
+        {
+          "caller": "api_start",
+          "callee": "str(_body_value(body, \"kiwoom_env\", \"kiwoom-env\") or \"prod\").lower",
+          "lineNumber": 251
+        },
+        {
+          "caller": "api_start",
+          "callee": "str",
+          "lineNumber": 251
+        },
+        {
+          "caller": "api_start",
+          "callee": "_body_value",
+          "lineNumber": 251
+        },
+        {
+          "caller": "api_start",
+          "callee": "make_websocket_source",
+          "lineNumber": 255
+        },
+        {
+          "caller": "api_start",
+          "callee": "IntradaySnapshotService",
+          "lineNumber": 270
+        },
+        {
+          "caller": "api_start",
+          "callee": "_load_name_map",
+          "lineNumber": 274
+        },
+        {
+          "caller": "api_start",
+          "callee": "IntradayRuntime",
+          "lineNumber": 276
+        },
+        {
+          "caller": "api_start",
+          "callee": "runtime.start",
+          "lineNumber": 281
+        },
+        {
+          "caller": "api_start",
+          "callee": "len",
+          "lineNumber": 286
+        },
+        {
+          "caller": "api_start",
+          "callee": "len",
+          "lineNumber": 287
+        },
+        {
+          "caller": "api_start",
+          "callee": "_display_path",
+          "lineNumber": 288
+        },
+        {
+          "caller": "api_start",
+          "callee": "_display_path",
+          "lineNumber": 289
+        },
+        {
+          "caller": "api_start",
+          "callee": "_set_runtime",
+          "lineNumber": 294
+        },
+        {
+          "caller": "api_start",
+          "callee": "jsonify",
+          "lineNumber": 296
+        },
+        {
+          "caller": "create_intraday_blueprint",
+          "callee": "blueprint.route",
+          "lineNumber": 305
+        },
+        {
+          "caller": "api_stop",
+          "callee": "_get_runtime",
+          "lineNumber": 308
+        },
+        {
+          "caller": "api_stop",
+          "callee": "jsonify",
+          "lineNumber": 310
+        },
+        {
+          "caller": "api_stop",
+          "callee": "runtime.stop",
+          "lineNumber": 312
+        },
+        {
+          "caller": "api_stop",
+          "callee": "_set_runtime",
+          "lineNumber": 313
+        },
+        {
+          "caller": "api_stop",
+          "callee": "jsonify",
+          "lineNumber": 314
+        },
+        {
+          "caller": "_get_runtime",
+          "callee": "current_app.config.get",
+          "lineNumber": 325
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "current_app.config.get",
+          "lineNumber": 334
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 336
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 337
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 338
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 339
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 340
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 341
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 342
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 343
+        },
+        {
+          "caller": "_get_runtime_meta",
+          "callee": "meta.get",
+          "lineNumber": 344
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "json.loads",
+          "lineNumber": 356
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "path.read_text",
+          "lineNumber": 356
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "isinstance",
+          "lineNumber": 357
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "str(k).zfill",
+          "lineNumber": 359
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "str",
+          "lineNumber": 359
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "data.items",
+          "lineNumber": 360
+        },
+        {
+          "caller": "_load_sector_map",
+          "callee": "isinstance",
+          "lineNumber": 361
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "path.open",
+          "lineNumber": 374
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "csv.DictReader",
+          "lineNumber": 375
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "str(row.get(\"code\", \"\")).strip().zfill",
+          "lineNumber": 377
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "str(row.get(\"code\", \"\")).strip",
+          "lineNumber": 377
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "str",
+          "lineNumber": 377
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "row.get",
+          "lineNumber": 377
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "str(row.get(\"name\", \"\")).strip",
+          "lineNumber": 378
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "str",
+          "lineNumber": 378
+        },
+        {
+          "caller": "_load_name_map",
+          "callee": "row.get",
+          "lineNumber": 378
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "path.read_text(encoding=\"utf-8\").splitlines",
+          "lineNumber": 390
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "path.read_text",
+          "lineNumber": 390
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "line.strip",
+          "lineNumber": 391
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "s.startswith",
+          "lineNumber": 392
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "s.isdigit",
+          "lineNumber": 392
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "len",
+          "lineNumber": 392
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "codes.append",
+          "lineNumber": 393
+        },
+        {
+          "caller": "_load_codes",
+          "callee": "s.zfill",
+          "lineNumber": 393
+        },
+        {
+          "caller": "_body_value",
+          "callee": "body.get",
+          "lineNumber": 402
+        },
+        {
+          "caller": "_resolve_data_file",
+          "callee": "str(value).strip",
+          "lineNumber": 407
+        },
+        {
+          "caller": "_resolve_data_file",
+          "callee": "str",
+          "lineNumber": 407
+        },
+        {
+          "caller": "_resolve_data_file",
+          "callee": "Path",
+          "lineNumber": 409
+        },
+        {
+          "caller": "_resolve_data_file",
+          "callee": "str",
+          "lineNumber": 409
+        },
+        {
+          "caller": "_resolve_data_file",
+          "callee": "path.is_absolute",
+          "lineNumber": 410
+        },
+        {
+          "caller": "_resolve_data_file",
+          "callee": "default_path.parent.joinpath",
+          "lineNumber": 413
+        },
+        {
+          "caller": "_display_path",
+          "callee": "str",
+          "lineNumber": 429
+        },
+        {
+          "caller": "_display_path",
+          "callee": "path.resolve().relative_to",
+          "lineNumber": 429
+        },
+        {
+          "caller": "_display_path",
+          "callee": "path.resolve",
+          "lineNumber": 429
+        },
+        {
+          "caller": "_display_path",
+          "callee": "data_dir.resolve",
+          "lineNumber": 429
+        },
+        {
+          "caller": "_display_path",
+          "callee": "str",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_display_path",
+          "callee": "path.resolve().relative_to",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_display_path",
+          "callee": "path.resolve",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_display_path",
+          "callee": "project_root.resolve",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_display_path",
+          "callee": "str",
+          "lineNumber": 435
+        },
+        {
+          "caller": "_redact_sensitive_text",
+          "callee": "str",
+          "lineNumber": 441
+        },
+        {
+          "caller": "_redact_sensitive_text",
+          "callee": "os.environ.items",
+          "lineNumber": 442
+        },
+        {
+          "caller": "_redact_sensitive_text",
+          "callee": "len",
+          "lineNumber": 443
+        },
+        {
+          "caller": "_redact_sensitive_text",
+          "callee": "any",
+          "lineNumber": 445
+        },
+        {
+          "caller": "_redact_sensitive_text",
+          "callee": "key.upper",
+          "lineNumber": 445
+        },
+        {
+          "caller": "_redact_sensitive_text",
+          "callee": "text.replace",
+          "lineNumber": 446
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 12,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "sector_board/repository.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 334,
+      "nonEmptyLines": 298,
+      "functions": [
+        {
+          "name": "_get_engine",
+          "startLine": 24,
+          "endLine": 37,
+          "params": [
+            "database_url"
+          ]
+        },
+        {
+          "name": "normalize_database_url",
+          "startLine": 40,
+          "endLine": 46,
+          "params": [
+            "database_url"
+          ]
+        },
+        {
+          "name": "resolve_database_url",
+          "startLine": 49,
+          "endLine": 66,
+          "params": [
+            "app",
+            "explicit_url"
+          ]
+        },
+        {
+          "name": "create_snapshot_engine",
+          "startLine": 69,
+          "endLine": 70,
+          "params": [
+            "database_url"
+          ]
+        },
+        {
+          "name": "_ensure_rise_reasons_column",
+          "startLine": 73,
+          "endLine": 93,
+          "params": [
+            "engine"
+          ]
+        },
+        {
+          "name": "_ensure_refresh_columns",
+          "startLine": 96,
+          "endLine": 120,
+          "params": [
+            "engine"
+          ]
+        },
+        {
+          "name": "ensure_schema",
+          "startLine": 123,
+          "endLine": 127,
+          "params": [
+            "database_url",
+            "engine"
+          ]
+        },
+        {
+          "name": "_upsert_row",
+          "startLine": 130,
+          "endLine": 165,
+          "params": [
+            "engine",
+            "full_values",
+            "on_conflict_updates"
+          ]
+        },
+        {
+          "name": "upsert_snapshot",
+          "startLine": 168,
+          "endLine": 208,
+          "params": [
+            "payload",
+            "database_url",
+            "engine",
+            "auto_create"
+          ]
+        },
+        {
+          "name": "set_refresh_running",
+          "startLine": 211,
+          "endLine": 238,
+          "params": [
+            "database_url",
+            "engine",
+            "snapshot_date"
+          ]
+        },
+        {
+          "name": "set_refresh_error",
+          "startLine": 241,
+          "endLine": 267,
+          "params": [
+            "error",
+            "database_url",
+            "engine",
+            "snapshot_date"
+          ]
+        },
+        {
+          "name": "_row_to_payload",
+          "startLine": 270,
+          "endLine": 288,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "fetch_snapshot",
+          "startLine": 291,
+          "endLine": 302,
+          "params": [
+            "database_url",
+            "engine",
+            "snapshot_date"
+          ]
+        },
+        {
+          "name": "fetch_previous_snapshot",
+          "startLine": 305,
+          "endLine": 317,
+          "params": [
+            "database_url",
+            "engine",
+            "before_date"
+          ]
+        },
+        {
+          "name": "fetch_recent_snapshots",
+          "startLine": 320,
+          "endLine": 334,
+          "params": [
+            "n",
+            "database_url",
+            "engine"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_get_engine",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "normalize_database_url",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "resolve_database_url",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "create_snapshot_engine",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_rise_reasons_column",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_refresh_columns",
+          "line": 96,
+          "isDefault": false
+        },
+        {
+          "name": "ensure_schema",
+          "line": 123,
+          "isDefault": false
+        },
+        {
+          "name": "_upsert_row",
+          "line": 130,
+          "isDefault": false
+        },
+        {
+          "name": "upsert_snapshot",
+          "line": 168,
+          "isDefault": false
+        },
+        {
+          "name": "set_refresh_running",
+          "line": 211,
+          "isDefault": false
+        },
+        {
+          "name": "set_refresh_error",
+          "line": 241,
+          "isDefault": false
+        },
+        {
+          "name": "_row_to_payload",
+          "line": 270,
+          "isDefault": false
+        },
+        {
+          "name": "fetch_snapshot",
+          "line": 291,
+          "isDefault": false
+        },
+        {
+          "name": "fetch_previous_snapshot",
+          "line": 305,
+          "isDefault": false
+        },
+        {
+          "name": "fetch_recent_snapshots",
+          "line": 320,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_get_engine",
+          "callee": "normalize_database_url",
+          "lineNumber": 26
+        },
+        {
+          "caller": "_get_engine",
+          "callee": "create_engine",
+          "lineNumber": 30
+        },
+        {
+          "caller": "normalize_database_url",
+          "callee": "database_url.strip",
+          "lineNumber": 41
+        },
+        {
+          "caller": "normalize_database_url",
+          "callee": "value.startswith",
+          "lineNumber": 42
+        },
+        {
+          "caller": "normalize_database_url",
+          "callee": "value.removeprefix",
+          "lineNumber": 43
+        },
+        {
+          "caller": "normalize_database_url",
+          "callee": "value.startswith",
+          "lineNumber": 44
+        },
+        {
+          "caller": "normalize_database_url",
+          "callee": "value.removeprefix",
+          "lineNumber": 45
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "explicit_url.strip",
+          "lineNumber": 50
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "normalize_database_url",
+          "lineNumber": 51
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "os.getenv(\"SECTOR_BOARD_DATABASE_URL\", \"\").strip",
+          "lineNumber": 52
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "os.getenv",
+          "lineNumber": 52
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "normalize_database_url",
+          "lineNumber": 54
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "str(app.config.get(\"SECTOR_BOARD_DATABASE_URL\") or \"\").strip",
+          "lineNumber": 56
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "str",
+          "lineNumber": 56
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "app.config.get",
+          "lineNumber": 56
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "normalize_database_url",
+          "lineNumber": 58
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "os.getenv(\"DATABASE_URL\", \"\").strip",
+          "lineNumber": 59
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "os.getenv",
+          "lineNumber": 59
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "normalize_database_url",
+          "lineNumber": 61
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "str(app.config.get(\"SQLALCHEMY_DATABASE_URI\") or \"\").strip",
+          "lineNumber": 63
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "str",
+          "lineNumber": 63
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "app.config.get",
+          "lineNumber": 63
+        },
+        {
+          "caller": "resolve_database_url",
+          "callee": "normalize_database_url",
+          "lineNumber": 65
+        },
+        {
+          "caller": "create_snapshot_engine",
+          "callee": "_get_engine",
+          "lineNumber": 70
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "sa_inspect",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "insp.get_table_names",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "insp.get_columns",
+          "lineNumber": 79
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "engine.begin",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "conn.execute",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "text",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "conn.execute",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "text",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_ensure_rise_reasons_column",
+          "callee": "_log.warning",
+          "lineNumber": 93
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "sa_inspect",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "insp.get_table_names",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "insp.get_columns",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "engine.begin",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "conn.execute",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "text",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "conn.execute",
+          "lineNumber": 116
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "text",
+          "lineNumber": 116
+        },
+        {
+          "caller": "_ensure_refresh_columns",
+          "callee": "_log.warning",
+          "lineNumber": 120
+        },
+        {
+          "caller": "ensure_schema",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 124
+        },
+        {
+          "caller": "ensure_schema",
+          "callee": "metadata.create_all",
+          "lineNumber": 125
+        },
+        {
+          "caller": "ensure_schema",
+          "callee": "_ensure_refresh_columns",
+          "lineNumber": 126
+        },
+        {
+          "caller": "ensure_schema",
+          "callee": "_ensure_rise_reasons_column",
+          "lineNumber": 127
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "engine.begin",
+          "lineNumber": 136
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "postgresql_insert(sector_snapshots).values",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "postgresql_insert",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "stmt.on_conflict_do_update",
+          "lineNumber": 140
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "conn.execute",
+          "lineNumber": 144
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "sqlite_insert(sector_snapshots).values",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "sqlite_insert",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "stmt.on_conflict_do_update",
+          "lineNumber": 147
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "conn.execute",
+          "lineNumber": 151
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "conn.execute(\n                select(sector_snapshots.c.id).where(\n                    sector_snapshots.c.snapshot_date == full_values[\"snapshot_date\"]\n                )\n            ).scalar_one_or_none",
+          "lineNumber": 153
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "conn.execute",
+          "lineNumber": 153
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "select(sector_snapshots.c.id).where",
+          "lineNumber": 154
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "select",
+          "lineNumber": 154
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "conn.execute",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "sector_snapshots.insert().values",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "sector_snapshots.insert",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "conn.execute",
+          "lineNumber": 161
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "update(sector_snapshots)\n                    .where(sector_snapshots.c.id == existing)\n                    .values",
+          "lineNumber": 162
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "update(sector_snapshots)\n                    .where",
+          "lineNumber": 162
+        },
+        {
+          "caller": "_upsert_row",
+          "callee": "update",
+          "lineNumber": 162
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 174
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "ensure_schema",
+          "lineNumber": 176
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "normalize_snapshot_payload",
+          "lineNumber": 178
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "datetime.now",
+          "lineNumber": 179
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "json.dumps",
+          "lineNumber": 180
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "normalized.get",
+          "lineNumber": 180
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "json.dumps",
+          "lineNumber": 184
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "json.dumps",
+          "lineNumber": 185
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "json.dumps",
+          "lineNumber": 186
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "_upsert_row",
+          "lineNumber": 204
+        },
+        {
+          "caller": "upsert_snapshot",
+          "callee": "normalized[\"snapshot_date\"].isoformat",
+          "lineNumber": 207
+        },
+        {
+          "caller": "set_refresh_running",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 216
+        },
+        {
+          "caller": "set_refresh_running",
+          "callee": "date.today",
+          "lineNumber": 217
+        },
+        {
+          "caller": "set_refresh_running",
+          "callee": "datetime.now",
+          "lineNumber": 218
+        },
+        {
+          "caller": "set_refresh_running",
+          "callee": "_upsert_row",
+          "lineNumber": 238
+        },
+        {
+          "caller": "set_refresh_error",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 247
+        },
+        {
+          "caller": "set_refresh_error",
+          "callee": "date.today",
+          "lineNumber": 248
+        },
+        {
+          "caller": "set_refresh_error",
+          "callee": "datetime.now",
+          "lineNumber": 249
+        },
+        {
+          "caller": "set_refresh_error",
+          "callee": "_upsert_row",
+          "lineNumber": 267
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "m.get",
+          "lineNumber": 274
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "m.get",
+          "lineNumber": 275
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "m[\"snapshot_date\"].isoformat",
+          "lineNumber": 277
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "m[\"fetched_at\"].isoformat",
+          "lineNumber": 278
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "json.loads",
+          "lineNumber": 279
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "json.loads",
+          "lineNumber": 280
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "json.loads",
+          "lineNumber": 281
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "json.loads",
+          "lineNumber": 282
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "m.get",
+          "lineNumber": 282
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "started_raw.isoformat",
+          "lineNumber": 285
+        },
+        {
+          "caller": "_row_to_payload",
+          "callee": "m.get",
+          "lineNumber": 287
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 296
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "select",
+          "lineNumber": 297
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "stmt.where",
+          "lineNumber": 299
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "stmt.order_by(desc(sector_snapshots.c.snapshot_date), desc(sector_snapshots.c.fetched_at)).limit",
+          "lineNumber": 300
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "stmt.order_by",
+          "lineNumber": 300
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "desc",
+          "lineNumber": 300
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "desc",
+          "lineNumber": 300
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "active_engine.connect",
+          "lineNumber": 301
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "_row_to_payload",
+          "lineNumber": 302
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "connection.execute(stmt).first",
+          "lineNumber": 302
+        },
+        {
+          "caller": "fetch_snapshot",
+          "callee": "connection.execute",
+          "lineNumber": 302
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 311
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "select",
+          "lineNumber": 312
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "stmt.where",
+          "lineNumber": 314
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "stmt.order_by(desc(sector_snapshots.c.snapshot_date)).limit",
+          "lineNumber": 315
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "stmt.order_by",
+          "lineNumber": 315
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "desc",
+          "lineNumber": 315
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "active_engine.connect",
+          "lineNumber": 316
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "_row_to_payload",
+          "lineNumber": 317
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "connection.execute(stmt).first",
+          "lineNumber": 317
+        },
+        {
+          "caller": "fetch_previous_snapshot",
+          "callee": "connection.execute",
+          "lineNumber": 317
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 326
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "select(sector_snapshots)\n        .order_by(desc(sector_snapshots.c.snapshot_date))\n        .limit",
+          "lineNumber": 328
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "select(sector_snapshots)\n        .order_by",
+          "lineNumber": 328
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "select",
+          "lineNumber": 328
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "desc",
+          "lineNumber": 329
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "active_engine.connect",
+          "lineNumber": 332
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "conn.execute(stmt).all",
+          "lineNumber": 333
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "conn.execute",
+          "lineNumber": 333
+        },
+        {
+          "caller": "fetch_recent_snapshots",
+          "callee": "_row_to_payload",
+          "lineNumber": 334
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 15,
+        "functionCount": 15,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "sector_board/schema.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 20,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "standalone.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 10,
+      "nonEmptyLines": 5,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_intraday_live_route.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 544,
+      "nonEmptyLines": 442,
+      "functions": [
+        {
+          "name": "_make_app",
+          "startLine": 18,
+          "endLine": 30,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_index_returns_200",
+          "startLine": 38,
+          "endLine": 42,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_index_returns_html",
+          "startLine": 45,
+          "endLine": 49,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_index_contains_live_script",
+          "startLine": 52,
+          "endLine": 60,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_index_has_separate_prod_sor_button",
+          "startLine": 63,
+          "endLine": 70,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_snapshot_no_runtime",
+          "startLine": 78,
+          "endLine": 87,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_start_mock_returns_ok",
+          "startLine": 98,
+          "endLine": 112,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_start_creates_runtime",
+          "startLine": 115,
+          "endLine": 130,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_start_idempotent",
+          "startLine": 133,
+          "endLine": 147,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_start_unknown_provider",
+          "startLine": 150,
+          "endLine": 158,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_stop_when_not_running",
+          "startLine": 166,
+          "endLine": 171,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_stop_after_start",
+          "startLine": 174,
+          "endLine": 183,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_snapshot_after_stop_returns_not_running",
+          "startLine": 186,
+          "endLine": 198,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_snapshot_with_data_has_required_keys",
+          "startLine": 206,
+          "endLine": 223,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_api_snapshot_sector_views_structure",
+          "startLine": 226,
+          "endLine": 241,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_morning_board_still_works",
+          "startLine": 249,
+          "endLine": 253,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_health_still_works",
+          "startLine": 256,
+          "endLine": 260,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_sector_board_intraday_still_works",
+          "startLine": 263,
+          "endLine": 268,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "_codes_file",
+          "startLine": 276,
+          "endLine": 280,
+          "params": [
+            "tmp_path",
+            "n"
+          ]
+        },
+        {
+          "name": "test_websocket_over_200_codes_returns_400",
+          "startLine": 283,
+          "endLine": 302,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "startLine": 305,
+          "endLine": 332,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_websocket_custom_max_total_realtime_codes",
+          "startLine": 335,
+          "endLine": 349,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_websocket_start_response_includes_kiwoom_env",
+          "startLine": 352,
+          "endLine": 381,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "startLine": 384,
+          "endLine": 431,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_websocket_prod_sor_uses_default_data_files",
+          "startLine": 434,
+          "endLine": 469,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_unknown_provider_returns_400",
+          "startLine": 472,
+          "endLine": 480,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_snapshot_no_runtime_has_diagnosis_fields",
+          "startLine": 488,
+          "endLine": 499,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_snapshot_with_runtime_has_started_at",
+          "startLine": 502,
+          "endLine": 514,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_snapshot_updated_at_equals_generated_at",
+          "startLine": 517,
+          "endLine": 529,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_snapshot_max_codes_limits_registered_count",
+          "startLine": 532,
+          "endLine": 544,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_make_app",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_index_returns_200",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_index_returns_html",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_index_contains_live_script",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_index_has_separate_prod_sor_button",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_snapshot_no_runtime",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_start_mock_returns_ok",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_start_creates_runtime",
+          "line": 115,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_start_idempotent",
+          "line": 133,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_start_unknown_provider",
+          "line": 150,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_stop_when_not_running",
+          "line": 166,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_stop_after_start",
+          "line": 174,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_snapshot_after_stop_returns_not_running",
+          "line": 186,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_snapshot_with_data_has_required_keys",
+          "line": 206,
+          "isDefault": false
+        },
+        {
+          "name": "test_api_snapshot_sector_views_structure",
+          "line": 226,
+          "isDefault": false
+        },
+        {
+          "name": "test_morning_board_still_works",
+          "line": 249,
+          "isDefault": false
+        },
+        {
+          "name": "test_health_still_works",
+          "line": 256,
+          "isDefault": false
+        },
+        {
+          "name": "test_sector_board_intraday_still_works",
+          "line": 263,
+          "isDefault": false
+        },
+        {
+          "name": "_codes_file",
+          "line": 276,
+          "isDefault": false
+        },
+        {
+          "name": "test_websocket_over_200_codes_returns_400",
+          "line": 283,
+          "isDefault": false
+        },
+        {
+          "name": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "line": 305,
+          "isDefault": false
+        },
+        {
+          "name": "test_websocket_custom_max_total_realtime_codes",
+          "line": 335,
+          "isDefault": false
+        },
+        {
+          "name": "test_websocket_start_response_includes_kiwoom_env",
+          "line": 352,
+          "isDefault": false
+        },
+        {
+          "name": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "line": 384,
+          "isDefault": false
+        },
+        {
+          "name": "test_websocket_prod_sor_uses_default_data_files",
+          "line": 434,
+          "isDefault": false
+        },
+        {
+          "name": "test_unknown_provider_returns_400",
+          "line": 472,
+          "isDefault": false
+        },
+        {
+          "name": "test_snapshot_no_runtime_has_diagnosis_fields",
+          "line": 488,
+          "isDefault": false
+        },
+        {
+          "name": "test_snapshot_with_runtime_has_started_at",
+          "line": 502,
+          "isDefault": false
+        },
+        {
+          "name": "test_snapshot_updated_at_equals_generated_at",
+          "line": 517,
+          "isDefault": false
+        },
+        {
+          "name": "test_snapshot_max_codes_limits_registered_count",
+          "line": 532,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 19
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 20
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 21
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 22
+        },
+        {
+          "caller": "_make_app",
+          "callee": "create_app",
+          "lineNumber": 24
+        },
+        {
+          "caller": "test_intraday_index_returns_200",
+          "callee": "_make_app",
+          "lineNumber": 39
+        },
+        {
+          "caller": "test_intraday_index_returns_200",
+          "callee": "app.test_client",
+          "lineNumber": 40
+        },
+        {
+          "caller": "test_intraday_index_returns_200",
+          "callee": "c.get",
+          "lineNumber": 41
+        },
+        {
+          "caller": "test_intraday_index_returns_html",
+          "callee": "_make_app",
+          "lineNumber": 46
+        },
+        {
+          "caller": "test_intraday_index_returns_html",
+          "callee": "app.test_client",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_intraday_index_returns_html",
+          "callee": "c.get",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_intraday_index_returns_html",
+          "callee": "r.content_type.encode",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_intraday_index_contains_live_script",
+          "callee": "_make_app",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_intraday_index_contains_live_script",
+          "callee": "app.test_client",
+          "lineNumber": 55
+        },
+        {
+          "caller": "test_intraday_index_contains_live_script",
+          "callee": "c.get",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_intraday_index_contains_live_script",
+          "callee": "r.data.decode",
+          "lineNumber": 57
+        },
+        {
+          "caller": "test_intraday_index_has_separate_prod_sor_button",
+          "callee": "_make_app",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_intraday_index_has_separate_prod_sor_button",
+          "callee": "app.test_client",
+          "lineNumber": 65
+        },
+        {
+          "caller": "test_intraday_index_has_separate_prod_sor_button",
+          "callee": "c.get",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_intraday_index_has_separate_prod_sor_button",
+          "callee": "r.data.decode",
+          "lineNumber": 67
+        },
+        {
+          "caller": "test_api_snapshot_no_runtime",
+          "callee": "_make_app",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_api_snapshot_no_runtime",
+          "callee": "app.test_client",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_api_snapshot_no_runtime",
+          "callee": "c.get",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_api_snapshot_no_runtime",
+          "callee": "json.loads",
+          "lineNumber": 83
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "_make_app",
+          "lineNumber": 99
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "app.test_client",
+          "lineNumber": 100
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "c.post",
+          "lineNumber": 101
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "json.dumps",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "json.loads",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "app.test_client",
+          "lineNumber": 111
+        },
+        {
+          "caller": "test_api_start_mock_returns_ok",
+          "callee": "c.post",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "_make_app",
+          "lineNumber": 116
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "app.test_client",
+          "lineNumber": 117
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "c.post",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "json.dumps",
+          "lineNumber": 119
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "time.sleep",
+          "lineNumber": 121
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "c.get",
+          "lineNumber": 122
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "json.loads",
+          "lineNumber": 124
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "app.test_client",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_api_start_creates_runtime",
+          "callee": "c.post",
+          "lineNumber": 130
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "_make_app",
+          "lineNumber": 135
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "app.test_client",
+          "lineNumber": 136
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "c.post",
+          "lineNumber": 137
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "json.dumps",
+          "lineNumber": 138
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "c.post",
+          "lineNumber": 140
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "json.dumps",
+          "lineNumber": 141
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "json.loads",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "json.loads",
+          "lineNumber": 144
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "app.test_client",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_api_start_idempotent",
+          "callee": "c.post",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_api_start_unknown_provider",
+          "callee": "_make_app",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_api_start_unknown_provider",
+          "callee": "app.test_client",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_api_start_unknown_provider",
+          "callee": "c.post",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_api_start_unknown_provider",
+          "callee": "json.dumps",
+          "lineNumber": 154
+        },
+        {
+          "caller": "test_api_start_unknown_provider",
+          "callee": "json.loads",
+          "lineNumber": 156
+        },
+        {
+          "caller": "test_api_stop_when_not_running",
+          "callee": "_make_app",
+          "lineNumber": 167
+        },
+        {
+          "caller": "test_api_stop_when_not_running",
+          "callee": "app.test_client",
+          "lineNumber": 168
+        },
+        {
+          "caller": "test_api_stop_when_not_running",
+          "callee": "c.post",
+          "lineNumber": 169
+        },
+        {
+          "caller": "test_api_stop_when_not_running",
+          "callee": "json.loads",
+          "lineNumber": 171
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "_make_app",
+          "lineNumber": 175
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "app.test_client",
+          "lineNumber": 176
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "c.post",
+          "lineNumber": 177
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "json.dumps",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "time.sleep",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "c.post",
+          "lineNumber": 181
+        },
+        {
+          "caller": "test_api_stop_after_start",
+          "callee": "json.loads",
+          "lineNumber": 183
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "_make_app",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "app.test_client",
+          "lineNumber": 189
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "c.post",
+          "lineNumber": 190
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "json.dumps",
+          "lineNumber": 191
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "time.sleep",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "c.post",
+          "lineNumber": 194
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "time.sleep",
+          "lineNumber": 195
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "c.get",
+          "lineNumber": 196
+        },
+        {
+          "caller": "test_api_snapshot_after_stop_returns_not_running",
+          "callee": "json.loads",
+          "lineNumber": 197
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "_make_app",
+          "lineNumber": 207
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "app.test_client",
+          "lineNumber": 208
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "c.post",
+          "lineNumber": 209
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "json.dumps",
+          "lineNumber": 210
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "time.sleep",
+          "lineNumber": 212
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "c.get",
+          "lineNumber": 213
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "json.loads",
+          "lineNumber": 215
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "isinstance",
+          "lineNumber": 220
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "app.test_client",
+          "lineNumber": 222
+        },
+        {
+          "caller": "test_api_snapshot_with_data_has_required_keys",
+          "callee": "c.post",
+          "lineNumber": 223
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "_make_app",
+          "lineNumber": 228
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "app.test_client",
+          "lineNumber": 229
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "c.post",
+          "lineNumber": 230
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "json.dumps",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "time.sleep",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "c.get",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "c.post",
+          "lineNumber": 235
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "json.loads",
+          "lineNumber": 237
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "data.get",
+          "lineNumber": 238
+        },
+        {
+          "caller": "test_api_snapshot_sector_views_structure",
+          "callee": "isinstance",
+          "lineNumber": 241
+        },
+        {
+          "caller": "test_morning_board_still_works",
+          "callee": "_make_app",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_morning_board_still_works",
+          "callee": "app.test_client",
+          "lineNumber": 251
+        },
+        {
+          "caller": "test_morning_board_still_works",
+          "callee": "c.get",
+          "lineNumber": 252
+        },
+        {
+          "caller": "test_health_still_works",
+          "callee": "_make_app",
+          "lineNumber": 257
+        },
+        {
+          "caller": "test_health_still_works",
+          "callee": "app.test_client",
+          "lineNumber": 258
+        },
+        {
+          "caller": "test_health_still_works",
+          "callee": "c.get",
+          "lineNumber": 259
+        },
+        {
+          "caller": "test_sector_board_intraday_still_works",
+          "callee": "_make_app",
+          "lineNumber": 265
+        },
+        {
+          "caller": "test_sector_board_intraday_still_works",
+          "callee": "app.test_client",
+          "lineNumber": 266
+        },
+        {
+          "caller": "test_sector_board_intraday_still_works",
+          "callee": "c.get",
+          "lineNumber": 267
+        },
+        {
+          "caller": "_codes_file",
+          "callee": "f.write_text",
+          "lineNumber": 279
+        },
+        {
+          "caller": "_codes_file",
+          "callee": "\"\\n\".join",
+          "lineNumber": 279
+        },
+        {
+          "caller": "_codes_file",
+          "callee": "range",
+          "lineNumber": 279
+        },
+        {
+          "caller": "_codes_file",
+          "callee": "str",
+          "lineNumber": 280
+        },
+        {
+          "caller": "test_websocket_over_200_codes_returns_400",
+          "callee": "_make_app",
+          "lineNumber": 288
+        },
+        {
+          "caller": "test_websocket_over_200_codes_returns_400",
+          "callee": "app.test_client",
+          "lineNumber": 289
+        },
+        {
+          "caller": "test_websocket_over_200_codes_returns_400",
+          "callee": "c.post",
+          "lineNumber": 290
+        },
+        {
+          "caller": "test_websocket_over_200_codes_returns_400",
+          "callee": "json.dumps",
+          "lineNumber": 291
+        },
+        {
+          "caller": "test_websocket_over_200_codes_returns_400",
+          "callee": "_codes_file",
+          "lineNumber": 293
+        },
+        {
+          "caller": "test_websocket_over_200_codes_returns_400",
+          "callee": "json.loads",
+          "lineNumber": 299
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 309
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "iter",
+          "lineNumber": 312
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "_make_app",
+          "lineNumber": 314
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "app.test_client",
+          "lineNumber": 315
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "c.post",
+          "lineNumber": 316
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "json.dumps",
+          "lineNumber": 317
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "_codes_file",
+          "lineNumber": 319
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "json.loads",
+          "lineNumber": 324
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "data.get",
+          "lineNumber": 326
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "data.get",
+          "lineNumber": 327
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "app.test_client",
+          "lineNumber": 331
+        },
+        {
+          "caller": "test_websocket_exactly_200_codes_not_blocked_by_limit",
+          "callee": "c2.post",
+          "lineNumber": 332
+        },
+        {
+          "caller": "test_websocket_custom_max_total_realtime_codes",
+          "callee": "_make_app",
+          "lineNumber": 337
+        },
+        {
+          "caller": "test_websocket_custom_max_total_realtime_codes",
+          "callee": "app.test_client",
+          "lineNumber": 338
+        },
+        {
+          "caller": "test_websocket_custom_max_total_realtime_codes",
+          "callee": "c.post",
+          "lineNumber": 339
+        },
+        {
+          "caller": "test_websocket_custom_max_total_realtime_codes",
+          "callee": "json.dumps",
+          "lineNumber": 340
+        },
+        {
+          "caller": "test_websocket_custom_max_total_realtime_codes",
+          "callee": "_codes_file",
+          "lineNumber": 342
+        },
+        {
+          "caller": "test_websocket_custom_max_total_realtime_codes",
+          "callee": "json.loads",
+          "lineNumber": 347
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 356
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "iter",
+          "lineNumber": 359
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "_make_app",
+          "lineNumber": 361
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "app.test_client",
+          "lineNumber": 363
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "c.post",
+          "lineNumber": 364
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "json.dumps",
+          "lineNumber": 365
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "_codes_file",
+          "lineNumber": 369
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "json.loads",
+          "lineNumber": 373
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "r.data.decode",
+          "lineNumber": 378
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "r.data.decode",
+          "lineNumber": 379
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "app.test_client",
+          "lineNumber": 380
+        },
+        {
+          "caller": "test_websocket_start_response_includes_kiwoom_env",
+          "callee": "c2.post",
+          "lineNumber": 381
+        },
+        {
+          "caller": "fake_make_websocket_source",
+          "callee": "list",
+          "lineNumber": 391
+        },
+        {
+          "caller": "fake_make_websocket_source",
+          "callee": "iter",
+          "lineNumber": 394
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 396
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 397
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 398
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "_codes_file",
+          "lineNumber": 399
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "sector_map_file.write_text",
+          "lineNumber": 401
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "_make_app",
+          "lineNumber": 402
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "app.test_client",
+          "lineNumber": 404
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "c.post",
+          "lineNumber": 405
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "json.dumps",
+          "lineNumber": 406
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "str",
+          "lineNumber": 411
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "json.loads",
+          "lineNumber": 418
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "c.post",
+          "lineNumber": 419
+        },
+        {
+          "caller": "test_websocket_prod_sor_payload_starts_without_secret_echo",
+          "callee": "r.data.decode",
+          "lineNumber": 429
+        },
+        {
+          "caller": "fake_make_websocket_source",
+          "callee": "len",
+          "lineNumber": 441
+        },
+        {
+          "caller": "fake_make_websocket_source",
+          "callee": "iter",
+          "lineNumber": 443
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 445
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "_make_app",
+          "lineNumber": 446
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "app.test_client",
+          "lineNumber": 448
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "c.post",
+          "lineNumber": 449
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "json.dumps",
+          "lineNumber": 450
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "json.loads",
+          "lineNumber": 457
+        },
+        {
+          "caller": "test_websocket_prod_sor_uses_default_data_files",
+          "callee": "c.post",
+          "lineNumber": 458
+        },
+        {
+          "caller": "test_unknown_provider_returns_400",
+          "callee": "_make_app",
+          "lineNumber": 474
+        },
+        {
+          "caller": "test_unknown_provider_returns_400",
+          "callee": "app.test_client",
+          "lineNumber": 475
+        },
+        {
+          "caller": "test_unknown_provider_returns_400",
+          "callee": "c.post",
+          "lineNumber": 476
+        },
+        {
+          "caller": "test_unknown_provider_returns_400",
+          "callee": "json.dumps",
+          "lineNumber": 477
+        },
+        {
+          "caller": "test_unknown_provider_returns_400",
+          "callee": "json.loads",
+          "lineNumber": 480
+        },
+        {
+          "caller": "test_snapshot_no_runtime_has_diagnosis_fields",
+          "callee": "_make_app",
+          "lineNumber": 490
+        },
+        {
+          "caller": "test_snapshot_no_runtime_has_diagnosis_fields",
+          "callee": "app.test_client",
+          "lineNumber": 491
+        },
+        {
+          "caller": "test_snapshot_no_runtime_has_diagnosis_fields",
+          "callee": "c.get",
+          "lineNumber": 492
+        },
+        {
+          "caller": "test_snapshot_no_runtime_has_diagnosis_fields",
+          "callee": "json.loads",
+          "lineNumber": 493
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "_make_app",
+          "lineNumber": 504
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "app.test_client",
+          "lineNumber": 505
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "c.post",
+          "lineNumber": 506
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "json.dumps",
+          "lineNumber": 507
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "time.sleep",
+          "lineNumber": 509
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "c.get",
+          "lineNumber": 510
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "c.post",
+          "lineNumber": 511
+        },
+        {
+          "caller": "test_snapshot_with_runtime_has_started_at",
+          "callee": "json.loads",
+          "lineNumber": 512
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "_make_app",
+          "lineNumber": 519
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "app.test_client",
+          "lineNumber": 520
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "c.post",
+          "lineNumber": 521
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "json.dumps",
+          "lineNumber": 522
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "time.sleep",
+          "lineNumber": 524
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "c.get",
+          "lineNumber": 525
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "c.post",
+          "lineNumber": 526
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "json.loads",
+          "lineNumber": 527
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "data.get",
+          "lineNumber": 529
+        },
+        {
+          "caller": "test_snapshot_updated_at_equals_generated_at",
+          "callee": "data.get",
+          "lineNumber": 529
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "_make_app",
+          "lineNumber": 534
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "app.test_client",
+          "lineNumber": 535
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "c.post",
+          "lineNumber": 536
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "json.dumps",
+          "lineNumber": 537
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "time.sleep",
+          "lineNumber": 539
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "c.get",
+          "lineNumber": 540
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "c.post",
+          "lineNumber": 541
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "json.loads",
+          "lineNumber": 542
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "data.get",
+          "lineNumber": 543
+        },
+        {
+          "caller": "test_snapshot_max_codes_limits_registered_count",
+          "callee": "data.get",
+          "lineNumber": 544
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 30,
+        "functionCount": 30,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_sector_board_blueprint.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 221,
+      "nonEmptyLines": 203,
+      "functions": [
+        {
+          "name": "_make_app",
+          "startLine": 10,
+          "endLine": 23,
+          "params": [
+            "tmp_path",
+            "monkeypatch",
+            "auto_create"
+          ]
+        },
+        {
+          "name": "_intraday_snapshot",
+          "startLine": 26,
+          "endLine": 148,
+          "params": []
+        },
+        {
+          "name": "test_sector_board_index_renders_snapshot",
+          "startLine": 151,
+          "endLine": 186,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_sector_board_index_renders_intraday_leaderboard",
+          "startLine": 189,
+          "endLine": 210,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_sector_board_api_reports_missing_database",
+          "startLine": 213,
+          "endLine": 221,
+          "params": [
+            "monkeypatch"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_make_app",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "_intraday_snapshot",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "test_sector_board_index_renders_snapshot",
+          "line": 151,
+          "isDefault": false
+        },
+        {
+          "name": "test_sector_board_index_renders_intraday_leaderboard",
+          "line": 189,
+          "isDefault": false
+        },
+        {
+          "name": "test_sector_board_api_reports_missing_database",
+          "line": 213,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 11
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 12
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 13
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 14
+        },
+        {
+          "caller": "_make_app",
+          "callee": "create_app",
+          "lineNumber": 16
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "_make_app",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "upsert_snapshot",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "app.test_client().get",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "app.test_client",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "\"오늘의 주도섹터\".encode",
+          "lineNumber": 183
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "\"AI\".encode",
+          "lineNumber": 184
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "\"000001\".encode",
+          "lineNumber": 185
+        },
+        {
+          "caller": "test_sector_board_index_renders_snapshot",
+          "callee": "\"오늘의 주도섹터 Top 5\".encode",
+          "lineNumber": 186
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "_make_app",
+          "lineNumber": 190
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "upsert_snapshot",
+          "lineNumber": 191
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "_intraday_snapshot",
+          "lineNumber": 191
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "app.test_client().get",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "app.test_client",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"오늘의 주도섹터 Top 5\".encode",
+          "lineNumber": 196
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"반도체\".encode",
+          "lineNumber": 197
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"삼성전자\".encode",
+          "lineNumber": 198
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"005930\".encode",
+          "lineNumber": 199
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"SK하이닉스\".encode",
+          "lineNumber": 200
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"000660\".encode",
+          "lineNumber": 201
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"한미반도체\".encode",
+          "lineNumber": 202
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"042700\".encode",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"숨김종목\".encode",
+          "lineNumber": 204
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"교체 감지\".encode",
+          "lineNumber": 205
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"데이터모드\".encode",
+          "lineNumber": 206
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"매칭\".encode",
+          "lineNumber": 209
+        },
+        {
+          "caller": "test_sector_board_index_renders_intraday_leaderboard",
+          "callee": "\"실제 실시간 시세로 오해하지 않도록\".encode",
+          "lineNumber": 210
+        },
+        {
+          "caller": "test_sector_board_api_reports_missing_database",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 214
+        },
+        {
+          "caller": "test_sector_board_api_reports_missing_database",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 215
+        },
+        {
+          "caller": "test_sector_board_api_reports_missing_database",
+          "callee": "create_app",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_sector_board_api_reports_missing_database",
+          "callee": "app.test_client().get",
+          "lineNumber": 218
+        },
+        {
+          "caller": "test_sector_board_api_reports_missing_database",
+          "callee": "app.test_client",
+          "lineNumber": 218
+        },
+        {
+          "caller": "test_sector_board_api_reports_missing_database",
+          "callee": "response.get_json",
+          "lineNumber": 221
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_sector_board_intraday_route.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 344,
+      "nonEmptyLines": 290,
+      "functions": [
+        {
+          "name": "_make_app",
+          "startLine": 17,
+          "endLine": 30,
+          "params": [
+            "tmp_path",
+            "monkeypatch",
+            "logs_dir"
+          ]
+        },
+        {
+          "name": "_make_snapshot_jsonl",
+          "startLine": 33,
+          "endLine": 39,
+          "params": [
+            "logs_dir",
+            "filename",
+            "rows"
+          ]
+        },
+        {
+          "name": "_ready_snapshot",
+          "startLine": 42,
+          "endLine": 104,
+          "params": []
+        },
+        {
+          "name": "test_intraday_route_exists",
+          "startLine": 112,
+          "endLine": 119,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_route_returns_html",
+          "startLine": 122,
+          "endLine": 128,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_empty_state_no_jsonl",
+          "startLine": 136,
+          "endLine": 146,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_empty_shows_run_hint",
+          "startLine": 149,
+          "endLine": 157,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_ready_state_with_jsonl",
+          "startLine": 165,
+          "endLine": 177,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_shows_sector_names",
+          "startLine": 180,
+          "endLine": 192,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_shows_leader_badges",
+          "startLine": 195,
+          "endLine": 207,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_shows_stock_codes",
+          "startLine": 210,
+          "endLine": 222,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_shows_minute_key",
+          "startLine": 225,
+          "endLine": 236,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_reads_most_recent_jsonl",
+          "startLine": 244,
+          "endLine": 260,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_reads_last_line_of_jsonl",
+          "startLine": 263,
+          "endLine": 278,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_warming_state",
+          "startLine": 286,
+          "endLine": 299,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_morning_board_route_still_works",
+          "startLine": 307,
+          "endLine": 315,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_health_route_still_works",
+          "startLine": 318,
+          "endLine": 323,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        },
+        {
+          "name": "test_intraday_shows_unmapped_warning",
+          "startLine": 331,
+          "endLine": 344,
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_make_app",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "_make_snapshot_jsonl",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "_ready_snapshot",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_route_exists",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_route_returns_html",
+          "line": 122,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_empty_state_no_jsonl",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_empty_shows_run_hint",
+          "line": 149,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_ready_state_with_jsonl",
+          "line": 165,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_shows_sector_names",
+          "line": 180,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_shows_leader_badges",
+          "line": 195,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_shows_stock_codes",
+          "line": 210,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_shows_minute_key",
+          "line": 225,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_reads_most_recent_jsonl",
+          "line": 244,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_reads_last_line_of_jsonl",
+          "line": 263,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_warming_state",
+          "line": 286,
+          "isDefault": false
+        },
+        {
+          "name": "test_morning_board_route_still_works",
+          "line": 307,
+          "isDefault": false
+        },
+        {
+          "name": "test_health_route_still_works",
+          "line": 318,
+          "isDefault": false
+        },
+        {
+          "name": "test_intraday_shows_unmapped_warning",
+          "line": 331,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 18
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 19
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 20
+        },
+        {
+          "caller": "_make_app",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 21
+        },
+        {
+          "caller": "_make_app",
+          "callee": "str",
+          "lineNumber": 29
+        },
+        {
+          "caller": "_make_app",
+          "callee": "create_app",
+          "lineNumber": 30
+        },
+        {
+          "caller": "_make_snapshot_jsonl",
+          "callee": "f.write_text",
+          "lineNumber": 35
+        },
+        {
+          "caller": "_make_snapshot_jsonl",
+          "callee": "\"\\n\".join",
+          "lineNumber": 36
+        },
+        {
+          "caller": "_make_snapshot_jsonl",
+          "callee": "json.dumps",
+          "lineNumber": 36
+        },
+        {
+          "caller": "test_intraday_route_exists",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 115
+        },
+        {
+          "caller": "test_intraday_route_exists",
+          "callee": "_make_app",
+          "lineNumber": 116
+        },
+        {
+          "caller": "test_intraday_route_exists",
+          "callee": "app.test_client",
+          "lineNumber": 117
+        },
+        {
+          "caller": "test_intraday_route_exists",
+          "callee": "client.get",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_intraday_route_returns_html",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 124
+        },
+        {
+          "caller": "test_intraday_route_returns_html",
+          "callee": "_make_app",
+          "lineNumber": 125
+        },
+        {
+          "caller": "test_intraday_route_returns_html",
+          "callee": "app.test_client",
+          "lineNumber": 126
+        },
+        {
+          "caller": "test_intraday_route_returns_html",
+          "callee": "client.get",
+          "lineNumber": 127
+        },
+        {
+          "caller": "test_intraday_route_returns_html",
+          "callee": "resp.content_type.encode",
+          "lineNumber": 128
+        },
+        {
+          "caller": "test_intraday_empty_state_no_jsonl",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 139
+        },
+        {
+          "caller": "test_intraday_empty_state_no_jsonl",
+          "callee": "_make_app",
+          "lineNumber": 140
+        },
+        {
+          "caller": "test_intraday_empty_state_no_jsonl",
+          "callee": "app.test_client",
+          "lineNumber": 141
+        },
+        {
+          "caller": "test_intraday_empty_state_no_jsonl",
+          "callee": "client.get",
+          "lineNumber": 142
+        },
+        {
+          "caller": "test_intraday_empty_state_no_jsonl",
+          "callee": "resp.data.decode",
+          "lineNumber": 144
+        },
+        {
+          "caller": "test_intraday_empty_state_no_jsonl",
+          "callee": "html.lower",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_intraday_empty_shows_run_hint",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_intraday_empty_shows_run_hint",
+          "callee": "_make_app",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_intraday_empty_shows_run_hint",
+          "callee": "app.test_client",
+          "lineNumber": 154
+        },
+        {
+          "caller": "test_intraday_empty_shows_run_hint",
+          "callee": "client.get",
+          "lineNumber": 155
+        },
+        {
+          "caller": "test_intraday_empty_shows_run_hint",
+          "callee": "resp.data.decode",
+          "lineNumber": 156
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 168
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 169
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "_ready_snapshot",
+          "lineNumber": 170
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "_make_app",
+          "lineNumber": 172
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "app.test_client",
+          "lineNumber": 173
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "client.get",
+          "lineNumber": 174
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "resp.data.decode",
+          "lineNumber": 176
+        },
+        {
+          "caller": "test_intraday_ready_state_with_jsonl",
+          "callee": "html.lower",
+          "lineNumber": 177
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 183
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 184
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "_ready_snapshot",
+          "lineNumber": 185
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "_make_app",
+          "lineNumber": 187
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "app.test_client",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "client.get",
+          "lineNumber": 189
+        },
+        {
+          "caller": "test_intraday_shows_sector_names",
+          "callee": "resp.data.decode",
+          "lineNumber": 190
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 198
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 199
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "_ready_snapshot",
+          "lineNumber": 200
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "_make_app",
+          "lineNumber": 202
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "app.test_client",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "client.get",
+          "lineNumber": 204
+        },
+        {
+          "caller": "test_intraday_shows_leader_badges",
+          "callee": "resp.data.decode",
+          "lineNumber": 205
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 213
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 214
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "_ready_snapshot",
+          "lineNumber": 215
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "_make_app",
+          "lineNumber": 217
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "app.test_client",
+          "lineNumber": 218
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "client.get",
+          "lineNumber": 219
+        },
+        {
+          "caller": "test_intraday_shows_stock_codes",
+          "callee": "resp.data.decode",
+          "lineNumber": 220
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 228
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 229
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "_ready_snapshot",
+          "lineNumber": 230
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "_make_app",
+          "lineNumber": 232
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "app.test_client",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "client.get",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_intraday_shows_minute_key",
+          "callee": "resp.data.decode",
+          "lineNumber": 235
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 247
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "dict",
+          "lineNumber": 248
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "_ready_snapshot",
+          "lineNumber": 248
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "dict",
+          "lineNumber": 249
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "_ready_snapshot",
+          "lineNumber": 249
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 253
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "_make_app",
+          "lineNumber": 256
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "app.test_client",
+          "lineNumber": 257
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "client.get",
+          "lineNumber": 258
+        },
+        {
+          "caller": "test_intraday_reads_most_recent_jsonl",
+          "callee": "resp.data.decode",
+          "lineNumber": 259
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 266
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "dict",
+          "lineNumber": 267
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "_ready_snapshot",
+          "lineNumber": 267
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "dict",
+          "lineNumber": 268
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "_ready_snapshot",
+          "lineNumber": 268
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 269
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "_make_app",
+          "lineNumber": 274
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "app.test_client",
+          "lineNumber": 275
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "client.get",
+          "lineNumber": 276
+        },
+        {
+          "caller": "test_intraday_reads_last_line_of_jsonl",
+          "callee": "resp.data.decode",
+          "lineNumber": 277
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 289
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "dict",
+          "lineNumber": 290
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "_ready_snapshot",
+          "lineNumber": 290
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 291
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "_make_app",
+          "lineNumber": 294
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "app.test_client",
+          "lineNumber": 295
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "client.get",
+          "lineNumber": 296
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "resp.data.decode",
+          "lineNumber": 298
+        },
+        {
+          "caller": "test_intraday_warming_state",
+          "callee": "html.lower",
+          "lineNumber": 299
+        },
+        {
+          "caller": "test_morning_board_route_still_works",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 310
+        },
+        {
+          "caller": "test_morning_board_route_still_works",
+          "callee": "_make_app",
+          "lineNumber": 311
+        },
+        {
+          "caller": "test_morning_board_route_still_works",
+          "callee": "app.test_client",
+          "lineNumber": 312
+        },
+        {
+          "caller": "test_morning_board_route_still_works",
+          "callee": "client.get",
+          "lineNumber": 313
+        },
+        {
+          "caller": "test_health_route_still_works",
+          "callee": "_make_app",
+          "lineNumber": 320
+        },
+        {
+          "caller": "test_health_route_still_works",
+          "callee": "app.test_client",
+          "lineNumber": 321
+        },
+        {
+          "caller": "test_health_route_still_works",
+          "callee": "client.get",
+          "lineNumber": 322
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "logs_dir.mkdir",
+          "lineNumber": 334
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "dict",
+          "lineNumber": 335
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "_ready_snapshot",
+          "lineNumber": 335
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "_make_snapshot_jsonl",
+          "lineNumber": 336
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "_make_app",
+          "lineNumber": 339
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "app.test_client",
+          "lineNumber": 340
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "client.get",
+          "lineNumber": 341
+        },
+        {
+          "caller": "test_intraday_shows_unmapped_warning",
+          "callee": "resp.data.decode",
+          "lineNumber": 342
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 18,
+        "functionCount": 18,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_sector_board_repository.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 65,
+      "nonEmptyLines": 51,
+      "functions": [
+        {
+          "name": "_payload",
+          "startLine": 11,
+          "endLine": 40,
+          "params": [
+            "name",
+            "generated_at"
+          ]
+        },
+        {
+          "name": "test_upsert_snapshot_keeps_one_row_per_day",
+          "startLine": 43,
+          "endLine": 58,
+          "params": [
+            "tmp_path"
+          ]
+        },
+        {
+          "name": "test_fetch_snapshot_returns_none_when_missing",
+          "startLine": 61,
+          "endLine": 65,
+          "params": [
+            "tmp_path"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_payload",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "test_upsert_snapshot_keeps_one_row_per_day",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "test_fetch_snapshot_returns_none_when_missing",
+          "line": 61,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 44
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "ensure_schema",
+          "lineNumber": 45
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "upsert_snapshot",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "_payload",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "upsert_snapshot",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "_payload",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "engine.connect",
+          "lineNumber": 50
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "connection.execute(select(func.count()).select_from(sector_snapshots)).scalar_one",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "connection.execute",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "select(func.count()).select_from",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "select",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "func.count",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "fetch_snapshot",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "datetime(2026, 5, 26).date",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_upsert_snapshot_keeps_one_row_per_day",
+          "callee": "datetime",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_fetch_snapshot_returns_none_when_missing",
+          "callee": "create_snapshot_engine",
+          "lineNumber": 62
+        },
+        {
+          "caller": "test_fetch_snapshot_returns_none_when_missing",
+          "callee": "ensure_schema",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_fetch_snapshot_returns_none_when_missing",
+          "callee": "fetch_snapshot",
+          "lineNumber": 65
+        },
+        {
+          "caller": "test_fetch_snapshot_returns_none_when_missing",
+          "callee": "datetime(2026, 5, 26).date",
+          "lineNumber": 65
+        },
+        {
+          "caller": "test_fetch_snapshot_returns_none_when_missing",
+          "callee": "datetime",
+          "lineNumber": 65
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    }
+  ]
+}

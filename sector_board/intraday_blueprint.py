@@ -267,11 +267,14 @@ def create_intraday_blueprint() -> Blueprint:
         from src.intraday_snapshot_service import IntradaySnapshotService
         from src.intraday_runtime import IntradayRuntime
 
+        market_cap_map = _load_market_cap_map(data_dir)
         service = IntradaySnapshotService(
             sector_map=sector_map,
             sector_limit=5,
             stock_limit=5,
             name_map=_load_name_map(data_dir),
+            market_cap_map=market_cap_map,
+            min_strong_riser_count=3 if market_cap_map else 0,
         )
         runtime = IntradayRuntime(
             service=service,
@@ -348,6 +351,22 @@ def _get_runtime_meta() -> dict:
 # ---------------------------------------------------------------------------
 # 파일 로드 헬퍼
 # ---------------------------------------------------------------------------
+
+
+def _load_market_cap_map(data_dir: Path) -> dict[str, int]:
+    """market_cap_map.json 을 로드한다. 파일 없으면 빈 dict."""
+    path = data_dir / "market_cap_map.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            return {
+                str(k).zfill(6): int(v)
+                for k, v in data.items()
+                if isinstance(v, (int, float)) and v > 0
+            }
+    except Exception:
+        pass
+    return {}
 
 
 def _load_sector_map(path: Path) -> dict[str, list[str]]:

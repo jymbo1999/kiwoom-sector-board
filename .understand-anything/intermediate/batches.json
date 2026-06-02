@@ -1,0 +1,2846 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 126,
+  "totalBatches": 14,
+  "exportsByPath": {
+    ".omc/state/agent-replay-7e9ac8b9-4402-4d84-847b-fde5366d2f7b.jsonl": [],
+    ".understand-anything/.understandignore": [],
+    "app.py": [
+      "load_board_view_models",
+      "load_yesterday_data",
+      "load_rise_reason_summaries",
+      "_empty_board_state",
+      "_theme_label",
+      "_auto_refresh_if_checkpoint_crossed",
+      "main"
+    ],
+    "astx.dmg": [],
+    "scripts/build_intraday_universe.py": [
+      "normalize_code",
+      "load_csv",
+      "find_column",
+      "FilterOptions",
+      "_truthy",
+      "should_exclude",
+      "apply_filters",
+      "sort_by_market_cap",
+      "extract_codes",
+      "_detect_sector_columns",
+      "build_sector_map",
+      "write_universe_txt",
+      "write_sector_map_json",
+      "write_template_csv",
+      "BuildResult",
+      "build_from_csv",
+      "_parse_args",
+      "main"
+    ],
+    "scripts/generate_sample_prices.py": [
+      "_stable_seed",
+      "_change_rate",
+      "_price_for",
+      "main"
+    ],
+    "scripts/run_intraday_snapshot_smoke.py": [
+      "parse_codes_str",
+      "parse_codes_file",
+      "apply_max_codes",
+      "format_codes",
+      "get_fallback_sector_map",
+      "load_sector_map_file",
+      "make_mock_real_message",
+      "_fmt_value",
+      "format_snapshot_summary",
+      "format_final_summary",
+      "_write_snapshot_jsonl",
+      "_run_mock_provider",
+      "_run_websocket_provider",
+      "_parse_args",
+      "_default_jsonl_path",
+      "_run",
+      "main"
+    ],
+    "scripts/test_kiwoom_ws_bulk.py": [
+      "parse_codes_file",
+      "validate_codes",
+      "apply_max_codes",
+      "format_bulk_codes",
+      "build_reg_groups",
+      "format_reg_summary",
+      "BulkTickAccumulator",
+      "_sanitize_response",
+      "_print_sanitized_response",
+      "_sanitize_for_log",
+      "_write_jsonl_record",
+      "_default_jsonl_path",
+      "_try_parse_json",
+      "_mask_key",
+      "_print_startup_summary",
+      "_print_interval_summary",
+      "_print_final_summary",
+      "_print_dry_run_plan",
+      "_parse_args",
+      "_run_mock_or_rest",
+      "_run_websocket",
+      "_run",
+      "main"
+    ],
+    "scripts/test_kiwoom_ws.py": [
+      "_parse_codes",
+      "_parse_args",
+      "_default_jsonl_path",
+      "_sanitize_for_log",
+      "_format_message_block",
+      "_run",
+      "main"
+    ],
+    "sector_board/__init__.py": [
+      "create_app",
+      "register_sector_board",
+      "_setup_scheduler",
+      "register_intraday"
+    ],
+    "sector_board/auth.py": [
+      "auth_gate"
+    ],
+    "sector_board/blueprint.py": [
+      "_to_float",
+      "_format_pct",
+      "_format_krw",
+      "_format_number",
+      "_compute_rank_changes",
+      "_build_sector_rows",
+      "_is_intraday_snapshot",
+      "_get_intraday_stale_seconds",
+      "_build_intraday_leaderboard_context",
+      "_build_weekly_table",
+      "_get_max_age_seconds",
+      "_is_snapshot_stale",
+      "create_sector_board_blueprint"
+    ],
+    "sector_board/collector.py": [
+      "collect_and_store",
+      "collect_intraday_and_store",
+      "_attach_intraday_evidence",
+      "_intraday_board_enabled",
+      "schedule_background_collect"
+    ],
+    "sector_board/intraday_blueprint.py": [
+      "create_intraday_blueprint",
+      "_get_runtime",
+      "_set_runtime",
+      "_get_runtime_meta",
+      "_load_sector_map",
+      "_load_name_map",
+      "_load_codes",
+      "_body_value",
+      "_resolve_data_file",
+      "_default_data_dir",
+      "_display_path",
+      "_redact_sensitive_text"
+    ],
+    "sector_board/intraday_reader.py": [
+      "find_latest_snapshot_jsonl",
+      "read_last_snapshot",
+      "load_latest_intraday_snapshot",
+      "_fmt_trade_value",
+      "_fmt_rate",
+      "_fmt_rising_ratio",
+      "_build_leader_stock",
+      "_build_sector_view",
+      "build_intraday_view"
+    ],
+    "sector_board/payload.py": [
+      "parse_generated_at",
+      "normalize_snapshot_payload"
+    ],
+    "sector_board/repository.py": [
+      "_get_engine",
+      "normalize_database_url",
+      "resolve_database_url",
+      "create_snapshot_engine",
+      "_ensure_rise_reasons_column",
+      "_ensure_refresh_columns",
+      "ensure_schema",
+      "_upsert_row",
+      "upsert_snapshot",
+      "set_refresh_running",
+      "set_refresh_error",
+      "_row_to_payload",
+      "fetch_snapshot",
+      "fetch_previous_snapshot",
+      "fetch_recent_snapshots"
+    ],
+    "sector_board/scheduler.py": [
+      "_collect_job",
+      "trigger_startup_collect_if_needed",
+      "setup_daily_scheduler"
+    ],
+    "sector_board/schema.py": [],
+    "src/__init__.py": [],
+    "src/config.py": [
+      "_as_bool",
+      "_as_int",
+      "_as_float",
+      "Settings",
+      "load_settings",
+      "get_opendart_api_key",
+      "get_naver_credentials",
+      "get_openai_api_key"
+    ],
+    "src/dart_service.py": [
+      "_format_date",
+      "_normalize_report_date",
+      "_build_disclosure_item",
+      "search_dart_disclosures"
+    ],
+    "src/dashboard_components.py": [
+      "_html",
+      "format_krw",
+      "inject_board_styles",
+      "_format_next_refresh",
+      "render_header",
+      "render_refresh_targets",
+      "_sector_reason",
+      "_render_sector_card_html",
+      "render_sector_cards",
+      "render_summary_table",
+      "_coerce_float",
+      "_hex_to_rgb",
+      "_rgba",
+      "_mix_hex",
+      "_range_ratio",
+      "_rise_heat_color",
+      "_rate_heat_badge_html",
+      "_confidence_badge_html",
+      "_rise_reason_rows",
+      "render_rise_reason_summaries",
+      "format_pct",
+      "_require_columns",
+      "_data_mode_badge_html",
+      "render_market_summary",
+      "_rank_change_label",
+      "render_pre_market_board",
+      "_render_morning_card_html",
+      "render_morning_sector_card_board",
+      "_fallback_theme_table",
+      "render_theme_treemap",
+      "render_selected_theme_leaders",
+      "_theme_change_bounds",
+      "_render_featured_theme_card_html",
+      "render_featured_themes",
+      "_change_color",
+      "_build_sector_color_map",
+      "_build_sector_key_map",
+      "_history_focus_labels",
+      "_render_history_board_html",
+      "render_theme_history_table",
+      "render_theme_timeline"
+    ],
+    "src/data_providers.py": [
+      "RawMarketDataProvider",
+      "MockQuoteProvider",
+      "KiwoomRestQuoteProvider",
+      "KiwoomWebSocketRawProvider",
+      "build_raw_market_data_provider"
+    ],
+    "src/dummy_data.py": [
+      "load_sample_prices"
+    ],
+    "src/evidence_service.py": [
+      "_trade_date_value",
+      "_safe_evidence_items",
+      "_dedupe_evidence",
+      "_sort_evidence",
+      "_collect_evidence",
+      "build_evidence_bundle",
+      "build_evidence_bundles",
+      "_leader_to_mover",
+      "build_evidence_bundles_for_leaders"
+    ],
+    "src/intraday_leader_ranker.py": [
+      "IntradayLeaderStockView",
+      "IntradaySectorLeaderView",
+      "_compute_sector_score",
+      "_display_badge",
+      "_make_stock_view",
+      "_sector_sort_key",
+      "rank_intraday_leaders"
+    ],
+    "src/intraday_runtime.py": [
+      "make_mock_source",
+      "make_websocket_source",
+      "IntradayRuntime"
+    ],
+    "src/intraday_sector_aggregator.py": [
+      "SectorLeaderStock",
+      "SectorMinuteSummary",
+      "_rank_score",
+      "_leader_sort_key",
+      "_summary_sort_key",
+      "_make_leader",
+      "_build_summary",
+      "aggregate_sector_minutes"
+    ],
+    "src/intraday_snapshot_serialization.py": [
+      "snapshot_to_dict"
+    ],
+    "src/intraday_snapshot_service.py": [
+      "build_intraday_snapshot_payload",
+      "_theme_view",
+      "_leader_view",
+      "_theme_badges",
+      "_market_cap_by_theme",
+      "_freshness_seconds",
+      "_safe_unique_count",
+      "_json_records",
+      "_json_default",
+      "IntradaySnapshot",
+      "IntradaySnapshotService"
+    ],
+    "src/intraday_state.py": [
+      "IntradayQuoteState",
+      "normalize_tick",
+      "_normalize_code",
+      "_first_present",
+      "_num"
+    ],
+    "src/intraday_tick_aggregator.py": [
+      "LatestTickState",
+      "MinuteBucket",
+      "_parse_minute_key",
+      "_recalculate_delta",
+      "IntradayTickAggregator"
+    ],
+    "src/intraday_universe_sync.py": [
+      "generate_sector_map_from_theme_map",
+      "generate_universe_codes",
+      "validate_universe_consistency",
+      "write_sector_map_json",
+      "write_universe_txt",
+      "_iter_theme_csv"
+    ],
+    "src/kiwoom_auth.py": [
+      "KiwoomAuthError",
+      "AccessToken",
+      "KiwoomApiConfig",
+      "_project_root",
+      "_load_project_env",
+      "_normalized_env",
+      "_normalized_provider",
+      "_select_app_key",
+      "_select_secret_key",
+      "load_kiwoom_api_config",
+      "issue_access_token",
+      "issue_access_token_from_env"
+    ],
+    "src/kiwoom_client.py": [
+      "KiwoomApiError",
+      "KiwoomRestClient",
+      "_to_number",
+      "_normalize_ka10001"
+    ],
+    "src/kiwoom_websocket.py": [
+      "KiwoomWebSocketError",
+      "KiwoomRawMessage",
+      "format_kiwoom_code",
+      "parse_item_code",
+      "parse_signed_int",
+      "parse_signed_float",
+      "_normalize_one_data_entry",
+      "normalize_tick_rows",
+      "normalize_tick_message",
+      "build_realtime_trade_registration",
+      "KiwoomWebSocketClient",
+      "_parse_json"
+    ],
+    "src/krx_collector.py": [
+      "get_last_trading_date",
+      "_fetch_sector_map_from_kind",
+      "_load_or_refresh_sector_map",
+      "fetch_krx_snapshot"
+    ],
+    "src/market_data.py": [
+      "load_market_prices",
+      "_empty_dataframe",
+      "_mock_intraday_universe",
+      "_mock_intraday_quotes",
+      "_get_market_phase",
+      "get_refresh_schedule",
+      "_load_ranked_snapshot",
+      "_load_krx_snapshot",
+      "_data_mode",
+      "_build_market_summary",
+      "_build_theme_heatmap",
+      "_build_leader_view",
+      "get_morning_board_view_models",
+      "get_intraday_board_view_models",
+      "get_market_summary",
+      "get_market_movers",
+      "get_theme_heatmap",
+      "get_theme_leaders"
+    ],
+    "src/news_service.py": [
+      "strip_html",
+      "_normalize_pub_date",
+      "_build_news_item",
+      "_compact_text",
+      "_matched_terms",
+      "_score_stock_news",
+      "_filter_relevant_news",
+      "search_naver_news",
+      "build_news_queries_for_mover"
+    ],
+    "src/rise_reason_service.py": [
+      "_evidence_items",
+      "_evidence_titles",
+      "_infer_reason_tags",
+      "_fallback_confidence",
+      "_fallback_summary",
+      "_validate_summary",
+      "_system_prompt",
+      "_user_prompt",
+      "_call_openai_summary",
+      "summarize_rise_reason",
+      "summarize_rise_reasons"
+    ],
+    "src/sector_map_loader.py": [
+      "SectorMapLoadError",
+      "SectorMapLoadResult",
+      "load_sector_map"
+    ],
+    "src/sector_ranker.py": [
+      "IntradayRankingWeights",
+      "_min_max_to_10",
+      "_rank_score",
+      "build_sector_universe",
+      "add_leader_scores",
+      "rank_sectors",
+      "rank_sectors_krx",
+      "rank_intraday_leaders",
+      "_build_intraday_frame",
+      "_add_intraday_leader_scores",
+      "_rank_intraday_theme_frames",
+      "_build_rank_events",
+      "_extract_previous_ranks",
+      "_intraday_summary",
+      "_provider_status",
+      "_stability_score",
+      "_records",
+      "_to_numeric",
+      "_normalize_code",
+      "_prefer_text",
+      "_dominant_text"
+    ],
+    "src/snapshot_service.py": [
+      "_records",
+      "build_morning_snapshot_payload",
+      "persist_morning_snapshot",
+      "_truthy_env",
+      "_persist_snapshot_to_sector_board_db",
+      "_upload_snapshot_to_r2",
+      "load_latest_snapshot",
+      "load_morning_view_models_from_snapshot",
+      "load_yesterday_heatmap",
+      "compute_rank_changes"
+    ],
+    "src/theme_loader.py": [
+      "load_theme_map",
+      "themes_to_long"
+    ],
+    "src/universe_builder.py": [
+      "UniverseBuildConfig",
+      "UniverseBuildResult",
+      "config_from_settings",
+      "build_universe",
+      "normalize_krx_frame",
+      "_attach_themes",
+      "_build_exclusion_flags",
+      "_excluded_by_reason",
+      "_with_max_code_exclusion",
+      "_metadata",
+      "_find_column",
+      "_normalize_code",
+      "_as_bool_series",
+      "_infer_flag",
+      "_empty_universe_frame"
+    ],
+    "standalone.py": [],
+    "tests/test_build_intraday_universe.py": [
+      "test_normalize_code_basic",
+      "test_normalize_code_zero_pads",
+      "test_normalize_code_none_returns_none",
+      "test_normalize_code_empty_returns_none",
+      "test_normalize_code_non_numeric_returns_none",
+      "test_normalize_code_seven_digits_returns_none",
+      "test_normalize_code_strips_whitespace",
+      "test_load_csv_basic",
+      "test_load_csv_skips_blank_trailing_row",
+      "test_load_csv_missing_file_raises",
+      "test_find_column_returns_first_match",
+      "test_find_column_returns_none_if_not_found",
+      "test_exclude_etf_by_flag",
+      "test_exclude_etf_by_name_pattern",
+      "test_exclude_preferred_by_name",
+      "test_exclude_spac_by_name",
+      "test_exclude_managed_by_flag",
+      "test_no_exclude_if_flags_disabled",
+      "test_apply_filters_removes_etf",
+      "test_apply_filters_default_opts_removes_preferred",
+      "test_sort_by_market_cap_descending",
+      "test_sort_by_market_cap_preserves_order_if_no_column",
+      "test_sort_by_market_cap_handles_empty",
+      "test_sort_by_market_cap_handles_non_numeric_cap",
+      "test_extract_codes_basic",
+      "test_extract_codes_deduplicates",
+      "test_extract_codes_zero_pads",
+      "test_extract_codes_skips_invalid",
+      "test_extract_codes_skips_empty",
+      "test_extract_codes_preserves_order",
+      "test_build_sector_map_sector_column",
+      "test_build_sector_map_theme1_column",
+      "test_build_sector_map_multi_sector",
+      "test_build_sector_map_skips_no_sector_column",
+      "test_build_sector_map_skips_empty_sector",
+      "test_build_sector_map_zero_pads_code",
+      "test_build_sector_map_no_duplicate_code_on_same_input",
+      "_make_rows",
+      "test_build_from_csv_limit",
+      "test_build_from_csv_limit_larger_than_rows",
+      "test_build_from_csv_limit_zero_means_all",
+      "test_build_from_csv_deduplicates",
+      "test_build_from_csv_excludes_preferred",
+      "test_build_from_csv_sector_map_built",
+      "test_build_from_csv_warns_unmapped_codes",
+      "test_build_from_csv_total_input_count",
+      "test_build_from_csv_sorts_by_market_cap",
+      "test_write_universe_txt",
+      "test_write_sector_map_json_is_valid_json",
+      "test_write_sector_map_json_creates_parent_dir",
+      "test_write_template_csv_creates_file",
+      "test_write_template_csv_has_required_columns",
+      "test_write_template_csv_codes_are_valid",
+      "test_cli_write_template_subprocess",
+      "test_cli_dry_run_subprocess",
+      "test_cli_generates_output_files",
+      "test_cli_no_input_exits_2",
+      "test_cli_missing_input_file_exits_2",
+      "test_cli_limit_option",
+      "test_theme_map_csv_format",
+      "test_theme_map_csv_multi_sector"
+    ],
+    "tests/test_config.py": [
+      "test_load_settings_supports_render_env_aliases",
+      "test_load_settings_preserves_legacy_env_names",
+      "test_load_settings_has_safe_intraday_defaults",
+      "test_kiwoom_env_mock_wins_over_use_mock_false",
+      "test_kiwoom_env_real_wins_over_use_mock_true",
+      "test_kiwoom_env_prod_alias_uses_real_url",
+      "test_kiwoom_base_url_manual_override_is_respected",
+      "test_kiwoom_env_absent_falls_back_to_use_mock",
+      "test_get_opendart_api_key_returns_empty_when_unset",
+      "test_get_opendart_api_key_returns_value_when_set",
+      "test_get_naver_credentials_returns_empty_tuple_when_unset",
+      "test_get_naver_credentials_returns_values_when_set",
+      "test_get_openai_api_key_returns_empty_when_unset",
+      "test_get_openai_api_key_returns_value_when_set"
+    ],
+    "tests/test_dart_service.py": [
+      "test_search_dart_disclosures_without_api_key_returns_empty_list",
+      "test_search_dart_disclosures_without_api_key_does_not_call_network",
+      "test_important_dart_keywords_include_contract_terms"
+    ],
+    "tests/test_dashboard_rise_reason_view.py": [
+      "test_rise_reason_rows_formats_required_ui_columns",
+      "test_rise_reason_rows_uses_evidence_items_ui_when_present"
+    ],
+    "tests/test_evidence_service.py": [
+      "test_build_evidence_bundle_returns_required_structure_without_api_keys",
+      "test_build_evidence_bundles_returns_limited_list_without_api_keys",
+      "test_build_evidence_bundle_uses_naver_news_only",
+      "test_build_evidence_bundles_for_leaders_maps_intraday_leaders",
+      "test_build_evidence_bundles_for_leaders_fails_open"
+    ],
+    "tests/test_intraday_board_integration.py": [
+      "test_mock_intraday_pipeline_renders_flask_board"
+    ],
+    "tests/test_intraday_data_providers.py": [
+      "test_load_kiwoom_api_config_mock_hosts",
+      "test_load_kiwoom_api_config_real_uses_real_keys",
+      "test_load_kiwoom_api_config_rejects_orderless_provider_typos",
+      "test_build_realtime_trade_registration_uses_market_data_type_only",
+      "test_normalize_tick_message_preserves_raw_payload",
+      "test_mock_quote_provider_returns_raw_messages",
+      "test_build_raw_market_data_provider_defaults_to_mock",
+      "test_format_kiwoom_code_krx_no_suffix",
+      "test_format_kiwoom_code_krx_zero_pads_short_code",
+      "test_format_kiwoom_code_nxt_appends_nx",
+      "test_format_kiwoom_code_nxt_zero_pads_short_code",
+      "test_format_kiwoom_code_sor_appends_al",
+      "test_format_kiwoom_code_all_same_as_sor",
+      "test_format_kiwoom_code_unknown_exchange_no_suffix",
+      "test_format_kiwoom_code_case_insensitive",
+      "test_load_kiwoom_api_config_mock_env_prefers_mock_key",
+      "test_load_kiwoom_api_config_mock_env_falls_back_to_legacy_key",
+      "test_load_kiwoom_api_config_real_env_rejects_missing_real_key",
+      "test_load_kiwoom_api_config_real_env_rejects_missing_real_secret",
+      "test_load_kiwoom_api_config_prod_alias_resolves_to_real_hosts",
+      "test_normalize_tick_message_extracts_item_and_type",
+      "test_normalize_tick_message_returns_none_for_missing_fields",
+      "test_parse_item_code_krx_plain",
+      "test_parse_item_code_nxt_suffix",
+      "test_parse_item_code_sor_suffix",
+      "test_parse_item_code_case_insensitive_suffix",
+      "test_parse_item_code_samsung_krx",
+      "test_parse_signed_int_positive_sign",
+      "test_parse_signed_int_negative_sign",
+      "test_parse_signed_int_plain_string",
+      "test_parse_signed_int_empty_string",
+      "test_parse_signed_int_none",
+      "test_parse_signed_int_non_numeric",
+      "test_parse_signed_float_positive",
+      "test_parse_signed_float_negative",
+      "test_parse_signed_float_none",
+      "test_parse_signed_float_empty",
+      "_make_0b_entry",
+      "test_normalize_tick_rows_krx_single_row",
+      "test_normalize_tick_rows_nxt_item_splits_correctly",
+      "test_normalize_tick_rows_sor_item_splits_correctly",
+      "test_normalize_tick_rows_accepts_nested_values_prod_shape",
+      "test_normalize_tick_rows_multi_row_returns_separate_entries",
+      "test_normalize_tick_rows_non_dict_entries_are_skipped",
+      "test_normalize_tick_rows_best_ask_bid_are_none_until_confirmed",
+      "test_normalize_tick_message_backward_compat_raw_preserved"
+    ],
+    "tests/test_intraday_leader_ranker.py": [
+      "_stock",
+      "_summary",
+      "test_empty_summaries_returns_empty",
+      "test_single_sector_rank",
+      "test_multiple_sectors_sorted_by_score",
+      "test_sector_limit_applied",
+      "test_stock_limit_applied",
+      "test_min_total_trade_value_filter",
+      "test_min_active_stock_count_filter",
+      "test_sector_rank_starts_at_one",
+      "test_leader_stock_rank_starts_at_one",
+      "test_display_badge_assignment",
+      "test_average_change_rate_none_treated_as_zero_in_score",
+      "test_rising_ratio_none_treated_as_zero_in_score",
+      "test_leader_stock_delta_none_preserved",
+      "test_sector_score_calculation",
+      "test_sector_score_negative_change_rate_clipped",
+      "test_leader_stock_fields_copied_from_original",
+      "test_all_filtered_returns_empty",
+      "test_same_score_tiebreak_by_total_tv",
+      "test_same_score_tv_tiebreak_by_sector_name"
+    ],
+    "tests/test_intraday_live_route.py": [
+      "_make_app",
+      "test_intraday_index_returns_200",
+      "test_intraday_index_returns_html",
+      "test_intraday_index_contains_live_script",
+      "test_intraday_index_has_separate_prod_sor_button",
+      "test_api_snapshot_no_runtime",
+      "test_api_start_mock_returns_ok",
+      "test_api_start_creates_runtime",
+      "test_api_start_idempotent",
+      "test_api_start_unknown_provider",
+      "test_api_stop_when_not_running",
+      "test_api_stop_after_start",
+      "test_api_snapshot_after_stop_returns_not_running",
+      "test_api_snapshot_with_data_has_required_keys",
+      "test_api_snapshot_sector_views_structure",
+      "test_morning_board_still_works",
+      "test_health_still_works",
+      "test_sector_board_intraday_still_works",
+      "_codes_file",
+      "test_websocket_over_200_codes_returns_400",
+      "test_websocket_exactly_200_codes_not_blocked_by_limit",
+      "test_websocket_custom_max_total_realtime_codes",
+      "test_websocket_start_response_includes_kiwoom_env",
+      "test_websocket_prod_sor_payload_starts_without_secret_echo",
+      "test_websocket_prod_sor_uses_default_data_files",
+      "test_unknown_provider_returns_400",
+      "test_snapshot_no_runtime_has_diagnosis_fields",
+      "test_snapshot_with_runtime_has_started_at",
+      "test_snapshot_updated_at_equals_generated_at",
+      "test_snapshot_max_codes_limits_registered_count"
+    ],
+    "tests/test_intraday_ranker.py": [
+      "_universe",
+      "_quotes",
+      "test_existing_rank_sectors_still_works",
+      "test_high_change_and_trade_stock_becomes_top_leader",
+      "test_broad_rally_scores_above_single_low_trade_spike",
+      "test_low_trade_spike_does_not_become_first_theme",
+      "test_top_five_sector_limit_and_leader_limit_are_enforced",
+      "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+      "test_string_numeric_values_and_missing_trade_values_are_defensive"
+    ],
+    "tests/test_intraday_runtime.py": [
+      "_make_service",
+      "_fake_rows_as_raw",
+      "_sync_source_factory",
+      "_async_source_factory",
+      "test_initial_state_is_idle",
+      "test_start_transitions_to_running",
+      "test_stop_after_source_exhausted",
+      "test_start_idempotent",
+      "test_stop_when_not_running_is_noop",
+      "test_runtime_ingests_sync_messages",
+      "test_runtime_ingests_async_messages",
+      "test_snapshot_updates_after_messages",
+      "test_snapshot_contains_required_keys",
+      "test_get_latest_snapshot_thread_safe",
+      "test_close_reason_stored_on_bye_exception",
+      "test_unexpected_exception_stored_as_error",
+      "test_make_mock_source_returns_callable",
+      "test_make_mock_source_yields_valid_json",
+      "test_runtime_with_mock_source_reaches_ready"
+    ],
+    "tests/test_intraday_sector_aggregator.py": [
+      "_bucket",
+      "test_empty_buckets_returns_empty",
+      "test_empty_sector_map_returns_empty",
+      "test_single_stock_single_sector",
+      "test_multiple_stocks_same_sector",
+      "test_multiple_sectors",
+      "test_one_stock_multiple_sectors",
+      "test_unmapped_stock_excluded",
+      "test_all_unmapped_returns_empty",
+      "test_minute_key_filter",
+      "test_minute_key_not_in_buckets_returns_empty",
+      "test_latest_minute_auto_selected",
+      "test_average_change_rate_calculation",
+      "test_change_rate_none_excluded_from_average",
+      "test_all_change_rate_none_average_is_none",
+      "test_total_trade_value_sum",
+      "test_delta_none_treated_as_zero_in_total",
+      "test_rising_stock_count",
+      "test_rising_ratio_calculation",
+      "test_rising_ratio_none_when_all_change_rate_none",
+      "test_leader_stocks_limit",
+      "test_leader_stocks_sorted_by_delta_desc",
+      "test_leader_stocks_delta_none_sorted_last",
+      "test_rank_score_formula",
+      "test_rank_score_negative_change_rate_clipped",
+      "test_sector_summary_sorted_by_total_trade_value",
+      "test_sector_summary_tiebreak_by_average_change_rate"
+    ],
+    "tests/test_intraday_snapshot_serialization.py": [
+      "_make_empty_snap",
+      "_make_ready_snap",
+      "test_snapshot_to_dict_returns_dict",
+      "test_snapshot_to_dict_is_json_serializable",
+      "test_snapshot_to_dict_required_keys",
+      "test_snapshot_to_dict_no_credentials",
+      "test_empty_snapshot_status",
+      "test_empty_snapshot_sector_views_is_list",
+      "test_empty_snapshot_generated_at_is_iso",
+      "test_ready_snapshot_has_sector_views",
+      "test_ready_snapshot_sector_view_keys",
+      "test_ready_snapshot_leader_stock_keys",
+      "test_ready_snapshot_is_fully_json_serializable"
+    ],
+    "tests/test_intraday_snapshot_service.py": [
+      "_universe",
+      "_quotes",
+      "test_build_intraday_snapshot_payload_is_repository_compatible",
+      "test_intraday_snapshot_theme_and_leader_keys_match_morning_template_shape",
+      "_row",
+      "_real_json",
+      "_real_json_values",
+      "_svc",
+      "test_v2_initial_snapshot_is_empty",
+      "test_v2_ingest_single_row_updates_latest",
+      "test_v2_ingest_raw_message_real_json",
+      "test_v2_ingest_raw_message_nested_values_creates_minute_bucket",
+      "test_v2_multiple_ticks_same_minute_single_bucket",
+      "test_v2_ticks_across_two_minutes_two_buckets",
+      "test_v2_sector_views_generated",
+      "test_v2_sector_limit_applied",
+      "test_v2_stock_limit_applied",
+      "test_v2_min_total_trade_value_filter",
+      "test_v2_min_active_stock_count_filter",
+      "test_v2_unmapped_stocks_yield_warming",
+      "test_v2_invalid_trade_time_no_bucket_status_empty",
+      "test_v2_none_trade_time_no_bucket",
+      "test_v2_invalid_json_returns_zero_increments_ignored",
+      "test_v2_non_real_message_returns_zero",
+      "test_v2_empty_rows_returns_zero_increments_ignored",
+      "test_v2_row_without_base_code_is_ignored",
+      "test_v2_row_without_exchange_is_ignored",
+      "test_v2_specific_minute_key_filter",
+      "test_v2_none_minute_key_uses_latest_minute",
+      "test_v2_reset_clears_state",
+      "test_v2_raw_row_count_accumulates",
+      "test_v2_ignored_row_count_accumulates",
+      "test_v2_generated_at_is_datetime",
+      "test_v2_snapshot_counts_accurate",
+      "test_v2_status_empty",
+      "test_v2_status_warming",
+      "test_v2_status_ready",
+      "test_v2_stock_in_multiple_sectors",
+      "test_v2_service_survives_normalize_exception"
+    ],
+    "tests/test_intraday_snapshot_smoke.py": [
+      "test_parse_codes_str_basic",
+      "test_parse_codes_str_skips_invalid",
+      "test_parse_codes_file_basic",
+      "test_parse_codes_file_skips_comments",
+      "test_zero_pad_short_code",
+      "test_zero_pad_from_file",
+      "test_dedup_codes_str",
+      "test_dedup_codes_file",
+      "test_apply_max_codes_limits",
+      "test_apply_max_codes_zero_means_no_limit",
+      "test_format_codes_krx",
+      "test_format_codes_nxt",
+      "test_format_codes_sor",
+      "test_over_limit_blocked_websocket_subprocess",
+      "test_dry_run_over_limit_not_blocked",
+      "test_fallback_sector_map_has_expected_sectors",
+      "test_fallback_sector_map_no_credentials",
+      "test_sector_map_file_load",
+      "test_sector_map_file_zero_pads_keys",
+      "test_invalid_sector_map_file_not_found",
+      "test_invalid_sector_map_file_bad_json",
+      "test_invalid_sector_map_file_wrong_type",
+      "test_mock_raw_message_is_normalizable",
+      "test_mock_raw_message_negative_change_rate",
+      "test_mock_stream_into_service_reaches_ready",
+      "test_format_snapshot_summary_empty",
+      "test_format_snapshot_summary_ready",
+      "test_snapshot_to_dict_is_json_serializable",
+      "test_snapshot_to_dict_no_credentials",
+      "test_dump_jsonl_no_credentials",
+      "test_format_final_summary_contains_key_fields",
+      "test_format_final_summary_hint_when_no_sectors",
+      "test_dry_run_subprocess_exits_zero",
+      "test_dry_run_shows_mapped_codes",
+      "test_mock_run_subprocess_exits_zero",
+      "test_mock_run_produces_snapshot_output",
+      "test_no_sector_map_file_exits_2_without_allow_fallback",
+      "test_allow_fallback_flag_enables_run_without_sector_map_file",
+      "test_allow_fallback_flag_shows_warning_message",
+      "test_sector_map_file_warns_on_non_list_value",
+      "test_sector_map_file_no_warnings_for_valid_file",
+      "test_high_min_trade_value_shows_hint"
+    ],
+    "tests/test_intraday_state.py": [
+      "test_intraday_quote_state_updates_latest_tick_by_code",
+      "test_normalize_tick_accepts_kiwoom_raw_values_shape",
+      "test_intraday_quote_state_rejects_missing_code"
+    ],
+    "tests/test_intraday_tick_aggregator.py": [
+      "_row",
+      "test_parse_minute_key_normal",
+      "test_parse_minute_key_exact_four_chars",
+      "test_parse_minute_key_too_short",
+      "test_parse_minute_key_none",
+      "test_parse_minute_key_empty_string",
+      "test_parse_minute_key_non_digit_prefix",
+      "test_recalculate_delta_normal",
+      "test_recalculate_delta_negative_is_none",
+      "test_recalculate_delta_first_none_is_none",
+      "test_empty_ingest_no_state",
+      "test_row_without_base_code_ignored",
+      "test_single_row_latest_state",
+      "test_latest_state_updates_on_second_tick",
+      "test_different_exchange_separate_latest_state",
+      "test_multiple_codes_separate_latest_states",
+      "test_single_row_creates_bucket",
+      "test_ohlc_multiple_ticks_same_minute",
+      "test_different_minute_creates_separate_buckets",
+      "test_different_codes_same_minute_separate_buckets",
+      "test_exchange_different_creates_separate_buckets",
+      "test_empty_trade_time_no_bucket_latest_updated",
+      "test_none_trade_time_no_bucket_latest_updated",
+      "test_short_trade_time_no_bucket",
+      "test_non_digit_trade_time_no_bucket",
+      "test_trade_value_delta_two_ticks",
+      "test_trade_value_delta_single_tick_is_zero",
+      "test_trade_value_none_yields_none_delta",
+      "test_trade_value_negative_delta_is_none",
+      "test_trade_value_first_none_then_value",
+      "_build_agg",
+      "test_get_top_empty_aggregator",
+      "test_get_top_sorted_by_delta_descending",
+      "test_get_top_limit_applied",
+      "test_get_top_latest_minute_auto_selected",
+      "test_get_top_none_delta_sorted_last",
+      "test_get_top_specific_minute_key"
+    ],
+    "tests/test_intraday_universe_sync.py": [
+      "_write_theme_csv",
+      "test_sector_map_basic",
+      "test_sector_map_theme1_only_is_default",
+      "test_sector_map_multi_sector",
+      "test_sector_map_multi_sector_empty_theme3",
+      "test_sector_map_excludes_empty_theme1",
+      "test_sector_map_code_is_zero_padded",
+      "test_sector_map_deduplicates_code",
+      "test_sector_map_skips_non_numeric_code",
+      "test_sector_map_skips_seven_digit_code",
+      "test_universe_codes_basic",
+      "test_universe_codes_excludes_empty_theme1",
+      "test_universe_codes_zero_pads",
+      "test_universe_codes_deduplicates",
+      "test_universe_codes_preserves_order",
+      "test_validate_consistency_ok",
+      "test_validate_consistency_in_sm_not_in_universe",
+      "test_validate_consistency_in_universe_not_in_sm",
+      "test_validate_consistency_set_input",
+      "test_write_sector_map_json",
+      "test_write_universe_txt",
+      "test_write_universe_txt_with_comment",
+      "test_data_files_are_consistent"
+    ],
+    "tests/test_kiwoom_bulk_helpers.py": [
+      "test_parse_codes_file_basic",
+      "test_parse_codes_file_deduplicates",
+      "test_parse_codes_file_skips_blank_and_comments",
+      "test_parse_codes_file_zero_pads_short_code",
+      "test_parse_codes_file_excludes_non_numeric",
+      "test_validate_codes_accepts_valid",
+      "test_validate_codes_deduplicates",
+      "test_validate_codes_zero_pads",
+      "test_validate_codes_rejects_non_numeric",
+      "test_validate_codes_rejects_too_long",
+      "test_apply_max_codes_limits",
+      "test_apply_max_codes_zero_means_no_limit",
+      "test_apply_max_codes_larger_than_list",
+      "test_format_bulk_codes_krx_no_suffix",
+      "test_format_bulk_codes_nxt_suffix",
+      "test_format_bulk_codes_sor_suffix",
+      "test_format_bulk_codes_all_triples_count",
+      "test_format_bulk_codes_all_contains_all_exchanges",
+      "test_format_bulk_codes_all_order_is_krx_nxt_sor",
+      "_make_real_msg",
+      "test_accumulator_counts_message_and_rows",
+      "test_accumulator_counts_by_item",
+      "test_accumulator_counts_by_exchange",
+      "test_accumulator_top_items",
+      "test_accumulator_unique_base_codes_strips_suffix",
+      "test_accumulator_multi_row_message",
+      "test_accumulator_mock_flat_message",
+      "_make_codes",
+      "test_build_reg_groups_199_is_single_group",
+      "test_build_reg_groups_200_is_single_group",
+      "test_build_reg_groups_201_splits_200_1",
+      "test_build_reg_groups_300_splits_200_100",
+      "test_build_reg_groups_401_splits_200_200_1",
+      "test_build_reg_groups_custom_batch_size",
+      "test_build_reg_groups_invalid_batch_size_raises",
+      "test_format_reg_summary_single_ok",
+      "test_format_reg_summary_single_failed",
+      "test_format_reg_summary_single_none",
+      "test_format_reg_summary_multi_all_ok",
+      "test_format_reg_summary_multi_partial",
+      "test_format_reg_summary_multi_all_failed",
+      "test_format_reg_summary_empty",
+      "test_dry_run_shows_chunk_plan",
+      "test_dry_run_300_codes_shows_two_groups",
+      "test_dry_run_300_codes_shows_over_limit_warning",
+      "test_websocket_200_codes_allowed",
+      "test_websocket_201_codes_blocked",
+      "test_websocket_300_codes_blocked",
+      "test_websocket_201_codes_experimental_not_blocked"
+    ],
+    "tests/test_market_data_view_models.py": [
+      "test_get_market_summary_returns_required_keys",
+      "test_get_market_movers_returns_limited_required_keys_without_api_key",
+      "test_get_market_movers_sorted_by_pct_change_desc",
+      "test_get_theme_heatmap_returns_required_columns_and_mock_data",
+      "test_get_theme_leaders_valid_theme_id_returns_at_most_five_rows",
+      "test_get_theme_leaders_unknown_theme_id_returns_empty_stable_frame",
+      "test_get_theme_heatmap_has_badges_column",
+      "test_load_market_prices_falls_back_when_auth_fails",
+      "test_get_theme_heatmap_has_leader_labels_with_change_rates",
+      "test_get_intraday_board_view_models_returns_payload"
+    ],
+    "tests/test_news_service.py": [
+      "test_search_naver_news_without_api_key_returns_empty_list",
+      "test_search_naver_news_display_argument_is_safe_without_api_key",
+      "test_strip_html_removes_tags_and_decodes_entities",
+      "test_build_news_queries_for_mover_uses_mover_name",
+      "test_search_naver_news_filters_to_stock_price_related_items"
+    ],
+    "tests/test_rise_reason_service.py": [
+      "test_summarize_rise_reason_without_api_key_returns_required_schema",
+      "test_summarize_rise_reason_without_evidence_returns_unknown",
+      "test_summarize_rise_reason_ignores_non_news_evidence",
+      "test_summarize_rise_reasons_returns_list"
+    ],
+    "tests/test_sector_board_blueprint.py": [
+      "_make_app",
+      "_intraday_snapshot",
+      "test_sector_board_index_renders_snapshot",
+      "test_sector_board_index_renders_intraday_leaderboard",
+      "test_sector_board_api_reports_missing_database"
+    ],
+    "tests/test_sector_board_intraday_collector.py": [
+      "test_collect_intraday_and_store_uses_same_day_upsert",
+      "test_collect_intraday_and_store_disabled_preserves_morning_path",
+      "test_collect_intraday_and_store_survives_evidence_failure"
+    ],
+    "tests/test_sector_board_intraday_reader.py": [
+      "_make_snapshot",
+      "test_fmt_trade_value_thousand_eok",
+      "test_fmt_trade_value_eok",
+      "test_fmt_trade_value_small_eok",
+      "test_fmt_trade_value_man",
+      "test_fmt_trade_value_none",
+      "test_fmt_trade_value_zero",
+      "test_fmt_rate_positive",
+      "test_fmt_rate_negative",
+      "test_fmt_rate_zero",
+      "test_fmt_rate_none",
+      "test_fmt_rising_ratio_full",
+      "test_fmt_rising_ratio_half",
+      "test_fmt_rising_ratio_none",
+      "test_find_latest_returns_most_recent",
+      "test_find_latest_returns_none_when_empty",
+      "test_find_latest_ignores_non_snapshot_files",
+      "test_read_last_snapshot_returns_last_line",
+      "test_read_last_snapshot_single_line",
+      "test_read_last_snapshot_file_not_found",
+      "test_read_last_snapshot_empty_file",
+      "test_read_last_snapshot_blank_lines_only",
+      "test_read_last_snapshot_bad_json_returns_none",
+      "test_load_latest_reads_newest_file",
+      "test_load_latest_returns_none_when_no_files",
+      "test_load_latest_returns_none_for_missing_dir",
+      "test_build_view_none_returns_empty",
+      "test_build_view_none_has_all_keys",
+      "test_build_view_ready_status",
+      "test_build_view_sector_count",
+      "test_build_view_sector_name_preserved",
+      "test_build_view_sector_trade_value_formatted",
+      "test_build_view_sector_rate_formatted",
+      "test_build_view_sector_negative_rate",
+      "test_build_view_rising_ratio_formatted",
+      "test_build_view_leader_count",
+      "test_build_view_leader_badges",
+      "test_build_view_leader_code",
+      "test_build_view_leader_rate_positive",
+      "test_build_view_leader_rate_negative",
+      "test_build_view_leader_price_formatted",
+      "test_build_view_leader_price_none_shows_na",
+      "test_build_view_leader_tv_formatted",
+      "test_build_view_empty_sector_views",
+      "test_build_view_warming_status",
+      "test_build_view_unmapped_count_preserved"
+    ],
+    "tests/test_sector_board_intraday_route.py": [
+      "_make_app",
+      "_make_snapshot_jsonl",
+      "_ready_snapshot",
+      "test_intraday_route_exists",
+      "test_intraday_route_returns_html",
+      "test_intraday_empty_state_no_jsonl",
+      "test_intraday_empty_shows_run_hint",
+      "test_intraday_ready_state_with_jsonl",
+      "test_intraday_shows_sector_names",
+      "test_intraday_shows_leader_badges",
+      "test_intraday_shows_stock_codes",
+      "test_intraday_shows_minute_key",
+      "test_intraday_reads_most_recent_jsonl",
+      "test_intraday_reads_last_line_of_jsonl",
+      "test_intraday_warming_state",
+      "test_morning_board_route_still_works",
+      "test_health_route_still_works",
+      "test_intraday_shows_unmapped_warning"
+    ],
+    "tests/test_sector_board_repository.py": [
+      "_payload",
+      "test_upsert_snapshot_keeps_one_row_per_day",
+      "test_fetch_snapshot_returns_none_when_missing"
+    ],
+    "tests/test_sector_map_loader.py": [
+      "test_load_valid_sector_map",
+      "test_load_returns_sector_map_load_result_type",
+      "test_short_code_is_zero_padded",
+      "test_already_six_digit_code_unchanged",
+      "test_code_with_spaces_stripped_and_padded",
+      "test_missing_file_raises_file_not_found",
+      "test_bad_json_raises_sector_map_load_error",
+      "test_bad_json_is_also_value_error",
+      "test_top_level_list_raises_error",
+      "test_top_level_string_raises_error",
+      "test_non_list_value_strict_false_produces_warning",
+      "test_non_list_value_strict_true_raises",
+      "test_non_list_value_int_strict_false_produces_warning",
+      "test_non_list_value_null_strict_false_produces_warning",
+      "test_non_string_sector_item_strict_false_warning",
+      "test_non_string_sector_item_strict_true_raises",
+      "test_empty_string_sector_item_is_ignored",
+      "test_mixed_valid_invalid_entries",
+      "test_empty_object_returns_empty_map",
+      "test_accepts_str_path",
+      "test_warnings_field_is_list"
+    ],
+    "tests/test_sector_ranker.py": [
+      "test_rank_sectors_scores_and_leaders"
+    ],
+    "tests/test_theme_loader.py": [
+      "test_themes_to_long_removes_empty_values"
+    ],
+    "tests/test_universe_builder.py": [
+      "_theme_map",
+      "_krx_rows",
+      "test_config_from_settings_reads_universe_defaults",
+      "test_normalize_krx_frame_accepts_project_and_fdr_column_names",
+      "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+      "test_build_universe_preserves_multi_theme_long_format",
+      "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+      "test_build_universe_can_disable_type_exclusions"
+    ]
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": "app.py",
+          "language": "python",
+          "sizeLines": 246,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/config.py",
+          "language": "python",
+          "sizeLines": 162,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/dart_service.py",
+          "language": "python",
+          "sizeLines": 114,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/dashboard_components.py",
+          "language": "python",
+          "sizeLines": 1519,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/evidence_service.py",
+          "language": "python",
+          "sizeLines": 181,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/news_service.py",
+          "language": "python",
+          "sizeLines": 227,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/rise_reason_service.py",
+          "language": "python",
+          "sizeLines": 247,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/snapshot_service.py",
+          "language": "python",
+          "sizeLines": 208,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_config.py",
+          "language": "python",
+          "sizeLines": 168,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_dart_service.py",
+          "language": "python",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_dashboard_rise_reason_view.py",
+          "language": "python",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_evidence_service.py",
+          "language": "python",
+          "sizeLines": 152,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_market_data_view_models.py",
+          "language": "python",
+          "sizeLines": 142,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_news_service.py",
+          "language": "python",
+          "sizeLines": 102,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_rise_reason_service.py",
+          "language": "python",
+          "sizeLines": 114,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app.py": [
+          "src/config.py",
+          "src/dashboard_components.py",
+          "src/evidence_service.py",
+          "src/market_data.py",
+          "src/rise_reason_service.py",
+          "src/snapshot_service.py"
+        ],
+        "src/config.py": [],
+        "src/dart_service.py": [
+          "src/config.py"
+        ],
+        "src/dashboard_components.py": [],
+        "src/evidence_service.py": [
+          "src/market_data.py",
+          "src/news_service.py"
+        ],
+        "src/news_service.py": [
+          "src/config.py"
+        ],
+        "src/rise_reason_service.py": [
+          "src/config.py"
+        ],
+        "src/snapshot_service.py": [],
+        "tests/test_config.py": [
+          "src/config.py"
+        ],
+        "tests/test_dart_service.py": [
+          "src/dart_service.py"
+        ],
+        "tests/test_dashboard_rise_reason_view.py": [
+          "src/dashboard_components.py"
+        ],
+        "tests/test_evidence_service.py": [
+          "src/evidence_service.py"
+        ],
+        "tests/test_market_data_view_models.py": [
+          "src/config.py",
+          "src/kiwoom_auth.py",
+          "src/market_data.py"
+        ],
+        "tests/test_news_service.py": [
+          "src/news_service.py"
+        ],
+        "tests/test_rise_reason_service.py": [
+          "src/rise_reason_service.py"
+        ]
+      },
+      "neighborMap": {
+        "app.py": [
+          {
+            "path": "src/market_data.py",
+            "batchIndex": 4,
+            "symbols": [
+              "load_market_prices",
+              "_empty_dataframe",
+              "_mock_intraday_universe",
+              "_mock_intraday_quotes",
+              "_get_market_phase",
+              "get_refresh_schedule",
+              "_load_ranked_snapshot",
+              "_load_krx_snapshot",
+              "_data_mode",
+              "_build_market_summary",
+              "_build_theme_heatmap",
+              "_build_leader_view",
+              "get_morning_board_view_models",
+              "get_intraday_board_view_models",
+              "get_market_summary",
+              "get_market_movers",
+              "get_theme_heatmap",
+              "get_theme_leaders"
+            ]
+          }
+        ],
+        "src/config.py": [
+          {
+            "path": "src/market_data.py",
+            "batchIndex": 4,
+            "symbols": [
+              "load_market_prices",
+              "_empty_dataframe",
+              "_mock_intraday_universe",
+              "_mock_intraday_quotes",
+              "_get_market_phase",
+              "get_refresh_schedule",
+              "_load_ranked_snapshot",
+              "_load_krx_snapshot",
+              "_data_mode",
+              "_build_market_summary",
+              "_build_theme_heatmap",
+              "_build_leader_view",
+              "get_morning_board_view_models",
+              "get_intraday_board_view_models",
+              "get_market_summary",
+              "get_market_movers",
+              "get_theme_heatmap",
+              "get_theme_leaders"
+            ]
+          },
+          {
+            "path": "src/universe_builder.py",
+            "batchIndex": 4,
+            "symbols": [
+              "UniverseBuildConfig",
+              "UniverseBuildResult",
+              "config_from_settings",
+              "build_universe",
+              "normalize_krx_frame",
+              "_attach_themes",
+              "_build_exclusion_flags",
+              "_excluded_by_reason",
+              "_with_max_code_exclusion",
+              "_metadata",
+              "_find_column",
+              "_normalize_code",
+              "_as_bool_series",
+              "_infer_flag",
+              "_empty_universe_frame"
+            ]
+          }
+        ],
+        "src/evidence_service.py": [
+          {
+            "path": "src/market_data.py",
+            "batchIndex": 4,
+            "symbols": [
+              "load_market_prices",
+              "_empty_dataframe",
+              "_mock_intraday_universe",
+              "_mock_intraday_quotes",
+              "_get_market_phase",
+              "get_refresh_schedule",
+              "_load_ranked_snapshot",
+              "_load_krx_snapshot",
+              "_data_mode",
+              "_build_market_summary",
+              "_build_theme_heatmap",
+              "_build_leader_view",
+              "get_morning_board_view_models",
+              "get_intraday_board_view_models",
+              "get_market_summary",
+              "get_market_movers",
+              "get_theme_heatmap",
+              "get_theme_leaders"
+            ]
+          }
+        ],
+        "tests/test_market_data_view_models.py": [
+          {
+            "path": "src/kiwoom_auth.py",
+            "batchIndex": 5,
+            "symbols": [
+              "KiwoomAuthError",
+              "AccessToken",
+              "KiwoomApiConfig",
+              "_project_root",
+              "_load_project_env",
+              "_normalized_env",
+              "_normalized_provider",
+              "_select_app_key",
+              "_select_secret_key",
+              "load_kiwoom_api_config",
+              "issue_access_token",
+              "issue_access_token_from_env"
+            ]
+          },
+          {
+            "path": "src/market_data.py",
+            "batchIndex": 4,
+            "symbols": [
+              "load_market_prices",
+              "_empty_dataframe",
+              "_mock_intraday_universe",
+              "_mock_intraday_quotes",
+              "_get_market_phase",
+              "get_refresh_schedule",
+              "_load_ranked_snapshot",
+              "_load_krx_snapshot",
+              "_data_mode",
+              "_build_market_summary",
+              "_build_theme_heatmap",
+              "_build_leader_view",
+              "get_morning_board_view_models",
+              "get_intraday_board_view_models",
+              "get_market_summary",
+              "get_market_movers",
+              "get_theme_heatmap",
+              "get_theme_leaders"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "scripts/run_intraday_snapshot_smoke.py",
+          "language": "python",
+          "sizeLines": 640,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/payload.py",
+          "language": "python",
+          "sizeLines": 46,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_leader_ranker.py",
+          "language": "python",
+          "sizeLines": 179,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_runtime.py",
+          "language": "python",
+          "sizeLines": 367,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_sector_aggregator.py",
+          "language": "python",
+          "sizeLines": 195,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_snapshot_serialization.py",
+          "language": "python",
+          "sizeLines": 54,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_snapshot_service.py",
+          "language": "python",
+          "sizeLines": 362,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_tick_aggregator.py",
+          "language": "python",
+          "sizeLines": 227,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_leader_ranker.py",
+          "language": "python",
+          "sizeLines": 351,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_runtime.py",
+          "language": "python",
+          "sizeLines": 282,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_sector_aggregator.py",
+          "language": "python",
+          "sizeLines": 407,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_snapshot_serialization.py",
+          "language": "python",
+          "sizeLines": 133,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_snapshot_service.py",
+          "language": "python",
+          "sizeLines": 542,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_snapshot_smoke.py",
+          "language": "python",
+          "sizeLines": 561,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_tick_aggregator.py",
+          "language": "python",
+          "sizeLines": 397,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "scripts/run_intraday_snapshot_smoke.py": [
+          "src/intraday_snapshot_serialization.py",
+          "src/intraday_snapshot_service.py",
+          "src/kiwoom_websocket.py"
+        ],
+        "sector_board/payload.py": [],
+        "src/intraday_leader_ranker.py": [
+          "src/intraday_sector_aggregator.py"
+        ],
+        "src/intraday_runtime.py": [
+          "src/intraday_snapshot_serialization.py",
+          "src/intraday_snapshot_service.py"
+        ],
+        "src/intraday_sector_aggregator.py": [
+          "src/intraday_tick_aggregator.py"
+        ],
+        "src/intraday_snapshot_serialization.py": [],
+        "src/intraday_snapshot_service.py": [
+          "src/intraday_leader_ranker.py",
+          "src/intraday_sector_aggregator.py",
+          "src/intraday_tick_aggregator.py",
+          "src/kiwoom_websocket.py",
+          "src/sector_ranker.py"
+        ],
+        "src/intraday_tick_aggregator.py": [],
+        "tests/test_intraday_leader_ranker.py": [
+          "src/intraday_leader_ranker.py",
+          "src/intraday_sector_aggregator.py"
+        ],
+        "tests/test_intraday_runtime.py": [
+          "src/intraday_runtime.py",
+          "src/intraday_snapshot_service.py"
+        ],
+        "tests/test_intraday_sector_aggregator.py": [
+          "src/intraday_sector_aggregator.py",
+          "src/intraday_tick_aggregator.py"
+        ],
+        "tests/test_intraday_snapshot_serialization.py": [
+          "src/intraday_snapshot_serialization.py",
+          "src/intraday_snapshot_service.py"
+        ],
+        "tests/test_intraday_snapshot_service.py": [
+          "sector_board/payload.py",
+          "src/intraday_snapshot_service.py"
+        ],
+        "tests/test_intraday_snapshot_smoke.py": [
+          "src/intraday_snapshot_service.py",
+          "src/kiwoom_websocket.py"
+        ],
+        "tests/test_intraday_tick_aggregator.py": [
+          "src/intraday_tick_aggregator.py"
+        ]
+      },
+      "neighborMap": {
+        "scripts/run_intraday_snapshot_smoke.py": [
+          {
+            "path": "src/kiwoom_websocket.py",
+            "batchIndex": 5,
+            "symbols": [
+              "KiwoomWebSocketError",
+              "KiwoomRawMessage",
+              "format_kiwoom_code",
+              "parse_item_code",
+              "parse_signed_int",
+              "parse_signed_float",
+              "_normalize_one_data_entry",
+              "normalize_tick_rows",
+              "normalize_tick_message",
+              "build_realtime_trade_registration",
+              "KiwoomWebSocketClient",
+              "_parse_json"
+            ]
+          }
+        ],
+        "sector_board/payload.py": [
+          {
+            "path": "sector_board/repository.py",
+            "batchIndex": 3,
+            "symbols": [
+              "_get_engine",
+              "normalize_database_url",
+              "resolve_database_url",
+              "create_snapshot_engine",
+              "_ensure_rise_reasons_column",
+              "_ensure_refresh_columns",
+              "ensure_schema",
+              "_upsert_row",
+              "upsert_snapshot",
+              "set_refresh_running",
+              "set_refresh_error",
+              "_row_to_payload",
+              "fetch_snapshot",
+              "fetch_previous_snapshot",
+              "fetch_recent_snapshots"
+            ]
+          }
+        ],
+        "src/intraday_snapshot_service.py": [
+          {
+            "path": "src/kiwoom_websocket.py",
+            "batchIndex": 5,
+            "symbols": [
+              "KiwoomWebSocketError",
+              "KiwoomRawMessage",
+              "format_kiwoom_code",
+              "parse_item_code",
+              "parse_signed_int",
+              "parse_signed_float",
+              "_normalize_one_data_entry",
+              "normalize_tick_rows",
+              "normalize_tick_message",
+              "build_realtime_trade_registration",
+              "KiwoomWebSocketClient",
+              "_parse_json"
+            ]
+          },
+          {
+            "path": "src/sector_ranker.py",
+            "batchIndex": 4,
+            "symbols": [
+              "IntradayRankingWeights",
+              "_min_max_to_10",
+              "_rank_score",
+              "build_sector_universe",
+              "add_leader_scores",
+              "rank_sectors",
+              "rank_sectors_krx",
+              "rank_intraday_leaders",
+              "_build_intraday_frame",
+              "_add_intraday_leader_scores",
+              "_rank_intraday_theme_frames",
+              "_build_rank_events",
+              "_extract_previous_ranks",
+              "_intraday_summary",
+              "_provider_status",
+              "_stability_score",
+              "_records",
+              "_to_numeric",
+              "_normalize_code",
+              "_prefer_text",
+              "_dominant_text"
+            ]
+          }
+        ],
+        "tests/test_intraday_snapshot_smoke.py": [
+          {
+            "path": "src/kiwoom_websocket.py",
+            "batchIndex": 5,
+            "symbols": [
+              "KiwoomWebSocketError",
+              "KiwoomRawMessage",
+              "format_kiwoom_code",
+              "parse_item_code",
+              "parse_signed_int",
+              "parse_signed_float",
+              "_normalize_one_data_entry",
+              "normalize_tick_rows",
+              "normalize_tick_message",
+              "build_realtime_trade_registration",
+              "KiwoomWebSocketClient",
+              "_parse_json"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": "sector_board/__init__.py",
+          "language": "python",
+          "sizeLines": 74,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/auth.py",
+          "language": "python",
+          "sizeLines": 22,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/blueprint.py",
+          "language": "python",
+          "sizeLines": 517,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/intraday_blueprint.py",
+          "language": "python",
+          "sizeLines": 447,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/repository.py",
+          "language": "python",
+          "sizeLines": 334,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/schema.py",
+          "language": "python",
+          "sizeLines": 24,
+          "fileCategory": "code"
+        },
+        {
+          "path": "standalone.py",
+          "language": "python",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_live_route.py",
+          "language": "python",
+          "sizeLines": 544,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_board_blueprint.py",
+          "language": "python",
+          "sizeLines": 221,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_board_intraday_route.py",
+          "language": "python",
+          "sizeLines": 344,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_board_repository.py",
+          "language": "python",
+          "sizeLines": 65,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "sector_board/__init__.py": [
+          "sector_board/blueprint.py",
+          "sector_board/intraday_blueprint.py",
+          "sector_board/repository.py"
+        ],
+        "sector_board/auth.py": [],
+        "sector_board/blueprint.py": [
+          "sector_board/auth.py",
+          "sector_board/repository.py"
+        ],
+        "sector_board/intraday_blueprint.py": [
+          "sector_board/auth.py"
+        ],
+        "sector_board/repository.py": [
+          "sector_board/payload.py",
+          "sector_board/schema.py"
+        ],
+        "sector_board/schema.py": [],
+        "standalone.py": [
+          "sector_board/__init__.py"
+        ],
+        "tests/test_intraday_live_route.py": [
+          "sector_board/__init__.py"
+        ],
+        "tests/test_sector_board_blueprint.py": [
+          "sector_board/__init__.py",
+          "sector_board/repository.py"
+        ],
+        "tests/test_sector_board_intraday_route.py": [
+          "sector_board/__init__.py"
+        ],
+        "tests/test_sector_board_repository.py": [
+          "sector_board/repository.py",
+          "sector_board/schema.py"
+        ]
+      },
+      "neighborMap": {
+        "sector_board/__init__.py": [
+          {
+            "path": "tests/test_intraday_board_integration.py",
+            "batchIndex": 4,
+            "symbols": [
+              "test_mock_intraday_pipeline_renders_flask_board"
+            ]
+          }
+        ],
+        "sector_board/repository.py": [
+          {
+            "path": "sector_board/payload.py",
+            "batchIndex": 2,
+            "symbols": [
+              "parse_generated_at",
+              "normalize_snapshot_payload"
+            ]
+          },
+          {
+            "path": "tests/test_intraday_board_integration.py",
+            "batchIndex": 4,
+            "symbols": [
+              "test_mock_intraday_pipeline_renders_flask_board"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": "src/dummy_data.py",
+          "language": "python",
+          "sizeLines": 24,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/market_data.py",
+          "language": "python",
+          "sizeLines": 557,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/sector_ranker.py",
+          "language": "python",
+          "sizeLines": 582,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/theme_loader.py",
+          "language": "python",
+          "sizeLines": 34,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/universe_builder.py",
+          "language": "python",
+          "sizeLines": 301,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_board_integration.py",
+          "language": "python",
+          "sizeLines": 72,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_ranker.py",
+          "language": "python",
+          "sizeLines": 121,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_ranker.py",
+          "language": "python",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_theme_loader.py",
+          "language": "python",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_universe_builder.py",
+          "language": "python",
+          "sizeLines": 153,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "src/dummy_data.py": [],
+        "src/market_data.py": [
+          "src/config.py",
+          "src/dummy_data.py",
+          "src/kiwoom_auth.py",
+          "src/kiwoom_client.py",
+          "src/sector_ranker.py",
+          "src/theme_loader.py"
+        ],
+        "src/sector_ranker.py": [
+          "src/dummy_data.py",
+          "src/theme_loader.py"
+        ],
+        "src/theme_loader.py": [],
+        "src/universe_builder.py": [
+          "src/config.py",
+          "src/theme_loader.py"
+        ],
+        "tests/test_intraday_board_integration.py": [
+          "sector_board/__init__.py",
+          "sector_board/repository.py",
+          "src/market_data.py",
+          "src/universe_builder.py"
+        ],
+        "tests/test_intraday_ranker.py": [
+          "src/sector_ranker.py"
+        ],
+        "tests/test_sector_ranker.py": [
+          "src/sector_ranker.py"
+        ],
+        "tests/test_theme_loader.py": [
+          "src/theme_loader.py"
+        ],
+        "tests/test_universe_builder.py": [
+          "src/universe_builder.py"
+        ]
+      },
+      "neighborMap": {
+        "src/market_data.py": [
+          {
+            "path": "src/config.py",
+            "batchIndex": 1,
+            "symbols": [
+              "_as_bool",
+              "_as_int",
+              "_as_float",
+              "Settings",
+              "load_settings",
+              "get_opendart_api_key",
+              "get_naver_credentials",
+              "get_openai_api_key"
+            ]
+          },
+          {
+            "path": "src/kiwoom_auth.py",
+            "batchIndex": 5,
+            "symbols": [
+              "KiwoomAuthError",
+              "AccessToken",
+              "KiwoomApiConfig",
+              "_project_root",
+              "_load_project_env",
+              "_normalized_env",
+              "_normalized_provider",
+              "_select_app_key",
+              "_select_secret_key",
+              "load_kiwoom_api_config",
+              "issue_access_token",
+              "issue_access_token_from_env"
+            ]
+          },
+          {
+            "path": "src/kiwoom_client.py",
+            "batchIndex": 5,
+            "symbols": [
+              "KiwoomApiError",
+              "KiwoomRestClient",
+              "_to_number",
+              "_normalize_ka10001"
+            ]
+          },
+          {
+            "path": "app.py",
+            "batchIndex": 1,
+            "symbols": [
+              "load_board_view_models",
+              "load_yesterday_data",
+              "load_rise_reason_summaries",
+              "_empty_board_state",
+              "_theme_label",
+              "_auto_refresh_if_checkpoint_crossed",
+              "main"
+            ]
+          },
+          {
+            "path": "src/evidence_service.py",
+            "batchIndex": 1,
+            "symbols": [
+              "_trade_date_value",
+              "_safe_evidence_items",
+              "_dedupe_evidence",
+              "_sort_evidence",
+              "_collect_evidence",
+              "build_evidence_bundle",
+              "build_evidence_bundles",
+              "_leader_to_mover",
+              "build_evidence_bundles_for_leaders"
+            ]
+          },
+          {
+            "path": "tests/test_market_data_view_models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "test_get_market_summary_returns_required_keys",
+              "test_get_market_movers_returns_limited_required_keys_without_api_key",
+              "test_get_market_movers_sorted_by_pct_change_desc",
+              "test_get_theme_heatmap_returns_required_columns_and_mock_data",
+              "test_get_theme_leaders_valid_theme_id_returns_at_most_five_rows",
+              "test_get_theme_leaders_unknown_theme_id_returns_empty_stable_frame",
+              "test_get_theme_heatmap_has_badges_column",
+              "test_load_market_prices_falls_back_when_auth_fails",
+              "test_get_theme_heatmap_has_leader_labels_with_change_rates",
+              "test_get_intraday_board_view_models_returns_payload"
+            ]
+          }
+        ],
+        "src/sector_ranker.py": [
+          {
+            "path": "src/intraday_snapshot_service.py",
+            "batchIndex": 2,
+            "symbols": [
+              "build_intraday_snapshot_payload",
+              "_theme_view",
+              "_leader_view",
+              "_theme_badges",
+              "_market_cap_by_theme",
+              "_freshness_seconds",
+              "_safe_unique_count",
+              "_json_records",
+              "_json_default",
+              "IntradaySnapshot",
+              "IntradaySnapshotService"
+            ]
+          }
+        ],
+        "src/universe_builder.py": [
+          {
+            "path": "src/config.py",
+            "batchIndex": 1,
+            "symbols": [
+              "_as_bool",
+              "_as_int",
+              "_as_float",
+              "Settings",
+              "load_settings",
+              "get_opendart_api_key",
+              "get_naver_credentials",
+              "get_openai_api_key"
+            ]
+          }
+        ],
+        "tests/test_intraday_board_integration.py": [
+          {
+            "path": "sector_board/__init__.py",
+            "batchIndex": 3,
+            "symbols": [
+              "create_app",
+              "register_sector_board",
+              "_setup_scheduler",
+              "register_intraday"
+            ]
+          },
+          {
+            "path": "sector_board/repository.py",
+            "batchIndex": 3,
+            "symbols": [
+              "_get_engine",
+              "normalize_database_url",
+              "resolve_database_url",
+              "create_snapshot_engine",
+              "_ensure_rise_reasons_column",
+              "_ensure_refresh_columns",
+              "ensure_schema",
+              "_upsert_row",
+              "upsert_snapshot",
+              "set_refresh_running",
+              "set_refresh_error",
+              "_row_to_payload",
+              "fetch_snapshot",
+              "fetch_previous_snapshot",
+              "fetch_recent_snapshots"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "scripts/test_kiwoom_ws.py",
+          "language": "python",
+          "sizeLines": 261,
+          "fileCategory": "code"
+        },
+        {
+          "path": "scripts/test_kiwoom_ws_bulk.py",
+          "language": "python",
+          "sizeLines": 757,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/data_providers.py",
+          "language": "python",
+          "sizeLines": 150,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/kiwoom_auth.py",
+          "language": "python",
+          "sizeLines": 199,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/kiwoom_client.py",
+          "language": "python",
+          "sizeLines": 135,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/kiwoom_websocket.py",
+          "language": "python",
+          "sizeLines": 525,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_data_providers.py",
+          "language": "python",
+          "sizeLines": 508,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_kiwoom_bulk_helpers.py",
+          "language": "python",
+          "sizeLines": 563,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "scripts/test_kiwoom_ws.py": [
+          "src/data_providers.py",
+          "src/kiwoom_auth.py",
+          "src/kiwoom_websocket.py"
+        ],
+        "scripts/test_kiwoom_ws_bulk.py": [
+          "src/kiwoom_auth.py",
+          "src/kiwoom_websocket.py"
+        ],
+        "src/data_providers.py": [
+          "src/kiwoom_auth.py",
+          "src/kiwoom_client.py",
+          "src/kiwoom_websocket.py"
+        ],
+        "src/kiwoom_auth.py": [],
+        "src/kiwoom_client.py": [
+          "src/kiwoom_auth.py"
+        ],
+        "src/kiwoom_websocket.py": [
+          "src/kiwoom_auth.py"
+        ],
+        "tests/test_intraday_data_providers.py": [
+          "src/data_providers.py",
+          "src/kiwoom_auth.py",
+          "src/kiwoom_websocket.py"
+        ],
+        "tests/test_kiwoom_bulk_helpers.py": [
+          "src/kiwoom_websocket.py"
+        ]
+      },
+      "neighborMap": {
+        "src/kiwoom_auth.py": [
+          {
+            "path": "src/market_data.py",
+            "batchIndex": 4,
+            "symbols": [
+              "load_market_prices",
+              "_empty_dataframe",
+              "_mock_intraday_universe",
+              "_mock_intraday_quotes",
+              "_get_market_phase",
+              "get_refresh_schedule",
+              "_load_ranked_snapshot",
+              "_load_krx_snapshot",
+              "_data_mode",
+              "_build_market_summary",
+              "_build_theme_heatmap",
+              "_build_leader_view",
+              "get_morning_board_view_models",
+              "get_intraday_board_view_models",
+              "get_market_summary",
+              "get_market_movers",
+              "get_theme_heatmap",
+              "get_theme_leaders"
+            ]
+          },
+          {
+            "path": "tests/test_market_data_view_models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "test_get_market_summary_returns_required_keys",
+              "test_get_market_movers_returns_limited_required_keys_without_api_key",
+              "test_get_market_movers_sorted_by_pct_change_desc",
+              "test_get_theme_heatmap_returns_required_columns_and_mock_data",
+              "test_get_theme_leaders_valid_theme_id_returns_at_most_five_rows",
+              "test_get_theme_leaders_unknown_theme_id_returns_empty_stable_frame",
+              "test_get_theme_heatmap_has_badges_column",
+              "test_load_market_prices_falls_back_when_auth_fails",
+              "test_get_theme_heatmap_has_leader_labels_with_change_rates",
+              "test_get_intraday_board_view_models_returns_payload"
+            ]
+          }
+        ],
+        "src/kiwoom_client.py": [
+          {
+            "path": "src/market_data.py",
+            "batchIndex": 4,
+            "symbols": [
+              "load_market_prices",
+              "_empty_dataframe",
+              "_mock_intraday_universe",
+              "_mock_intraday_quotes",
+              "_get_market_phase",
+              "get_refresh_schedule",
+              "_load_ranked_snapshot",
+              "_load_krx_snapshot",
+              "_data_mode",
+              "_build_market_summary",
+              "_build_theme_heatmap",
+              "_build_leader_view",
+              "get_morning_board_view_models",
+              "get_intraday_board_view_models",
+              "get_market_summary",
+              "get_market_movers",
+              "get_theme_heatmap",
+              "get_theme_leaders"
+            ]
+          }
+        ],
+        "src/kiwoom_websocket.py": [
+          {
+            "path": "scripts/run_intraday_snapshot_smoke.py",
+            "batchIndex": 2,
+            "symbols": [
+              "parse_codes_str",
+              "parse_codes_file",
+              "apply_max_codes",
+              "format_codes",
+              "get_fallback_sector_map",
+              "load_sector_map_file",
+              "make_mock_real_message",
+              "_fmt_value",
+              "format_snapshot_summary",
+              "format_final_summary",
+              "_write_snapshot_jsonl",
+              "_run_mock_provider",
+              "_run_websocket_provider",
+              "_parse_args",
+              "_default_jsonl_path",
+              "_run",
+              "main"
+            ]
+          },
+          {
+            "path": "src/intraday_snapshot_service.py",
+            "batchIndex": 2,
+            "symbols": [
+              "build_intraday_snapshot_payload",
+              "_theme_view",
+              "_leader_view",
+              "_theme_badges",
+              "_market_cap_by_theme",
+              "_freshness_seconds",
+              "_safe_unique_count",
+              "_json_records",
+              "_json_default",
+              "IntradaySnapshot",
+              "IntradaySnapshotService"
+            ]
+          },
+          {
+            "path": "tests/test_intraday_snapshot_smoke.py",
+            "batchIndex": 2,
+            "symbols": [
+              "test_parse_codes_str_basic",
+              "test_parse_codes_str_skips_invalid",
+              "test_parse_codes_file_basic",
+              "test_parse_codes_file_skips_comments",
+              "test_zero_pad_short_code",
+              "test_zero_pad_from_file",
+              "test_dedup_codes_str",
+              "test_dedup_codes_file",
+              "test_apply_max_codes_limits",
+              "test_apply_max_codes_zero_means_no_limit",
+              "test_format_codes_krx",
+              "test_format_codes_nxt",
+              "test_format_codes_sor",
+              "test_over_limit_blocked_websocket_subprocess",
+              "test_dry_run_over_limit_not_blocked",
+              "test_fallback_sector_map_has_expected_sectors",
+              "test_fallback_sector_map_no_credentials",
+              "test_sector_map_file_load",
+              "test_sector_map_file_zero_pads_keys",
+              "test_invalid_sector_map_file_not_found",
+              "test_invalid_sector_map_file_bad_json",
+              "test_invalid_sector_map_file_wrong_type",
+              "test_mock_raw_message_is_normalizable",
+              "test_mock_raw_message_negative_change_rate",
+              "test_mock_stream_into_service_reaches_ready",
+              "test_format_snapshot_summary_empty",
+              "test_format_snapshot_summary_ready",
+              "test_snapshot_to_dict_is_json_serializable",
+              "test_snapshot_to_dict_no_credentials",
+              "test_dump_jsonl_no_credentials",
+              "test_format_final_summary_contains_key_fields",
+              "test_format_final_summary_hint_when_no_sectors",
+              "test_dry_run_subprocess_exits_zero",
+              "test_dry_run_shows_mapped_codes",
+              "test_mock_run_subprocess_exits_zero",
+              "test_mock_run_produces_snapshot_output",
+              "test_no_sector_map_file_exits_2_without_allow_fallback",
+              "test_allow_fallback_flag_enables_run_without_sector_map_file",
+              "test_allow_fallback_flag_shows_warning_message",
+              "test_sector_map_file_warns_on_non_list_value",
+              "test_sector_map_file_no_warnings_for_valid_file",
+              "test_high_min_trade_value_shows_hint"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 6,
+      "files": [
+        {
+          "path": ".env.example",
+          "language": "config",
+          "sizeLines": 40,
+          "fileCategory": "config"
+        },
+        {
+          "path": "AGENTS.md",
+          "language": "markdown",
+          "sizeLines": 266,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "README.md",
+          "language": "markdown",
+          "sizeLines": 148,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "REQUEST_migration.md",
+          "language": "markdown",
+          "sizeLines": 263,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "pyproject.toml",
+          "language": "toml",
+          "sizeLines": 35,
+          "fileCategory": "config"
+        },
+        {
+          "path": "requirements.txt",
+          "language": "txt",
+          "sizeLines": 17,
+          "fileCategory": "docs"
+        }
+      ],
+      "batchImportData": {
+        ".env.example": [],
+        "AGENTS.md": [],
+        "README.md": [],
+        "REQUEST_migration.md": [],
+        "pyproject.toml": [],
+        "requirements.txt": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 7,
+      "files": [
+        {
+          "path": ".omc/sessions/06c51013-2963-4e90-a7b6-0ce8fe8ddad0.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/0bd725d4-0c48-41b1-b00f-61f2fa62eee9.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/3da21d48-e69e-4f3c-a450-42f61738fd4c.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/787a2c73-1eda-4394-b856-6bdf22b1fe55.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/854cf7a7-4388-426a-ac06-cc22fec22044.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/8cd1df45-0440-4d3f-8eeb-5785cd890f29.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/bac3f0a1-aab1-4a06-ac61-e31e23057475.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/bbef4954-f803-4723-8c46-71aaf0c6c758.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/bece4b9a-8827-4b01-8003-048c4906c929.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/c696a52b-9056-4eab-ac6d-6c6b76649f52.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/e6d93c50-cc1f-4eee-9a73-e036a9e71cae.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/sessions/fdd6941e-46ed-48b0-b4a2-9d7746941c8d.json",
+          "language": "json",
+          "sizeLines": 7,
+          "fileCategory": "config"
+        }
+      ],
+      "batchImportData": {
+        ".omc/sessions/06c51013-2963-4e90-a7b6-0ce8fe8ddad0.json": [],
+        ".omc/sessions/0bd725d4-0c48-41b1-b00f-61f2fa62eee9.json": [],
+        ".omc/sessions/3da21d48-e69e-4f3c-a450-42f61738fd4c.json": [],
+        ".omc/sessions/787a2c73-1eda-4394-b856-6bdf22b1fe55.json": [],
+        ".omc/sessions/854cf7a7-4388-426a-ac06-cc22fec22044.json": [],
+        ".omc/sessions/8cd1df45-0440-4d3f-8eeb-5785cd890f29.json": [],
+        ".omc/sessions/bac3f0a1-aab1-4a06-ac61-e31e23057475.json": [],
+        ".omc/sessions/bbef4954-f803-4723-8c46-71aaf0c6c758.json": [],
+        ".omc/sessions/bece4b9a-8827-4b01-8003-048c4906c929.json": [],
+        ".omc/sessions/c696a52b-9056-4eab-ac6d-6c6b76649f52.json": [],
+        ".omc/sessions/e6d93c50-cc1f-4eee-9a73-e036a9e71cae.json": [],
+        ".omc/sessions/fdd6941e-46ed-48b0-b4a2-9d7746941c8d.json": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 8,
+      "files": [
+        {
+          "path": ".omc/state/last-tool-error.json",
+          "language": "json",
+          "sizeLines": 6,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/state/mission-state.json",
+          "language": "json",
+          "sizeLines": 44,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".omc/state/subagent-tracking.json",
+          "language": "json",
+          "sizeLines": 14,
+          "fileCategory": "config"
+        }
+      ],
+      "batchImportData": {
+        ".omc/state/last-tool-error.json": [],
+        ".omc/state/mission-state.json": [],
+        ".omc/state/subagent-tracking.json": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 9,
+      "files": [
+        {
+          "path": "data/sample_prices.csv",
+          "language": "csv",
+          "sizeLines": 151,
+          "fileCategory": "data"
+        },
+        {
+          "path": "data/sector_map.json",
+          "language": "json",
+          "sizeLines": 452,
+          "fileCategory": "config"
+        },
+        {
+          "path": "data/theme_map.csv",
+          "language": "csv",
+          "sizeLines": 151,
+          "fileCategory": "data"
+        },
+        {
+          "path": "data/universe_codes.txt",
+          "language": "txt",
+          "sizeLines": 10,
+          "fileCategory": "docs"
+        }
+      ],
+      "batchImportData": {
+        "data/sample_prices.csv": [],
+        "data/sector_map.json": [],
+        "data/theme_map.csv": [],
+        "data/universe_codes.txt": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 10,
+      "files": [
+        {
+          "path": "docs/HANDOVER_2026_06.md",
+          "language": "markdown",
+          "sizeLines": 263,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "docs/INTRADAY_LEADER_BOARD_PLAN.md",
+          "language": "markdown",
+          "sizeLines": 218,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "docs/INTRADAY_LEADER_BOARD_RUNBOOK.md",
+          "language": "markdown",
+          "sizeLines": 627,
+          "fileCategory": "docs"
+        }
+      ],
+      "batchImportData": {
+        "docs/HANDOVER_2026_06.md": [],
+        "docs/INTRADAY_LEADER_BOARD_PLAN.md": [],
+        "docs/INTRADAY_LEADER_BOARD_RUNBOOK.md": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 11,
+      "files": [
+        {
+          "path": "requests/REQUEST_01_market_theme_analyze.md",
+          "language": "markdown",
+          "sizeLines": 61,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_02_market_theme_dummy_api.md",
+          "language": "markdown",
+          "sizeLines": 149,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_03_market_theme_template.md",
+          "language": "markdown",
+          "sizeLines": 139,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_04_market_theme_frontend_js_css.md",
+          "language": "markdown",
+          "sizeLines": 59,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_05_news_only_rise_reason.md",
+          "language": "markdown",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_06_sector_board_ui_heatmap_cleanup.md",
+          "language": "markdown",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_07_morning_sector_leader_board.md",
+          "language": "markdown",
+          "sizeLines": 29,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requests/REQUEST_08_intraday_evidence_runbook.md",
+          "language": "markdown",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        }
+      ],
+      "batchImportData": {
+        "requests/REQUEST_01_market_theme_analyze.md": [],
+        "requests/REQUEST_02_market_theme_dummy_api.md": [],
+        "requests/REQUEST_03_market_theme_template.md": [],
+        "requests/REQUEST_04_market_theme_frontend_js_css.md": [],
+        "requests/REQUEST_05_news_only_rise_reason.md": [],
+        "requests/REQUEST_06_sector_board_ui_heatmap_cleanup.md": [],
+        "requests/REQUEST_07_morning_sector_leader_board.md": [],
+        "requests/REQUEST_08_intraday_evidence_runbook.md": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 12,
+      "files": [
+        {
+          "path": "sector_board/templates/sector_board/index.html",
+          "language": "html",
+          "sizeLines": 413,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "sector_board/templates/sector_board/intraday.html",
+          "language": "html",
+          "sizeLines": 376,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "sector_board/templates/sector_board/intraday_live.html",
+          "language": "html",
+          "sizeLines": 475,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "sector_board/templates/sector_board/standalone.html",
+          "language": "html",
+          "sizeLines": 17,
+          "fileCategory": "markup"
+        }
+      ],
+      "batchImportData": {
+        "sector_board/templates/sector_board/index.html": [],
+        "sector_board/templates/sector_board/intraday.html": [],
+        "sector_board/templates/sector_board/intraday_live.html": [],
+        "sector_board/templates/sector_board/standalone.html": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 13,
+      "files": [
+        {
+          "path": "src/data/sample_prices.csv",
+          "language": "csv",
+          "sizeLines": 151,
+          "fileCategory": "data"
+        },
+        {
+          "path": "src/data/sector_cache.csv",
+          "language": "csv",
+          "sizeLines": 2658,
+          "fileCategory": "data"
+        },
+        {
+          "path": "src/data/sector_map.json",
+          "language": "json",
+          "sizeLines": 452,
+          "fileCategory": "config"
+        },
+        {
+          "path": "src/data/theme_map.csv",
+          "language": "csv",
+          "sizeLines": 151,
+          "fileCategory": "data"
+        },
+        {
+          "path": "src/data/universe_codes_150.txt",
+          "language": "txt",
+          "sizeLines": 150,
+          "fileCategory": "docs"
+        }
+      ],
+      "batchImportData": {
+        "src/data/sample_prices.csv": [],
+        "src/data/sector_cache.csv": [],
+        "src/data/sector_map.json": [],
+        "src/data/theme_map.csv": [],
+        "src/data/universe_codes_150.txt": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 14,
+      "files": [
+        {
+          "path": ".omc/state/agent-replay-7e9ac8b9-4402-4d84-847b-fde5366d2f7b.jsonl",
+          "language": "jsonl",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": ".omc/state/checkpoints/checkpoint-2026-05-26T08-23-15-935Z.json",
+          "language": "json",
+          "sizeLines": 15,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".streamlit/config.toml",
+          "language": "toml",
+          "sizeLines": 6,
+          "fileCategory": "config"
+        },
+        {
+          "path": ".understand-anything/.understandignore",
+          "language": "unknown",
+          "sizeLines": 41,
+          "fileCategory": "code"
+        },
+        {
+          "path": "astx.dmg",
+          "language": "dmg",
+          "sizeLines": 119896,
+          "fileCategory": "code"
+        },
+        {
+          "path": "scripts/build_intraday_universe.py",
+          "language": "python",
+          "sizeLines": 501,
+          "fileCategory": "code"
+        },
+        {
+          "path": "scripts/generate_sample_prices.py",
+          "language": "python",
+          "sizeLines": 93,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/collector.py",
+          "language": "python",
+          "sizeLines": 202,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/intraday_reader.py",
+          "language": "python",
+          "sizeLines": 172,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/scheduler.py",
+          "language": "python",
+          "sizeLines": 98,
+          "fileCategory": "code"
+        },
+        {
+          "path": "sector_board/static/sector_board.css",
+          "language": "css",
+          "sizeLines": 708,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "src/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_state.py",
+          "language": "python",
+          "sizeLines": 98,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/intraday_universe_sync.py",
+          "language": "python",
+          "sizeLines": 183,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/krx_collector.py",
+          "language": "python",
+          "sizeLines": 156,
+          "fileCategory": "code"
+        },
+        {
+          "path": "src/sector_map_loader.py",
+          "language": "python",
+          "sizeLines": 107,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_build_intraday_universe.py",
+          "language": "python",
+          "sizeLines": 591,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_state.py",
+          "language": "python",
+          "sizeLines": 67,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_intraday_universe_sync.py",
+          "language": "python",
+          "sizeLines": 285,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_board_intraday_collector.py",
+          "language": "python",
+          "sizeLines": 85,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_board_intraday_reader.py",
+          "language": "python",
+          "sizeLines": 422,
+          "fileCategory": "code"
+        },
+        {
+          "path": "tests/test_sector_map_loader.py",
+          "language": "python",
+          "sizeLines": 242,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        ".omc/state/agent-replay-7e9ac8b9-4402-4d84-847b-fde5366d2f7b.jsonl": [],
+        ".omc/state/checkpoints/checkpoint-2026-05-26T08-23-15-935Z.json": [],
+        ".streamlit/config.toml": [],
+        ".understand-anything/.understandignore": [],
+        "astx.dmg": [],
+        "scripts/build_intraday_universe.py": [],
+        "scripts/generate_sample_prices.py": [],
+        "sector_board/collector.py": [],
+        "sector_board/intraday_reader.py": [],
+        "sector_board/scheduler.py": [],
+        "sector_board/static/sector_board.css": [],
+        "src/__init__.py": [],
+        "src/intraday_state.py": [],
+        "src/intraday_universe_sync.py": [],
+        "src/krx_collector.py": [],
+        "src/sector_map_loader.py": [],
+        "tests/test_build_intraday_universe.py": [],
+        "tests/test_intraday_state.py": [
+          "src/intraday_state.py"
+        ],
+        "tests/test_intraday_universe_sync.py": [
+          "src/intraday_universe_sync.py"
+        ],
+        "tests/test_sector_board_intraday_collector.py": [
+          "sector_board/collector.py"
+        ],
+        "tests/test_sector_board_intraday_reader.py": [
+          "sector_board/intraday_reader.py"
+        ],
+        "tests/test_sector_map_loader.py": [
+          "src/sector_map_loader.py"
+        ]
+      },
+      "neighborMap": {}
+    }
+  ]
+}

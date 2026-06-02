@@ -1,0 +1,1061 @@
+{
+  "nodes": [
+    {
+      "id": "file:src/dummy_data.py",
+      "type": "file",
+      "name": "dummy_data.py",
+      "filePath": "src/dummy_data.py",
+      "summary": "Provides a CSV-backed sample price loader used as a fallback data source when live Kiwoom API access is unavailable.",
+      "tags": ["utility", "data-model", "mock-data"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/dummy_data.py:load_sample_prices",
+      "type": "function",
+      "name": "load_sample_prices",
+      "filePath": "src/dummy_data.py",
+      "lineRange": [19, 24],
+      "summary": "Reads a CSV file of sample stock prices, validates required columns, and returns a cleaned DataFrame subset.",
+      "tags": ["utility", "data-loading", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/market_data.py",
+      "type": "file",
+      "name": "market_data.py",
+      "filePath": "src/market_data.py",
+      "summary": "Central orchestrator for market data retrieval and view model construction, supporting both morning board (KRX daily) and intraday live-refresh modes with mock fallback.",
+      "tags": ["service", "api-handler", "data-model"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/market_data.py:load_market_prices",
+      "type": "function",
+      "name": "load_market_prices",
+      "filePath": "src/market_data.py",
+      "lineRange": [196, 216],
+      "summary": "Fetches current stock prices either from the Kiwoom REST API or sample CSV depending on settings, with progress callback support.",
+      "tags": ["data-loading", "api-handler", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/market_data.py:_mock_intraday_universe",
+      "type": "function",
+      "name": "_mock_intraday_universe",
+      "filePath": "src/market_data.py",
+      "lineRange": [223, 239],
+      "summary": "Generates a synthetic intraday universe DataFrame from mock movers data for testing and development.",
+      "tags": ["mock-data", "utility", "test"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/market_data.py:_mock_intraday_quotes",
+      "type": "function",
+      "name": "_mock_intraday_quotes",
+      "filePath": "src/market_data.py",
+      "lineRange": [242, 264],
+      "summary": "Builds a synthetic real-time quotes DataFrame with randomised price movements for mock intraday mode.",
+      "tags": ["mock-data", "utility", "test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/market_data.py:get_refresh_schedule",
+      "type": "function",
+      "name": "get_refresh_schedule",
+      "filePath": "src/market_data.py",
+      "lineRange": [282, 307],
+      "summary": "Computes the next scheduled data refresh time and market phase based on KRX trading hours, returning a structured schedule dict.",
+      "tags": ["scheduling", "utility", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/market_data.py:_build_market_summary",
+      "type": "function",
+      "name": "_build_market_summary",
+      "filePath": "src/market_data.py",
+      "lineRange": [350, 374],
+      "summary": "Assembles a market summary dict including phase, stock count, average change rate, and advance ratio from sector and price frames.",
+      "tags": ["data-model", "utility", "serialization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/market_data.py:_build_theme_heatmap",
+      "type": "function",
+      "name": "_build_theme_heatmap",
+      "filePath": "src/market_data.py",
+      "lineRange": [377, 419],
+      "summary": "Constructs the theme heatmap DataFrame with normalised scores, leader name labels, and trade value quantile bands for the board view.",
+      "tags": ["data-model", "serialization", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/market_data.py:get_morning_board_view_models",
+      "type": "function",
+      "name": "get_morning_board_view_models",
+      "filePath": "src/market_data.py",
+      "lineRange": [431, 462],
+      "summary": "Loads and ranks daily snapshot data then builds all view models (market summary, heatmap, leaders) for the morning board.",
+      "tags": ["api-handler", "service", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/market_data.py:get_intraday_board_view_models",
+      "type": "function",
+      "name": "get_intraday_board_view_models",
+      "filePath": "src/market_data.py",
+      "lineRange": [465, 503],
+      "summary": "Processes live intraday quotes and universe to produce the ranked sector snapshot payload used by the WebSocket-driven board.",
+      "tags": ["api-handler", "service", "data-model"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/market_data.py:get_market_movers",
+      "type": "function",
+      "name": "get_market_movers",
+      "filePath": "src/market_data.py",
+      "lineRange": [513, 533],
+      "summary": "Returns the top N stocks by change rate from the cached ranked snapshot, supporting a configurable date and limit.",
+      "tags": ["api-handler", "utility", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/market_data.py:get_theme_leaders",
+      "type": "function",
+      "name": "get_theme_leaders",
+      "filePath": "src/market_data.py",
+      "lineRange": [543, 557],
+      "summary": "Retrieves and formats the top-5 leader stocks for a specific theme ID from the ranked snapshot.",
+      "tags": ["api-handler", "utility", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/sector_ranker.py",
+      "type": "file",
+      "name": "sector_ranker.py",
+      "filePath": "src/sector_ranker.py",
+      "summary": "Core ranking engine that scores and sorts Korean stock sectors by daily and intraday metrics, producing ranked theme and leader frames used across the dashboard.",
+      "tags": ["service", "data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:src/sector_ranker.py:IntradayRankingWeights",
+      "type": "class",
+      "name": "IntradayRankingWeights",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [22, 33],
+      "summary": "Dataclass holding configurable weight coefficients for the multi-factor intraday sector ranking algorithm.",
+      "tags": ["data-model", "configuration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/sector_ranker.py:build_sector_universe",
+      "type": "function",
+      "name": "build_sector_universe",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [55, 75],
+      "summary": "Merges price data with the long-format theme map to create the per-stock sector universe DataFrame with numeric feature columns.",
+      "tags": ["data-model", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/sector_ranker.py:rank_sectors",
+      "type": "function",
+      "name": "rank_sectors",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [91, 130],
+      "summary": "Scores and ranks sectors from theme-mapped price data using leader scores, change rates, and trade values, returning sorted sector and leader DataFrames.",
+      "tags": ["service", "data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/sector_ranker.py:rank_sectors_krx",
+      "type": "function",
+      "name": "rank_sectors_krx",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [133, 202],
+      "summary": "KRX-native sector ranking path that scores stocks from raw KRX price data without theme mapping, used for the morning board.",
+      "tags": ["service", "data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/sector_ranker.py:rank_intraday_leaders",
+      "type": "function",
+      "name": "rank_intraday_leaders",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [205, 252],
+      "summary": "Entry point for intraday ranking: builds the matched frame, scores leaders, ranks themes, and emits rank-change events against the previous snapshot.",
+      "tags": ["service", "api-handler", "event-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/sector_ranker.py:_build_intraday_frame",
+      "type": "function",
+      "name": "_build_intraday_frame",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [255, 315],
+      "summary": "Joins live quotes to the universe DataFrame, normalises codes, resolves text columns, and computes change-rate and open-strength fields.",
+      "tags": ["data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/sector_ranker.py:_add_intraday_leader_scores",
+      "type": "function",
+      "name": "_add_intraday_leader_scores",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [318, 340],
+      "summary": "Adds weighted multi-factor leader score columns (change rank, trade rank, open strength, contribution, surge) to the intraday frame.",
+      "tags": ["data-model", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/sector_ranker.py:_rank_intraday_theme_frames",
+      "type": "function",
+      "name": "_rank_intraday_theme_frames",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [343, 441],
+      "summary": "Groups stocks by theme, computes multi-factor theme scores with stability weighting, selects top themes and their leaders, and returns ranked DataFrames.",
+      "tags": ["service", "data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/sector_ranker.py:_build_rank_events",
+      "type": "function",
+      "name": "_build_rank_events",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [444, 478],
+      "summary": "Compares current theme ranks against previous snapshot to generate rank-change, new-entry, and drop-out events for the live feed.",
+      "tags": ["event-handler", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/sector_ranker.py:_extract_previous_ranks",
+      "type": "function",
+      "name": "_extract_previous_ranks",
+      "filePath": "src/sector_ranker.py",
+      "lineRange": [481, 505],
+      "summary": "Extracts a theme-name-to-rank mapping from either a previous snapshot dict or a rank-state list, normalising varied input formats.",
+      "tags": ["utility", "serialization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/theme_loader.py",
+      "type": "file",
+      "name": "theme_loader.py",
+      "filePath": "src/theme_loader.py",
+      "summary": "Loads the sector theme mapping CSV and converts it to a long-format DataFrame used by the ranker and universe builder.",
+      "tags": ["utility", "data-loading", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/theme_loader.py:load_theme_map",
+      "type": "function",
+      "name": "load_theme_map",
+      "filePath": "src/theme_loader.py",
+      "lineRange": [12, 17],
+      "summary": "Reads and validates a theme map CSV, ensuring required columns are present and returning a trimmed copy.",
+      "tags": ["data-loading", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/theme_loader.py:themes_to_long",
+      "type": "function",
+      "name": "themes_to_long",
+      "filePath": "src/theme_loader.py",
+      "lineRange": [20, 34],
+      "summary": "Melts a wide-format theme map into a deduplicated long-format DataFrame with one row per stock-theme combination.",
+      "tags": ["data-model", "utility", "serialization"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/universe_builder.py",
+      "type": "file",
+      "name": "universe_builder.py",
+      "filePath": "src/universe_builder.py",
+      "summary": "Builds the filtered and theme-annotated stock universe from raw KRX data, applying configurable exclusion rules for ETFs, SPACs, preferred shares, and market-cap/trade-value thresholds.",
+      "tags": ["service", "data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:src/universe_builder.py:UniverseBuildConfig",
+      "type": "class",
+      "name": "UniverseBuildConfig",
+      "filePath": "src/universe_builder.py",
+      "lineRange": [47, 54],
+      "summary": "Dataclass holding universe build parameters including market-cap/trade-value thresholds, type exclusion flags, and max code count.",
+      "tags": ["data-model", "configuration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/universe_builder.py:UniverseBuildResult",
+      "type": "class",
+      "name": "UniverseBuildResult",
+      "filePath": "src/universe_builder.py",
+      "lineRange": [58, 60],
+      "summary": "Simple result container bundling the universe DataFrame with its build metadata dict.",
+      "tags": ["data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/universe_builder.py:config_from_settings",
+      "type": "function",
+      "name": "config_from_settings",
+      "filePath": "src/universe_builder.py",
+      "lineRange": [63, 73],
+      "summary": "Reads application settings and constructs a UniverseBuildConfig with values sourced from the settings object.",
+      "tags": ["factory", "configuration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/universe_builder.py:build_universe",
+      "type": "function",
+      "name": "build_universe",
+      "filePath": "src/universe_builder.py",
+      "lineRange": [76, 129],
+      "summary": "Orchestrates the full universe build pipeline: normalise KRX frame, apply exclusion flags, attach themes, enforce max-codes cap, and return a UniverseBuildResult.",
+      "tags": ["service", "data-model", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/universe_builder.py:normalize_krx_frame",
+      "type": "function",
+      "name": "normalize_krx_frame",
+      "filePath": "src/universe_builder.py",
+      "lineRange": [132, 182],
+      "summary": "Normalises a raw KRX DataFrame to a standard schema with canonical column names, typed numeric fields, and inferred boolean flags for ETF/SPAC/preferred/managed status.",
+      "tags": ["data-model", "utility", "serialization"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_intraday_board_integration.py",
+      "type": "file",
+      "name": "test_intraday_board_integration.py",
+      "filePath": "tests/test_intraday_board_integration.py",
+      "summary": "End-to-end integration test that wires up the Flask app, universe builder, and intraday view model pipeline then verifies the board renders Korean sector content correctly.",
+      "tags": ["test", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_intraday_board_integration.py:test_mock_intraday_pipeline_renders_flask_board",
+      "type": "function",
+      "name": "test_mock_intraday_pipeline_renders_flask_board",
+      "filePath": "tests/test_intraday_board_integration.py",
+      "lineRange": [14, 72],
+      "summary": "Builds a full mock intraday pipeline with a synthetic universe and quotes, stores a snapshot, and asserts the Flask board response contains expected Korean sector strings.",
+      "tags": ["test", "integration", "api-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_intraday_ranker.py",
+      "type": "file",
+      "name": "test_intraday_ranker.py",
+      "filePath": "tests/test_intraday_ranker.py",
+      "summary": "Unit tests for the intraday sector ranker covering leader ordering, theme scoring, rank-change event generation, and defensive handling of malformed numeric inputs.",
+      "tags": ["test", "unit-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_intraday_ranker.py:test_existing_rank_sectors_still_works",
+      "type": "function",
+      "name": "test_existing_rank_sectors_still_works",
+      "filePath": "tests/test_intraday_ranker.py",
+      "lineRange": [42, 59],
+      "summary": "Regression test verifying that the daily rank_sectors function still scores and sorts themes correctly after intraday changes.",
+      "tags": ["test", "regression"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_intraday_ranker.py:test_previous_snapshot_generates_new_drop_and_rank_change_events",
+      "type": "function",
+      "name": "test_previous_snapshot_generates_new_drop_and_rank_change_events",
+      "filePath": "tests/test_intraday_ranker.py",
+      "lineRange": [93, 108],
+      "summary": "Verifies that rank_intraday_leaders emits new-entry and drop-out events when comparing against a previous snapshot with different theme ordering.",
+      "tags": ["test", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_intraday_ranker.py:test_string_numeric_values_and_missing_trade_values_are_defensive",
+      "type": "function",
+      "name": "test_string_numeric_values_and_missing_trade_values_are_defensive",
+      "filePath": "tests/test_intraday_ranker.py",
+      "lineRange": [111, 121],
+      "summary": "Ensures rank_intraday_leaders handles string-encoded numeric fields and missing trade values without raising exceptions.",
+      "tags": ["test", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_sector_ranker.py",
+      "type": "file",
+      "name": "test_sector_ranker.py",
+      "filePath": "tests/test_sector_ranker.py",
+      "summary": "Unit test verifying that rank_sectors correctly scores sectors and assigns ranked leaders from synthetic price and theme data.",
+      "tags": ["test", "unit-test"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:tests/test_sector_ranker.py:test_rank_sectors_scores_and_leaders",
+      "type": "function",
+      "name": "test_rank_sectors_scores_and_leaders",
+      "filePath": "tests/test_sector_ranker.py",
+      "lineRange": [8, 29],
+      "summary": "Builds a minimal synthetic dataset and asserts that rank_sectors produces correct sector scores and assigns the expected leader stock.",
+      "tags": ["test", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_theme_loader.py",
+      "type": "file",
+      "name": "test_theme_loader.py",
+      "filePath": "tests/test_theme_loader.py",
+      "summary": "Unit test confirming that themes_to_long correctly melts a wide theme map and removes rows with empty or null sector values.",
+      "tags": ["test", "unit-test"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:tests/test_theme_loader.py:test_themes_to_long_removes_empty_values",
+      "type": "function",
+      "name": "test_themes_to_long_removes_empty_values",
+      "filePath": "tests/test_theme_loader.py",
+      "lineRange": [8, 19],
+      "summary": "Verifies that themes_to_long drops empty string and NaN sector entries while preserving valid stock-theme pairs.",
+      "tags": ["test", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_universe_builder.py",
+      "type": "file",
+      "name": "test_universe_builder.py",
+      "filePath": "tests/test_universe_builder.py",
+      "summary": "Comprehensive unit tests for the universe builder covering config loading, KRX frame normalisation, exclusion filters, multi-theme expansion, and max-codes capping.",
+      "tags": ["test", "unit-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_universe_builder.py:test_build_universe_applies_market_cap_trade_value_and_type_filters",
+      "type": "function",
+      "name": "test_build_universe_applies_market_cap_trade_value_and_type_filters",
+      "filePath": "tests/test_universe_builder.py",
+      "lineRange": [65, 94],
+      "summary": "Asserts that build_universe correctly excludes stocks below market-cap and trade-value thresholds and removes ETF, SPAC, and preferred share types.",
+      "tags": ["test", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_universe_builder.py:test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+      "type": "function",
+      "name": "test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+      "filePath": "tests/test_universe_builder.py",
+      "lineRange": [114, 136],
+      "summary": "Verifies that max_codes cap is applied by sorting on market cap then trade value and retaining only the top N stocks.",
+      "tags": ["test", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_universe_builder.py:test_build_universe_can_disable_type_exclusions",
+      "type": "function",
+      "name": "test_build_universe_can_disable_type_exclusions",
+      "filePath": "tests/test_universe_builder.py",
+      "lineRange": [139, 153],
+      "summary": "Confirms that setting all exclude_* flags to False causes build_universe to retain ETFs, SPACs, and other normally excluded security types.",
+      "tags": ["test", "validation"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/dummy_data.py",
+      "target": "function:src/dummy_data.py:load_sample_prices",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dummy_data.py",
+      "target": "function:src/dummy_data.py:load_sample_prices",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:src/dummy_data.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:src/kiwoom_auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:src/kiwoom_client.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:src/sector_ranker.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:src/theme_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:load_market_prices",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:load_market_prices",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:_mock_intraday_universe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:_mock_intraday_quotes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_refresh_schedule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_refresh_schedule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:_build_market_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:_build_theme_heatmap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_morning_board_view_models",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_morning_board_view_models",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_intraday_board_view_models",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_intraday_board_view_models",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_market_movers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_market_movers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_theme_leaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "function:src/market_data.py:get_theme_leaders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/market_data.py:load_market_prices",
+      "target": "function:src/dummy_data.py:load_sample_prices",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/market_data.py:load_market_prices",
+      "target": "function:src/sector_ranker.py:rank_sectors",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "file:src/dummy_data.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "file:src/theme_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "class:src/sector_ranker.py:IntradayRankingWeights",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "class:src/sector_ranker.py:IntradayRankingWeights",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:build_sector_universe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:build_sector_universe",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:rank_sectors",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:rank_sectors",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:rank_sectors_krx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:rank_sectors_krx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:rank_intraday_leaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:rank_intraday_leaders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:_build_intraday_frame",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:_add_intraday_leader_scores",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:_rank_intraday_theme_frames",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:_build_rank_events",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "function:src/sector_ranker.py:_extract_previous_ranks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "function:src/sector_ranker.py:build_sector_universe",
+      "target": "function:src/theme_loader.py:themes_to_long",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/theme_loader.py",
+      "target": "function:src/theme_loader.py:load_theme_map",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/theme_loader.py",
+      "target": "function:src/theme_loader.py:load_theme_map",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/theme_loader.py",
+      "target": "function:src/theme_loader.py:themes_to_long",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/theme_loader.py",
+      "target": "function:src/theme_loader.py:themes_to_long",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "file:src/theme_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "class:src/universe_builder.py:UniverseBuildConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "class:src/universe_builder.py:UniverseBuildConfig",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "class:src/universe_builder.py:UniverseBuildResult",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "class:src/universe_builder.py:UniverseBuildResult",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "function:src/universe_builder.py:config_from_settings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "function:src/universe_builder.py:config_from_settings",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "function:src/universe_builder.py:build_universe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "function:src/universe_builder.py:build_universe",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "function:src/universe_builder.py:normalize_krx_frame",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "function:src/universe_builder.py:normalize_krx_frame",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/universe_builder.py:build_universe",
+      "target": "function:src/theme_loader.py:themes_to_long",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "tests/test_intraday_board_integration.py",
+      "target": "file:sector_board/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_board_integration.py",
+      "target": "file:sector_board/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_board_integration.py",
+      "target": "file:sector_board/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_board_integration.py",
+      "target": "file:src/market_data.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_board_integration.py",
+      "target": "file:src/universe_builder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_board_integration.py",
+      "target": "function:tests/test_intraday_board_integration.py:test_mock_intraday_pipeline_renders_flask_board",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/market_data.py",
+      "target": "file:tests/test_intraday_board_integration.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "file:tests/test_intraday_board_integration.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_intraday_ranker.py",
+      "target": "file:src/sector_ranker.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_ranker.py",
+      "target": "function:tests/test_intraday_ranker.py:test_existing_rank_sectors_still_works",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_intraday_ranker.py",
+      "target": "function:tests/test_intraday_ranker.py:test_previous_snapshot_generates_new_drop_and_rank_change_events",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_intraday_ranker.py",
+      "target": "function:tests/test_intraday_ranker.py:test_string_numeric_values_and_missing_trade_values_are_defensive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "file:tests/test_intraday_ranker.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_sector_ranker.py",
+      "target": "file:src/sector_ranker.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_sector_ranker.py",
+      "target": "function:tests/test_sector_ranker.py:test_rank_sectors_scores_and_leaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/sector_ranker.py",
+      "target": "file:tests/test_sector_ranker.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_theme_loader.py",
+      "target": "file:src/theme_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_theme_loader.py",
+      "target": "function:tests/test_theme_loader.py:test_themes_to_long_removes_empty_values",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/theme_loader.py",
+      "target": "file:tests/test_theme_loader.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tests/test_universe_builder.py",
+      "target": "file:src/universe_builder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_universe_builder.py",
+      "target": "function:tests/test_universe_builder.py:test_build_universe_applies_market_cap_trade_value_and_type_filters",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_universe_builder.py",
+      "target": "function:tests/test_universe_builder.py:test_build_universe_applies_intraday_max_codes_by_market_cap_then_trade_value",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_universe_builder.py",
+      "target": "function:tests/test_universe_builder.py:test_build_universe_can_disable_type_exclusions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/universe_builder.py",
+      "target": "file:tests/test_universe_builder.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

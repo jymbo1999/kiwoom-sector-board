@@ -1,0 +1,836 @@
+{
+  "nodes": [
+    {
+      "id": "file:sector_board/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "sector_board/__init__.py",
+      "summary": "Package entry point for the sector_board Flask application; provides `create_app` to bootstrap a full Flask app and `register_sector_board`/`register_intraday` helpers for embedding the blueprints into an existing app.",
+      "tags": ["entry-point", "factory", "flask", "api-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/__init__.py:create_app",
+      "type": "function",
+      "name": "create_app",
+      "filePath": "sector_board/__init__.py",
+      "lineRange": [16, 38],
+      "summary": "Flask application factory that configures the app, registers both the sector board and intraday blueprints, and sets up a root redirect.",
+      "tags": ["factory", "entry-point", "flask"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/__init__.py:register_sector_board",
+      "type": "function",
+      "name": "register_sector_board",
+      "filePath": "sector_board/__init__.py",
+      "lineRange": [41, 51],
+      "summary": "Registers the sector board blueprint on an existing Flask app, resolves the database URL, optionally auto-creates the schema, and starts the background scheduler.",
+      "tags": ["factory", "flask", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/__init__.py:_setup_scheduler",
+      "type": "function",
+      "name": "_setup_scheduler",
+      "filePath": "sector_board/__init__.py",
+      "lineRange": [54, 66],
+      "summary": "Loads settings and wires up the daily data-collection scheduler, triggering a startup collect if needed; logs a warning on failure.",
+      "tags": ["service", "scheduler", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/__init__.py:register_intraday",
+      "type": "function",
+      "name": "register_intraday",
+      "filePath": "sector_board/__init__.py",
+      "lineRange": [69, 71],
+      "summary": "Registers the intraday live blueprint on an existing Flask app at the given URL prefix.",
+      "tags": ["factory", "flask"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:sector_board/auth.py",
+      "type": "file",
+      "name": "auth.py",
+      "filePath": "sector_board/auth.py",
+      "summary": "Provides the `auth_gate` before-request guard that checks for a configured API token and redirects unauthenticated requests to a login page.",
+      "tags": ["middleware", "security", "api-handler"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/auth.py:auth_gate",
+      "type": "function",
+      "name": "auth_gate",
+      "filePath": "sector_board/auth.py",
+      "lineRange": [6, 22],
+      "summary": "Before-request hook that enforces token-based authentication; skips gate when no token is configured and redirects to login when the token is absent or wrong.",
+      "tags": ["middleware", "security", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:sector_board/blueprint.py",
+      "type": "file",
+      "name": "blueprint.py",
+      "filePath": "sector_board/blueprint.py",
+      "summary": "Defines the main sector board Flask blueprint with routes for the dashboard index, API snapshot, refresh trigger, intraday leaderboard, health check, and debug endpoint; includes all view-level data-building helpers.",
+      "tags": ["api-handler", "flask", "service", "component"],
+      "complexity": "complex",
+      "languageNotes": "The blueprint uses a factory function pattern (`create_sector_board_blueprint`) so it can be registered with configurable URL prefixes."
+    },
+    {
+      "id": "function:sector_board/blueprint.py:create_sector_board_blueprint",
+      "type": "function",
+      "name": "create_sector_board_blueprint",
+      "filePath": "sector_board/blueprint.py",
+      "lineRange": [293, 517],
+      "summary": "Blueprint factory that registers all HTTP routes (index, refresh, api/snapshot, debug, intraday, health) and wires up the before-request auth guard.",
+      "tags": ["api-handler", "factory", "flask"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:sector_board/blueprint.py:_build_intraday_leaderboard_context",
+      "type": "function",
+      "name": "_build_intraday_leaderboard_context",
+      "filePath": "sector_board/blueprint.py",
+      "lineRange": [137, 237],
+      "summary": "Transforms a raw intraday snapshot dict into a rich template context with sorted sector rows, leader stocks, market event timeline, and provider status metadata.",
+      "tags": ["utility", "data-model", "component"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:sector_board/blueprint.py:_build_sector_rows",
+      "type": "function",
+      "name": "_build_sector_rows",
+      "filePath": "sector_board/blueprint.py",
+      "lineRange": [72, 121],
+      "summary": "Builds display-ready sector row dicts from theme and leader data, sorting by change-rate and attaching rank-change badges for the HTML dashboard.",
+      "tags": ["utility", "data-model", "serialization"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:sector_board/blueprint.py:_compute_rank_changes",
+      "type": "function",
+      "name": "_compute_rank_changes",
+      "filePath": "sector_board/blueprint.py",
+      "lineRange": [40, 69],
+      "summary": "Computes day-over-day theme rank changes by comparing today's and yesterday's snapshot data, returning a map of theme_id to rank delta.",
+      "tags": ["utility", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/blueprint.py:_build_weekly_table",
+      "type": "function",
+      "name": "_build_weekly_table",
+      "filePath": "sector_board/blueprint.py",
+      "lineRange": [243, 271],
+      "summary": "Constructs a weekly performance table from a list of recent snapshots, grouping themes by day-of-week for the dashboard's trailing view.",
+      "tags": ["utility", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/blueprint.py:_is_snapshot_stale",
+      "type": "function",
+      "name": "_is_snapshot_stale",
+      "filePath": "sector_board/blueprint.py",
+      "lineRange": [281, 290],
+      "summary": "Checks whether a snapshot's `generated_at` timestamp is older than the configured max-age threshold.",
+      "tags": ["utility", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:sector_board/intraday_blueprint.py",
+      "type": "file",
+      "name": "intraday_blueprint.py",
+      "filePath": "sector_board/intraday_blueprint.py",
+      "summary": "Defines the intraday live-feed Flask blueprint with REST endpoints to start/stop the Kiwoom WebSocket or mock data pipeline and stream real-time sector snapshots; includes runtime state management and file-loading helpers.",
+      "tags": ["api-handler", "flask", "service", "event-handler"],
+      "complexity": "complex",
+      "languageNotes": "Uses an `IntradayRuntime` object stored in Flask app config to coordinate the background WebSocket data pipeline across requests."
+    },
+    {
+      "id": "function:sector_board/intraday_blueprint.py:create_intraday_blueprint",
+      "type": "function",
+      "name": "create_intraday_blueprint",
+      "filePath": "sector_board/intraday_blueprint.py",
+      "lineRange": [41, 316],
+      "summary": "Blueprint factory registering intraday routes (index, api/snapshot, api/start, api/stop) along with the auth guard; orchestrates mock and Kiwoom WebSocket provider startup.",
+      "tags": ["api-handler", "factory", "flask"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:sector_board/intraday_blueprint.py:_load_sector_map",
+      "type": "function",
+      "name": "_load_sector_map",
+      "filePath": "sector_board/intraday_blueprint.py",
+      "lineRange": [353, 365],
+      "summary": "Reads a JSON file mapping sector (theme) codes to names, normalising keys to zero-padded strings.",
+      "tags": ["utility", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/intraday_blueprint.py:_load_name_map",
+      "type": "function",
+      "name": "_load_name_map",
+      "filePath": "sector_board/intraday_blueprint.py",
+      "lineRange": [368, 383],
+      "summary": "Reads a CSV file to build a stock-code-to-name mapping used for resolving ticker display names in intraday snapshots.",
+      "tags": ["utility", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/intraday_blueprint.py:_get_runtime_meta",
+      "type": "function",
+      "name": "_get_runtime_meta",
+      "filePath": "sector_board/intraday_blueprint.py",
+      "lineRange": [333, 345],
+      "summary": "Retrieves intraday runtime metadata (provider, exchange, file paths, timestamps) from the Flask app config for inclusion in API responses.",
+      "tags": ["utility", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:sector_board/repository.py",
+      "type": "file",
+      "name": "repository.py",
+      "filePath": "sector_board/repository.py",
+      "summary": "Data-access layer for the sector snapshots; manages SQLAlchemy engine creation, schema setup/migration, and CRUD operations (upsert, fetch latest, fetch previous, fetch recent) against a SQLite or PostgreSQL database.",
+      "tags": ["service", "data-model", "database", "utility"],
+      "complexity": "complex",
+      "languageNotes": "Uses both `postgresql_insert` and `sqlite_insert` with on-conflict upsert, branching on the engine dialect to maintain compatibility."
+    },
+    {
+      "id": "function:sector_board/repository.py:upsert_snapshot",
+      "type": "function",
+      "name": "upsert_snapshot",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [168, 208],
+      "summary": "Normalizes and persists a sector snapshot payload to the database, optionally auto-creating the schema, serializing JSON columns and updating timestamps.",
+      "tags": ["service", "data-model", "database"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:sector_board/repository.py:resolve_database_url",
+      "type": "function",
+      "name": "resolve_database_url",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [49, 66],
+      "summary": "Resolves the active database URL through a priority chain: explicit argument, env var `SECTOR_BOARD_DATABASE_URL`, Flask app config, fallback `DATABASE_URL`, and `SQLALCHEMY_DATABASE_URI`.",
+      "tags": ["utility", "configuration", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/repository.py:ensure_schema",
+      "type": "function",
+      "name": "ensure_schema",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [123, 127],
+      "summary": "Creates the sector_snapshots table if absent and runs column-migration helpers to add newer columns to existing databases.",
+      "tags": ["database", "migration", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/repository.py:fetch_snapshot",
+      "type": "function",
+      "name": "fetch_snapshot",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [291, 302],
+      "summary": "Fetches the latest (or date-specific) sector snapshot from the database, returning a deserialized payload dict or None.",
+      "tags": ["service", "data-model", "database"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/repository.py:fetch_previous_snapshot",
+      "type": "function",
+      "name": "fetch_previous_snapshot",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [305, 317],
+      "summary": "Retrieves the most recent snapshot strictly before a given date, used to compute day-over-day rank changes.",
+      "tags": ["service", "data-model", "database"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/repository.py:fetch_recent_snapshots",
+      "type": "function",
+      "name": "fetch_recent_snapshots",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [320, 334],
+      "summary": "Returns the N most recent sector snapshots ordered by date descending, used to build the weekly performance table.",
+      "tags": ["service", "data-model", "database"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:sector_board/repository.py:set_refresh_running",
+      "type": "function",
+      "name": "set_refresh_running",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [211, 238],
+      "summary": "Marks a snapshot row as refresh-in-progress by upserting a record with `refresh_status='running'` and a started timestamp.",
+      "tags": ["service", "database"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:sector_board/repository.py:set_refresh_error",
+      "type": "function",
+      "name": "set_refresh_error",
+      "filePath": "sector_board/repository.py",
+      "lineRange": [241, 267],
+      "summary": "Records a refresh failure by upserting a snapshot row with `refresh_status='error'` and the error message.",
+      "tags": ["service", "database"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:sector_board/schema.py",
+      "type": "file",
+      "name": "schema.py",
+      "filePath": "sector_board/schema.py",
+      "summary": "Declares the SQLAlchemy `sector_snapshots` table with all columns (dates, JSON blobs, refresh status fields) and the unique constraint on `snapshot_date`.",
+      "tags": ["data-model", "database", "schema-definition"],
+      "complexity": "simple",
+      "languageNotes": "Uses core SQLAlchemy Table/Column API rather than ORM declarative base, keeping the schema portable."
+    },
+    {
+      "id": "file:standalone.py",
+      "type": "file",
+      "name": "standalone.py",
+      "filePath": "standalone.py",
+      "summary": "Minimal standalone Flask server entry point that calls `create_app()` from the sector_board package and runs the development server.",
+      "tags": ["entry-point", "flask", "script"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_intraday_live_route.py",
+      "type": "file",
+      "name": "test_intraday_live_route.py",
+      "filePath": "tests/test_intraday_live_route.py",
+      "summary": "Pytest suite for the intraday live blueprint routes, covering mock and Kiwoom WebSocket provider start/stop, API snapshot responses, code-limit enforcement, secret redaction, and runtime metadata fields.",
+      "tags": ["test", "api-handler", "flask"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_sector_board_blueprint.py",
+      "type": "file",
+      "name": "test_sector_board_blueprint.py",
+      "filePath": "tests/test_sector_board_blueprint.py",
+      "summary": "Pytest suite testing the main sector board blueprint routes (index, health, api/snapshot) with mocked repository calls and snapshot data.",
+      "tags": ["test", "api-handler", "flask"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_sector_board_intraday_route.py",
+      "type": "file",
+      "name": "test_sector_board_intraday_route.py",
+      "filePath": "tests/test_sector_board_intraday_route.py",
+      "summary": "Pytest suite for the intraday snapshot-file route within the sector board blueprint, exercising JSONL parsing, sector/leader rendering, and file-selection logic.",
+      "tags": ["test", "api-handler", "flask"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_sector_board_repository.py",
+      "type": "file",
+      "name": "test_sector_board_repository.py",
+      "filePath": "tests/test_sector_board_repository.py",
+      "summary": "Pytest suite for the repository layer, verifying upsert idempotency (one row per day) and correct None return when no snapshot exists.",
+      "tags": ["test", "database", "data-model"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "file:sector_board/blueprint.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "file:sector_board/intraday_blueprint.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "file:sector_board/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "file:sector_board/auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "file:sector_board/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "file:sector_board/auth.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "file:sector_board/payload.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "file:sector_board/schema.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:standalone.py",
+      "target": "file:sector_board/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_intraday_live_route.py",
+      "target": "file:sector_board/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_sector_board_blueprint.py",
+      "target": "file:sector_board/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_sector_board_blueprint.py",
+      "target": "file:sector_board/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_sector_board_intraday_route.py",
+      "target": "file:sector_board/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_sector_board_repository.py",
+      "target": "file:sector_board/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_sector_board_repository.py",
+      "target": "file:sector_board/schema.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:create_app",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:register_sector_board",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:_setup_scheduler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:register_intraday",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:create_app",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:register_sector_board",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/__init__.py:register_intraday",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/auth.py",
+      "target": "function:sector_board/auth.py:auth_gate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/auth.py",
+      "target": "function:sector_board/auth.py:auth_gate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:create_sector_board_blueprint",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:_build_intraday_leaderboard_context",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:_build_sector_rows",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:_compute_rank_changes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:_build_weekly_table",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:_is_snapshot_stale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/blueprint.py:create_sector_board_blueprint",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "function:sector_board/intraday_blueprint.py:create_intraday_blueprint",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "function:sector_board/intraday_blueprint.py:_load_sector_map",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "function:sector_board/intraday_blueprint.py:_load_name_map",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "function:sector_board/intraday_blueprint.py:_get_runtime_meta",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "function:sector_board/intraday_blueprint.py:create_intraday_blueprint",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:upsert_snapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:resolve_database_url",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:ensure_schema",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:fetch_snapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:fetch_previous_snapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:fetch_recent_snapshots",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:set_refresh_running",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:set_refresh_error",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:upsert_snapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:resolve_database_url",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:ensure_schema",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:fetch_snapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:fetch_previous_snapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:fetch_recent_snapshots",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:set_refresh_running",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:set_refresh_error",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/blueprint.py:create_sector_board_blueprint",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/intraday_blueprint.py:create_intraday_blueprint",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/repository.py:resolve_database_url",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "function:sector_board/repository.py:ensure_schema",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/auth.py:auth_gate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/repository.py:fetch_snapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/repository.py:fetch_previous_snapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/repository.py:fetch_recent_snapshots",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/blueprint.py",
+      "target": "function:sector_board/repository.py:resolve_database_url",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/intraday_blueprint.py",
+      "target": "function:sector_board/auth.py:auth_gate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "file:sector_board/schema.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "file:tests/test_intraday_live_route.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "file:tests/test_sector_board_blueprint.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:sector_board/__init__.py",
+      "target": "file:tests/test_sector_board_intraday_route.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "file:tests/test_sector_board_blueprint.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "file:tests/test_sector_board_repository.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:sector_board/schema.py",
+      "target": "file:tests/test_sector_board_repository.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "function:sector_board/repository.py:upsert_snapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:sector_board/repository.py",
+      "target": "file:sector_board/payload.py",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

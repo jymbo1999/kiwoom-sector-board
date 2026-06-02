@@ -1,0 +1,1009 @@
+{
+  "nodes": [
+    {
+      "id": "file:app.py",
+      "type": "file",
+      "name": "app.py",
+      "filePath": "app.py",
+      "summary": "Streamlit application entry point that orchestrates the Korean stock sector dashboard: loads market data, snapshot, evidence bundles, and rise-reason summaries, then renders all UI sections with auto-refresh logic.",
+      "tags": ["entry-point", "service", "component"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:app.py:load_board_view_models",
+      "type": "function",
+      "name": "load_board_view_models",
+      "filePath": "app.py",
+      "lineRange": [36, 79],
+      "summary": "Fetches morning board view models from the Kiwoom API with a progress bar, falling back to a cached snapshot when available.",
+      "tags": ["data-model", "api-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:app.py:load_rise_reason_summaries",
+      "type": "function",
+      "name": "load_rise_reason_summaries",
+      "filePath": "app.py",
+      "lineRange": [88, 112],
+      "summary": "Builds evidence bundles for top market movers and summarizes their rise reasons into flat row dicts ready for display.",
+      "tags": ["service", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:app.py:_empty_board_state",
+      "type": "function",
+      "name": "_empty_board_state",
+      "filePath": "app.py",
+      "lineRange": [115, 134],
+      "summary": "Returns a safe empty board state dict with empty DataFrames and optional error message used as a fallback when data loading fails.",
+      "tags": ["utility", "factory"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:app.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "app.py",
+      "lineRange": [161, 242],
+      "summary": "Top-level Streamlit page function that wires together data loading, auto-refresh scheduling, and rendering of all dashboard sections including sector cards, theme treemap, and rise reason summaries.",
+      "tags": ["entry-point", "component", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/config.py",
+      "type": "file",
+      "name": "config.py",
+      "filePath": "src/config.py",
+      "summary": "Central configuration module that reads all Kiwoom and third-party API settings from environment variables, providing a typed Settings dataclass and accessor functions for API keys.",
+      "tags": ["configuration", "utility", "singleton"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/config.py:Settings",
+      "type": "class",
+      "name": "Settings",
+      "filePath": "src/config.py",
+      "lineRange": [48, 76],
+      "summary": "Dataclass holding all runtime configuration: Kiwoom API credentials, mock/real mode, universe filters, and intraday board parameters.",
+      "tags": ["data-model", "configuration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/config.py:load_settings",
+      "type": "function",
+      "name": "load_settings",
+      "filePath": "src/config.py",
+      "lineRange": [79, 135],
+      "summary": "Reads all environment variables, applies Render.com alias fallbacks and KIWOOM_ENV precedence rules, and constructs a fully validated Settings instance.",
+      "tags": ["factory", "configuration"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/dart_service.py",
+      "type": "file",
+      "name": "dart_service.py",
+      "filePath": "src/dart_service.py",
+      "summary": "Service module that queries the OpenDart REST API for recent corporate disclosure filings for a given stock ticker, returning normalized disclosure item dicts.",
+      "tags": ["service", "api-handler", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/dart_service.py:search_dart_disclosures",
+      "type": "function",
+      "name": "search_dart_disclosures",
+      "filePath": "src/dart_service.py",
+      "lineRange": [59, 114],
+      "summary": "Calls the OpenDart API with ticker/corp-name filters, handles missing API key gracefully, and returns a list of normalized disclosure dicts filtered to the requested lookback window.",
+      "tags": ["api-handler", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/dart_service.py:_build_disclosure_item",
+      "type": "function",
+      "name": "_build_disclosure_item",
+      "filePath": "src/dart_service.py",
+      "lineRange": [42, 56],
+      "summary": "Normalizes a raw OpenDart JSON disclosure item into a consistent dict with required fields and a human-readable search query string.",
+      "tags": ["utility", "serialization"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/dashboard_components.py",
+      "type": "file",
+      "name": "dashboard_components.py",
+      "filePath": "src/dashboard_components.py",
+      "summary": "Large Streamlit UI component library containing all rendering functions for the sector board: sector cards, market summary, morning board, theme treemap, rise reason summaries, theme history, and timeline views.",
+      "tags": ["component", "utility", "service"],
+      "complexity": "complex",
+      "languageNotes": "Heavy use of HTML string building with html.escape for XSS safety; uses st.html when available, falling back to st.markdown with unsafe_allow_html."
+    },
+    {
+      "id": "function:src/dashboard_components.py:inject_board_styles",
+      "type": "function",
+      "name": "inject_board_styles",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [27, 454],
+      "summary": "Injects the complete CSS stylesheet for the sector board UI as inline HTML, covering sector cards, morning cards, rise reason tables, theme treemap, and history board styles.",
+      "tags": ["component", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_header",
+      "type": "function",
+      "name": "render_header",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [472, 500],
+      "summary": "Renders the dashboard header with the reference timestamp, mock/live badge, manual refresh button, and next auto-refresh countdown.",
+      "tags": ["component"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_market_summary",
+      "type": "function",
+      "name": "render_market_summary",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [806, 834],
+      "summary": "Renders a row of Streamlit metric widgets showing advance/decline counts, KOSPI change rate, trade value, and market phase badge.",
+      "tags": ["component"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_pre_market_board",
+      "type": "function",
+      "name": "render_pre_market_board",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [850, 887],
+      "summary": "Renders the pre-market (yesterday) sector ranking table sorted by sector score, showing sector name, score, average change rate, and trading value.",
+      "tags": ["component"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_morning_sector_card_board",
+      "type": "function",
+      "name": "render_morning_sector_card_board",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [941, 983],
+      "summary": "Renders the morning sector card board as a grid of HTML cards, each showing sector score, rank change, and top-5 leader stocks with heat-colored change badges.",
+      "tags": ["component"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_rise_reason_summaries",
+      "type": "function",
+      "name": "render_rise_reason_summaries",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [681, 764],
+      "summary": "Renders the rise reason summary table as styled HTML rows with ticker, stock name, market move badge, news evidence links, confidence badge, and AI-generated summary text.",
+      "tags": ["component"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_theme_treemap",
+      "type": "function",
+      "name": "render_theme_treemap",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [1021, 1095],
+      "summary": "Renders an interactive Plotly treemap of themes sized by trading value or change rate, with fallback to a plain dataframe table when required columns are missing.",
+      "tags": ["component"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_summary_table",
+      "type": "function",
+      "name": "render_summary_table",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [552, 590],
+      "summary": "Renders an HTML table listing top sectors with sector name, score, leader stocks, average change rate, and total trading value.",
+      "tags": ["component"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/dashboard_components.py:_render_history_board_html",
+      "type": "function",
+      "name": "_render_history_board_html",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [1264, 1457],
+      "summary": "Builds the full HTML string for the sector theme history board, producing color-coded rows showing daily ranking movements per sector across multiple trading days.",
+      "tags": ["component", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/dashboard_components.py:render_theme_timeline",
+      "type": "function",
+      "name": "render_theme_timeline",
+      "filePath": "src/dashboard_components.py",
+      "lineRange": [1472, 1519],
+      "summary": "Renders the theme timeline as a formatted Streamlit dataframe with Korean column labels, showing date, theme name, leader stocks, change rates, and trading value per day.",
+      "tags": ["component"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/evidence_service.py",
+      "type": "file",
+      "name": "evidence_service.py",
+      "filePath": "src/evidence_service.py",
+      "summary": "Service that assembles evidence bundles for stock market movers by collecting Naver news articles, deduplicating and sorting them, and packaging the result with stock metadata and trade date.",
+      "tags": ["service", "data-model"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/evidence_service.py:build_evidence_bundle",
+      "type": "function",
+      "name": "build_evidence_bundle",
+      "filePath": "src/evidence_service.py",
+      "lineRange": [103, 119],
+      "summary": "Collects news evidence for a single market mover and packages it into a structured bundle dict with stock metadata, trade date, and deduplicated evidence items.",
+      "tags": ["service", "factory"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/evidence_service.py:build_evidence_bundles",
+      "type": "function",
+      "name": "build_evidence_bundles",
+      "filePath": "src/evidence_service.py",
+      "lineRange": [122, 133],
+      "summary": "Fetches top market movers from the market data service and builds evidence bundles for each, up to the specified limit.",
+      "tags": ["service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/evidence_service.py:build_evidence_bundles_for_leaders",
+      "type": "function",
+      "name": "build_evidence_bundles_for_leaders",
+      "filePath": "src/evidence_service.py",
+      "lineRange": [149, 181],
+      "summary": "Builds evidence bundles for a list of intraday leader stock records, converting leader dicts to mover format and collecting news evidence with fail-open error handling.",
+      "tags": ["service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/evidence_service.py:_safe_evidence_items",
+      "type": "function",
+      "name": "_safe_evidence_items",
+      "filePath": "src/evidence_service.py",
+      "lineRange": [31, 55],
+      "summary": "Normalizes a raw list of evidence items into consistently typed dicts, coercing all fields to safe types and filtering out invalid entries.",
+      "tags": ["utility", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/evidence_service.py:_dedupe_evidence",
+      "type": "function",
+      "name": "_dedupe_evidence",
+      "filePath": "src/evidence_service.py",
+      "lineRange": [58, 75],
+      "summary": "Removes duplicate evidence items by URL and title, preserving the first occurrence of each unique article.",
+      "tags": ["utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/news_service.py",
+      "type": "file",
+      "name": "news_service.py",
+      "filePath": "src/news_service.py",
+      "summary": "Service module that queries the Naver News Search API for articles relevant to a stock mover, scoring and filtering results for stock-price relevance using keyword matching.",
+      "tags": ["service", "api-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/news_service.py:search_naver_news",
+      "type": "function",
+      "name": "search_naver_news",
+      "filePath": "src/news_service.py",
+      "lineRange": [175, 210],
+      "summary": "Calls the Naver News API with OAuth headers, parses results, and returns stock-relevant articles filtered and scored by keyword relevance.",
+      "tags": ["api-handler", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/news_service.py:_score_stock_news",
+      "type": "function",
+      "name": "_score_stock_news",
+      "filePath": "src/news_service.py",
+      "lineRange": [116, 149],
+      "summary": "Scores a news article for relevance to a specific stock by checking for title/excerpt mentions, market movement keywords, and negative sentiment patterns.",
+      "tags": ["utility", "validation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/news_service.py:_filter_relevant_news",
+      "type": "function",
+      "name": "_filter_relevant_news",
+      "filePath": "src/news_service.py",
+      "lineRange": [152, 172],
+      "summary": "Filters and ranks news items by stock relevance score, returning only items that pass the minimum threshold sorted by score descending.",
+      "tags": ["utility", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/rise_reason_service.py",
+      "type": "file",
+      "name": "rise_reason_service.py",
+      "filePath": "src/rise_reason_service.py",
+      "summary": "Service that uses OpenAI GPT to summarize the rise reason for a stock market mover from its evidence bundle, with keyword-based fallback logic when the API key is absent.",
+      "tags": ["service", "api-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/rise_reason_service.py:_call_openai_summary",
+      "type": "function",
+      "name": "_call_openai_summary",
+      "filePath": "src/rise_reason_service.py",
+      "lineRange": [188, 227],
+      "summary": "Calls the OpenAI Responses API with a structured prompt containing news evidence and returns a parsed JSON summary dict, or None on failure.",
+      "tags": ["api-handler", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/rise_reason_service.py:summarize_rise_reason",
+      "type": "function",
+      "name": "summarize_rise_reason",
+      "filePath": "src/rise_reason_service.py",
+      "lineRange": [230, 235],
+      "summary": "Public entry point that tries OpenAI summarization for an evidence bundle and validates the result, falling back to the rule-based summary on any failure.",
+      "tags": ["service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/rise_reason_service.py:summarize_rise_reasons",
+      "type": "function",
+      "name": "summarize_rise_reasons",
+      "filePath": "src/rise_reason_service.py",
+      "lineRange": [238, 247],
+      "summary": "Iterates over a list of evidence bundles and returns a list of rise reason summary dicts, skipping non-dict bundles.",
+      "tags": ["service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/rise_reason_service.py:_fallback_summary",
+      "type": "function",
+      "name": "_fallback_summary",
+      "filePath": "src/rise_reason_service.py",
+      "lineRange": [106, 128],
+      "summary": "Generates a rule-based rise reason summary using inferred keyword tags and evidence titles when OpenAI is unavailable.",
+      "tags": ["utility", "fallback"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/rise_reason_service.py:_infer_reason_tags",
+      "type": "function",
+      "name": "_infer_reason_tags",
+      "filePath": "src/rise_reason_service.py",
+      "lineRange": [64, 86],
+      "summary": "Scans evidence text and market move data against a keyword dictionary to infer human-readable rise reason tags for a stock.",
+      "tags": ["utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/rise_reason_service.py:_validate_summary",
+      "type": "function",
+      "name": "_validate_summary",
+      "filePath": "src/rise_reason_service.py",
+      "lineRange": [131, 150],
+      "summary": "Validates that an OpenAI candidate summary dict has all required fields with non-empty values, falling back to the rule-based summary if validation fails.",
+      "tags": ["validation", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/snapshot_service.py",
+      "type": "file",
+      "name": "snapshot_service.py",
+      "filePath": "src/snapshot_service.py",
+      "summary": "Service for persisting and loading morning sector board snapshots: saves locally as JSON, optionally uploads to Cloudflare R2 and upserts to a database, and provides loaders for cached view models and yesterday's heatmap.",
+      "tags": ["service", "data-model"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/snapshot_service.py:persist_morning_snapshot",
+      "type": "function",
+      "name": "persist_morning_snapshot",
+      "filePath": "src/snapshot_service.py",
+      "lineRange": [38, 61],
+      "summary": "Writes the morning snapshot JSON to a date-stamped local directory, then conditionally uploads to R2 and persists to the database, returning a result dict with status flags.",
+      "tags": ["service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/snapshot_service.py:load_morning_view_models_from_snapshot",
+      "type": "function",
+      "name": "load_morning_view_models_from_snapshot",
+      "filePath": "src/snapshot_service.py",
+      "lineRange": [133, 152],
+      "summary": "Loads the latest snapshot from disk and returns summary/heatmap/leaders DataFrames if within the allowed max age, otherwise returns None.",
+      "tags": ["service", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/snapshot_service.py:compute_rank_changes",
+      "type": "function",
+      "name": "compute_rank_changes",
+      "filePath": "src/snapshot_service.py",
+      "lineRange": [164, 208],
+      "summary": "Computes sector rank change labels (new/up/down/same) by comparing today's and yesterday's sorted heatmaps, returning a dict of theme_id to rank change string.",
+      "tags": ["utility", "data-model"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/snapshot_service.py:_upload_snapshot_to_r2",
+      "type": "function",
+      "name": "_upload_snapshot_to_r2",
+      "filePath": "src/snapshot_service.py",
+      "lineRange": [88, 115],
+      "summary": "Uploads the snapshot payload as a JSON object to a Cloudflare R2 bucket using boto3 when all required AWS credentials are present.",
+      "tags": ["service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/snapshot_service.py:build_morning_snapshot_payload",
+      "type": "function",
+      "name": "build_morning_snapshot_payload",
+      "filePath": "src/snapshot_service.py",
+      "lineRange": [23, 35],
+      "summary": "Serializes the morning summary, heatmap DataFrame, and leaders DataFrame into a JSON-safe dict payload with a generated_at timestamp.",
+      "tags": ["utility", "serialization"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:app.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "file:src/dashboard_components.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "file:src/evidence_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "file:src/market_data.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "file:src/rise_reason_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "file:src/snapshot_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/dart_service.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "file:src/market_data.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "file:src/news_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/news_service.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "file:src/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:load_board_view_models",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:load_rise_reason_summaries",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:_empty_board_state",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:load_board_view_models",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:app.py:load_board_view_models",
+      "target": "function:src/market_data.py:get_morning_board_view_models",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:app.py:load_board_view_models",
+      "target": "function:src/snapshot_service.py:load_morning_view_models_from_snapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:app.py:load_rise_reason_summaries",
+      "target": "function:src/evidence_service.py:build_evidence_bundles",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:app.py:load_rise_reason_summaries",
+      "target": "function:src/rise_reason_service.py:summarize_rise_reasons",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/config.py",
+      "target": "class:src/config.py:Settings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/config.py",
+      "target": "function:src/config.py:load_settings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/config.py",
+      "target": "class:src/config.py:Settings",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/config.py",
+      "target": "function:src/config.py:load_settings",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dart_service.py",
+      "target": "function:src/dart_service.py:search_dart_disclosures",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dart_service.py",
+      "target": "function:src/dart_service.py:_build_disclosure_item",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dart_service.py",
+      "target": "function:src/dart_service.py:search_dart_disclosures",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/dart_service.py:search_dart_disclosures",
+      "target": "function:src/config.py:load_settings",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:inject_board_styles",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_header",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_market_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_pre_market_board",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_morning_sector_card_board",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_rise_reason_summaries",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_theme_treemap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_summary_table",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:_render_history_board_html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_theme_timeline",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:inject_board_styles",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_header",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_market_summary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_pre_market_board",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_morning_sector_card_board",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_rise_reason_summaries",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_theme_treemap",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_summary_table",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/dashboard_components.py",
+      "target": "function:src/dashboard_components.py:render_theme_timeline",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:build_evidence_bundle",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:build_evidence_bundles",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:build_evidence_bundles_for_leaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:_safe_evidence_items",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:_dedupe_evidence",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:build_evidence_bundle",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:build_evidence_bundles",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/evidence_service.py",
+      "target": "function:src/evidence_service.py:build_evidence_bundles_for_leaders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/evidence_service.py:build_evidence_bundles",
+      "target": "function:src/market_data.py:get_market_movers",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/evidence_service.py:build_evidence_bundle",
+      "target": "function:src/news_service.py:search_naver_news",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/news_service.py",
+      "target": "function:src/news_service.py:search_naver_news",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/news_service.py",
+      "target": "function:src/news_service.py:_score_stock_news",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/news_service.py",
+      "target": "function:src/news_service.py:_filter_relevant_news",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/news_service.py",
+      "target": "function:src/news_service.py:search_naver_news",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/news_service.py:search_naver_news",
+      "target": "function:src/config.py:load_settings",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:_call_openai_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:summarize_rise_reason",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:summarize_rise_reasons",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:_fallback_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:_infer_reason_tags",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:_validate_summary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:summarize_rise_reason",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/rise_reason_service.py",
+      "target": "function:src/rise_reason_service.py:summarize_rise_reasons",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/rise_reason_service.py:_call_openai_summary",
+      "target": "function:src/config.py:load_settings",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:persist_morning_snapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:load_morning_view_models_from_snapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:compute_rank_changes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:_upload_snapshot_to_r2",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:build_morning_snapshot_payload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:persist_morning_snapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:load_morning_view_models_from_snapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/snapshot_service.py",
+      "target": "function:src/snapshot_service.py:compute_rank_changes",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

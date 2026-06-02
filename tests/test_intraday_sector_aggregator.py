@@ -327,8 +327,8 @@ def test_leader_stocks_limit() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_leader_stocks_sorted_by_delta_desc() -> None:
-    """delta 큰 순 → change_rate 큰 순 → tick_count 큰 순."""
+def test_leader_stocks_sorted_by_change_rate_desc() -> None:
+    """v3: change_rate 큰 순 → delta 큰 순 → tick_count 큰 순."""
     buckets = [
         _bucket(base_code="000660", minute_trade_value_delta=500, last_change_rate=1.0, tick_count=5),
         _bucket(base_code="005930", minute_trade_value_delta=1000, last_change_rate=0.5, tick_count=3),
@@ -337,11 +337,11 @@ def test_leader_stocks_sorted_by_delta_desc() -> None:
     sm = {"000660": ["반도체"], "005930": ["반도체"], "035420": ["반도체"]}
     result = aggregate_sector_minutes(buckets, sm, leader_limit=5)
     leaders = result[0].leader_stocks
-    # 1위: 005930 (delta=1000)
-    assert leaders[0].base_code == "005930"
-    # 2위: 035420 (delta=500, change=2.0) vs 000660 (delta=500, change=1.0)
-    assert leaders[1].base_code == "035420"
-    assert leaders[2].base_code == "000660"
+    # 1위: 035420 (cr=2.0)
+    assert leaders[0].base_code == "035420"
+    # 2위: 000660 (cr=1.0) > 005930 (cr=0.5)
+    assert leaders[1].base_code == "000660"
+    assert leaders[2].base_code == "005930"
 
 
 def test_leader_stocks_delta_none_sorted_last() -> None:

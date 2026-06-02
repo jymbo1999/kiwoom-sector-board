@@ -1,0 +1,788 @@
+{
+  "scriptCompleted": true,
+  "files": [
+    {
+      "path": ".env.example",
+      "language": "config",
+      "sizeLines": 40,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/06c51013-2963-4e90-a7b6-0ce8fe8ddad0.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/0bd725d4-0c48-41b1-b00f-61f2fa62eee9.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/3da21d48-e69e-4f3c-a450-42f61738fd4c.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/787a2c73-1eda-4394-b856-6bdf22b1fe55.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/854cf7a7-4388-426a-ac06-cc22fec22044.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/8cd1df45-0440-4d3f-8eeb-5785cd890f29.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/bac3f0a1-aab1-4a06-ac61-e31e23057475.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/bbef4954-f803-4723-8c46-71aaf0c6c758.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/bece4b9a-8827-4b01-8003-048c4906c929.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/c696a52b-9056-4eab-ac6d-6c6b76649f52.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/e6d93c50-cc1f-4eee-9a73-e036a9e71cae.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/sessions/fdd6941e-46ed-48b0-b4a2-9d7746941c8d.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/state/agent-replay-7e9ac8b9-4402-4d84-847b-fde5366d2f7b.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".omc/state/checkpoints/checkpoint-2026-05-26T08-23-15-935Z.json",
+      "language": "json",
+      "sizeLines": 15,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/state/last-tool-error.json",
+      "language": "json",
+      "sizeLines": 6,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/state/mission-state.json",
+      "language": "json",
+      "sizeLines": 44,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".omc/state/subagent-tracking.json",
+      "language": "json",
+      "sizeLines": 14,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".streamlit/config.toml",
+      "language": "toml",
+      "sizeLines": 6,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/.understandignore",
+      "language": "unknown",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 266,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "app.py",
+      "language": "python",
+      "sizeLines": 246,
+      "fileCategory": "code"
+    },
+    {
+      "path": "astx.dmg",
+      "language": "dmg",
+      "sizeLines": 119896,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/sample_prices.csv",
+      "language": "csv",
+      "sizeLines": 151,
+      "fileCategory": "data"
+    },
+    {
+      "path": "data/sector_map.json",
+      "language": "json",
+      "sizeLines": 452,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/theme_map.csv",
+      "language": "csv",
+      "sizeLines": 151,
+      "fileCategory": "data"
+    },
+    {
+      "path": "data/universe_codes.txt",
+      "language": "txt",
+      "sizeLines": 10,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/HANDOVER_2026_06.md",
+      "language": "markdown",
+      "sizeLines": 263,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/INTRADAY_LEADER_BOARD_PLAN.md",
+      "language": "markdown",
+      "sizeLines": 218,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/INTRADAY_LEADER_BOARD_RUNBOOK.md",
+      "language": "markdown",
+      "sizeLines": 627,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "pyproject.toml",
+      "language": "toml",
+      "sizeLines": 35,
+      "fileCategory": "config"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 148,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "REQUEST_migration.md",
+      "language": "markdown",
+      "sizeLines": 263,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_01_market_theme_analyze.md",
+      "language": "markdown",
+      "sizeLines": 61,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_02_market_theme_dummy_api.md",
+      "language": "markdown",
+      "sizeLines": 149,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_03_market_theme_template.md",
+      "language": "markdown",
+      "sizeLines": 139,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_04_market_theme_frontend_js_css.md",
+      "language": "markdown",
+      "sizeLines": 59,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_05_news_only_rise_reason.md",
+      "language": "markdown",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_06_sector_board_ui_heatmap_cleanup.md",
+      "language": "markdown",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_07_morning_sector_leader_board.md",
+      "language": "markdown",
+      "sizeLines": 29,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requests/REQUEST_08_intraday_evidence_runbook.md",
+      "language": "markdown",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requirements.txt",
+      "language": "txt",
+      "sizeLines": 17,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "scripts/build_intraday_universe.py",
+      "language": "python",
+      "sizeLines": 501,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/generate_sample_prices.py",
+      "language": "python",
+      "sizeLines": 93,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/run_intraday_snapshot_smoke.py",
+      "language": "python",
+      "sizeLines": 640,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/test_kiwoom_ws_bulk.py",
+      "language": "python",
+      "sizeLines": 757,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/test_kiwoom_ws.py",
+      "language": "python",
+      "sizeLines": 261,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/__init__.py",
+      "language": "python",
+      "sizeLines": 74,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/auth.py",
+      "language": "python",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/blueprint.py",
+      "language": "python",
+      "sizeLines": 517,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/collector.py",
+      "language": "python",
+      "sizeLines": 202,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/intraday_blueprint.py",
+      "language": "python",
+      "sizeLines": 447,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/intraday_reader.py",
+      "language": "python",
+      "sizeLines": 172,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/payload.py",
+      "language": "python",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/repository.py",
+      "language": "python",
+      "sizeLines": 334,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/scheduler.py",
+      "language": "python",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/schema.py",
+      "language": "python",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "sector_board/static/sector_board.css",
+      "language": "css",
+      "sizeLines": 708,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "sector_board/templates/sector_board/index.html",
+      "language": "html",
+      "sizeLines": 413,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "sector_board/templates/sector_board/intraday_live.html",
+      "language": "html",
+      "sizeLines": 475,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "sector_board/templates/sector_board/intraday.html",
+      "language": "html",
+      "sizeLines": 376,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "sector_board/templates/sector_board/standalone.html",
+      "language": "html",
+      "sizeLines": 17,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "src/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/config.py",
+      "language": "python",
+      "sizeLines": 162,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/dart_service.py",
+      "language": "python",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/dashboard_components.py",
+      "language": "python",
+      "sizeLines": 1519,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/data_providers.py",
+      "language": "python",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/data/sample_prices.csv",
+      "language": "csv",
+      "sizeLines": 151,
+      "fileCategory": "data"
+    },
+    {
+      "path": "src/data/sector_cache.csv",
+      "language": "csv",
+      "sizeLines": 2658,
+      "fileCategory": "data"
+    },
+    {
+      "path": "src/data/sector_map.json",
+      "language": "json",
+      "sizeLines": 452,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/data/theme_map.csv",
+      "language": "csv",
+      "sizeLines": 151,
+      "fileCategory": "data"
+    },
+    {
+      "path": "src/data/universe_codes_150.txt",
+      "language": "txt",
+      "sizeLines": 150,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "src/dummy_data.py",
+      "language": "python",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evidence_service.py",
+      "language": "python",
+      "sizeLines": 181,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_leader_ranker.py",
+      "language": "python",
+      "sizeLines": 179,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_runtime.py",
+      "language": "python",
+      "sizeLines": 367,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_sector_aggregator.py",
+      "language": "python",
+      "sizeLines": 195,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_snapshot_serialization.py",
+      "language": "python",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_snapshot_service.py",
+      "language": "python",
+      "sizeLines": 362,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_state.py",
+      "language": "python",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_tick_aggregator.py",
+      "language": "python",
+      "sizeLines": 227,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/intraday_universe_sync.py",
+      "language": "python",
+      "sizeLines": 183,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/kiwoom_auth.py",
+      "language": "python",
+      "sizeLines": 199,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/kiwoom_client.py",
+      "language": "python",
+      "sizeLines": 135,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/kiwoom_websocket.py",
+      "language": "python",
+      "sizeLines": 525,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/krx_collector.py",
+      "language": "python",
+      "sizeLines": 156,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/market_data.py",
+      "language": "python",
+      "sizeLines": 557,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/news_service.py",
+      "language": "python",
+      "sizeLines": 227,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/rise_reason_service.py",
+      "language": "python",
+      "sizeLines": 247,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/sector_map_loader.py",
+      "language": "python",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/sector_ranker.py",
+      "language": "python",
+      "sizeLines": 582,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/snapshot_service.py",
+      "language": "python",
+      "sizeLines": 208,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/theme_loader.py",
+      "language": "python",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/universe_builder.py",
+      "language": "python",
+      "sizeLines": 301,
+      "fileCategory": "code"
+    },
+    {
+      "path": "standalone.py",
+      "language": "python",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_build_intraday_universe.py",
+      "language": "python",
+      "sizeLines": 591,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_config.py",
+      "language": "python",
+      "sizeLines": 168,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_dart_service.py",
+      "language": "python",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_dashboard_rise_reason_view.py",
+      "language": "python",
+      "sizeLines": 57,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_evidence_service.py",
+      "language": "python",
+      "sizeLines": 152,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_board_integration.py",
+      "language": "python",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_data_providers.py",
+      "language": "python",
+      "sizeLines": 508,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_leader_ranker.py",
+      "language": "python",
+      "sizeLines": 351,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_live_route.py",
+      "language": "python",
+      "sizeLines": 544,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_ranker.py",
+      "language": "python",
+      "sizeLines": 121,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_runtime.py",
+      "language": "python",
+      "sizeLines": 282,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_sector_aggregator.py",
+      "language": "python",
+      "sizeLines": 407,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_snapshot_serialization.py",
+      "language": "python",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_snapshot_service.py",
+      "language": "python",
+      "sizeLines": 542,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_snapshot_smoke.py",
+      "language": "python",
+      "sizeLines": 561,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_state.py",
+      "language": "python",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_tick_aggregator.py",
+      "language": "python",
+      "sizeLines": 397,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_intraday_universe_sync.py",
+      "language": "python",
+      "sizeLines": 285,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_kiwoom_bulk_helpers.py",
+      "language": "python",
+      "sizeLines": 563,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_market_data_view_models.py",
+      "language": "python",
+      "sizeLines": 142,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_news_service.py",
+      "language": "python",
+      "sizeLines": 102,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_rise_reason_service.py",
+      "language": "python",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_board_blueprint.py",
+      "language": "python",
+      "sizeLines": 221,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_board_intraday_collector.py",
+      "language": "python",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_board_intraday_reader.py",
+      "language": "python",
+      "sizeLines": 422,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_board_intraday_route.py",
+      "language": "python",
+      "sizeLines": 344,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_board_repository.py",
+      "language": "python",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_map_loader.py",
+      "language": "python",
+      "sizeLines": 242,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_sector_ranker.py",
+      "language": "python",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_theme_loader.py",
+      "language": "python",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_universe_builder.py",
+      "language": "python",
+      "sizeLines": 153,
+      "fileCategory": "code"
+    }
+  ],
+  "totalFiles": 126,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "stats": {
+    "filesScanned": 126,
+    "byCategory": {
+      "config": 21,
+      "code": 78,
+      "docs": 17,
+      "data": 5,
+      "markup": 5
+    },
+    "byLanguage": {
+      "config": 1,
+      "json": 18,
+      "jsonl": 1,
+      "toml": 2,
+      "unknown": 1,
+      "markdown": 14,
+      "python": 75,
+      "dmg": 1,
+      "csv": 5,
+      "txt": 3,
+      "css": 1,
+      "html": 4
+    }
+  }
+}

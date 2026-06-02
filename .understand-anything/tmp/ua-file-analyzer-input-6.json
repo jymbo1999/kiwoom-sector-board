@@ -1,0 +1,12 @@
+{
+  "projectRoot": "/Users/haesungjun/VSCODE Library/kiwoom-sector-board",
+  "batchFiles": [
+    {"path": ".env.example", "language": "config", "sizeLines": 40, "fileCategory": "config"},
+    {"path": "AGENTS.md", "language": "markdown", "sizeLines": 266, "fileCategory": "docs"},
+    {"path": "README.md", "language": "markdown", "sizeLines": 148, "fileCategory": "docs"},
+    {"path": "REQUEST_migration.md", "language": "markdown", "sizeLines": 263, "fileCategory": "docs"},
+    {"path": "pyproject.toml", "language": "toml", "sizeLines": 35, "fileCategory": "config"},
+    {"path": "requirements.txt", "language": "txt", "sizeLines": 17, "fileCategory": "docs"}
+  ],
+  "batchImportData": {".env.example": [], "AGENTS.md": [], "README.md": [], "REQUEST_migration.md": [], "pyproject.toml": [], "requirements.txt": []}
+}

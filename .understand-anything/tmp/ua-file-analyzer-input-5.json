@@ -1,0 +1,23 @@
+{
+  "projectRoot": "/Users/haesungjun/VSCODE Library/kiwoom-sector-board",
+  "batchFiles": [
+    {"path": "scripts/test_kiwoom_ws.py", "language": "python", "sizeLines": 261, "fileCategory": "code"},
+    {"path": "scripts/test_kiwoom_ws_bulk.py", "language": "python", "sizeLines": 757, "fileCategory": "code"},
+    {"path": "src/data_providers.py", "language": "python", "sizeLines": 150, "fileCategory": "code"},
+    {"path": "src/kiwoom_auth.py", "language": "python", "sizeLines": 199, "fileCategory": "code"},
+    {"path": "src/kiwoom_client.py", "language": "python", "sizeLines": 135, "fileCategory": "code"},
+    {"path": "src/kiwoom_websocket.py", "language": "python", "sizeLines": 525, "fileCategory": "code"},
+    {"path": "tests/test_intraday_data_providers.py", "language": "python", "sizeLines": 508, "fileCategory": "code"},
+    {"path": "tests/test_kiwoom_bulk_helpers.py", "language": "python", "sizeLines": 563, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "scripts/test_kiwoom_ws.py": ["src/data_providers.py", "src/kiwoom_auth.py", "src/kiwoom_websocket.py"],
+    "scripts/test_kiwoom_ws_bulk.py": ["src/kiwoom_auth.py", "src/kiwoom_websocket.py"],
+    "src/data_providers.py": ["src/kiwoom_auth.py", "src/kiwoom_client.py", "src/kiwoom_websocket.py"],
+    "src/kiwoom_auth.py": [],
+    "src/kiwoom_client.py": ["src/kiwoom_auth.py"],
+    "src/kiwoom_websocket.py": ["src/kiwoom_auth.py"],
+    "tests/test_intraday_data_providers.py": ["src/data_providers.py", "src/kiwoom_auth.py", "src/kiwoom_websocket.py"],
+    "tests/test_kiwoom_bulk_helpers.py": ["src/kiwoom_websocket.py"]
+  }
+}
