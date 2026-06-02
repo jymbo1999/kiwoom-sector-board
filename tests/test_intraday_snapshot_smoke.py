@@ -280,7 +280,7 @@ def test_mock_raw_message_negative_change_rate() -> None:
 def test_mock_stream_into_service_reaches_ready() -> None:
     """mock 메시지를 서비스에 주입하면 status=ready에 도달한다."""
     sm = {"000660": ["반도체"], "005930": ["반도체"], "035420": ["인터넷/게임"]}
-    svc = IntradaySnapshotService(sm)
+    svc = IntradaySnapshotService(sm, min_riser_count=0)
 
     codes = list(sm.keys())
     acc_tv = {c: 1_000_000_000 for c in codes}
@@ -317,7 +317,7 @@ def test_format_snapshot_summary_ready() -> None:
     svc.ingest_raw_message(make_mock_real_message("000660", "sor", 70100, 0.6, 5_000_000, "134530"))
     snap = svc.get_snapshot()
     out = format_snapshot_summary(snap)
-    assert "반도체" in out or "warming" in out or "empty" in out  # sector or hint
+    assert "반도체" in out or "warming" in out or "empty" in out or "no_leader" in out  # sector or hint
 
 
 # ---------------------------------------------------------------------------

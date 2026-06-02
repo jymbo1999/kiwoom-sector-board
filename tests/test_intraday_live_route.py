@@ -123,7 +123,7 @@ def test_api_start_creates_runtime(tmp_path, monkeypatch):
 
     data = json.loads(r.data)
     assert data["ok"] is True
-    assert data["status"] in ("ready", "warming", "empty")
+    assert data["status"] in ("ready", "warming", "empty", "no_leader")
 
     # cleanup
     with app.test_client() as c:
@@ -432,7 +432,7 @@ def test_websocket_prod_sor_payload_starts_without_secret_echo(tmp_path, monkeyp
 
 
 def test_websocket_prod_sor_uses_default_data_files(tmp_path, monkeypatch):
-    """prod SOR 기본 시작은 150 universe 와 기본 sector_map 을 사용한다."""
+    """prod SOR 기본 시작은 200 universe 와 기본 sector_map 을 사용한다."""
     from src import intraday_runtime as runtime_mod
 
     captured = {}
@@ -462,10 +462,10 @@ def test_websocket_prod_sor_uses_default_data_files(tmp_path, monkeypatch):
     assert data["provider"] == "websocket"
     assert data["kiwoom_env"] == "prod"
     assert data["exchange"] == "sor"
-    assert data["codes"] == 150
-    assert data["codes_file"] == "data/universe_codes_150.txt"
+    assert data["codes"] == 200
+    assert data["codes_file"] == "data/universe_codes_200.txt"
     assert data["sector_map_file"] == "data/sector_map.json"
-    assert captured["code_count"] == 150
+    assert captured["code_count"] == 200
     assert captured["exchange"] == "sor"
 
 

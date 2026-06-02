@@ -52,7 +52,8 @@ class SectorMinuteSummary:
     total_minute_trade_value: int        # delta None → 0으로 합산
     max_stock_trade_value: int | None
     leader_stocks: list[SectorLeaderStock]
-    strong_riser_count: int = 0          # v3: change_rate >= 10.0 종목 수
+    strong_riser_count: int = 0          # v3/v4: change_rate >= 10.0 종목 수
+    riser_5_count: int = 0               # v4: change_rate >= 5.0 종목 수
     positive_stock_count: int = 0        # change_rate > 0 종목 수
 
 
@@ -103,6 +104,7 @@ def _make_leader(bucket: MinuteBucket) -> SectorLeaderStock:
 
 
 _STRONG_RISER_THRESHOLD = 10.0
+_RISER_5_THRESHOLD = 5.0
 
 
 def _build_summary(
@@ -127,6 +129,9 @@ def _build_summary(
     strong_riser_count = sum(
         1 for b in rated if (b.last_change_rate or 0) >= _STRONG_RISER_THRESHOLD
     )
+    riser_5_count = sum(
+        1 for b in rated if (b.last_change_rate or 0) >= _RISER_5_THRESHOLD
+    )
     positive_stock_count = rising_stock_count
 
     # 거래대금 — delta None은 0으로 취급
@@ -149,6 +154,7 @@ def _build_summary(
         max_stock_trade_value=max_tv,
         leader_stocks=leaders,
         strong_riser_count=strong_riser_count,
+        riser_5_count=riser_5_count,
         positive_stock_count=positive_stock_count,
     )
 

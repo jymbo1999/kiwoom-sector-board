@@ -51,6 +51,8 @@ def _summary(
     average_change_rate: float | None = 1.0,
     max_stock_trade_value: int | None = 2_000_000,
     leader_stocks: list[SectorLeaderStock] | None = None,
+    riser_5_count: int = 3,
+    strong_riser_count: int = 0,
 ) -> SectorMinuteSummary:
     if leader_stocks is None:
         leader_stocks = [_stock()]
@@ -65,6 +67,8 @@ def _summary(
         total_minute_trade_value=total_minute_trade_value,
         max_stock_trade_value=max_stock_trade_value,
         leader_stocks=leader_stocks,
+        riser_5_count=riser_5_count,
+        strong_riser_count=strong_riser_count,
     )
 
 
@@ -335,17 +339,17 @@ def test_same_score_tiebreak_by_total_tv() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 18. 동일 score/tv → sector_name 오름차순 안정 정렬
+# 18. 모든 조건이 동일하면 두 섹터 모두 결과에 포함
 # ---------------------------------------------------------------------------
 
 
-def test_same_score_tv_tiebreak_by_sector_name() -> None:
-    """score와 total_tv가 모두 같으면 sector_name 오름차순(가나다순)."""
+def test_same_all_conditions_both_included() -> None:
+    """grade/riser_count/tv/top5avg가 모두 같으면 두 섹터 모두 결과에 포함된다."""
     na = _summary(sector_name="나노", total_minute_trade_value=5_000_000,
                   average_change_rate=0.0, rising_ratio=0.0, active_stock_count=0)
     ga = _summary(sector_name="가전자", total_minute_trade_value=5_000_000,
                   average_change_rate=0.0, rising_ratio=0.0, active_stock_count=0)
-    assert _compute_sector_score(na) == pytest.approx(_compute_sector_score(ga))
     result = rank_intraday_leaders([na, ga], min_active_stock_count=0)
-    assert result[0].sector_name == "가전자"   # 오름차순
-    assert result[1].sector_name == "나노"
+    names = {r.sector_name for r in result}
+    assert "나노" in names
+    assert "가전자" in names

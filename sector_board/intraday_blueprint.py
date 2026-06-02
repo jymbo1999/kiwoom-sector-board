@@ -28,7 +28,7 @@ _RUNTIME_KEY = "INTRADAY_RUNTIME"
 _RUNTIME_META_KEY = "INTRADAY_RUNTIME_META"
 _MAX_WEBSOCKET_CODES = 200          # Kiwoom WebSocket 세션 총 등록 상한
 _DEFAULT_SNAPSHOT_INTERVAL = 1.0
-_DEFAULT_MAX_CODES = 150
+_DEFAULT_MAX_CODES = 200
 _DEFAULT_LISTEN_SECONDS = 7200      # 2시간
 _SENSITIVE_ENV_PARTS = ("SECRET", "APP_KEY", "TOKEN", "PASSWORD")
 
@@ -58,14 +58,11 @@ def create_intraday_blueprint() -> Blueprint:
     @blueprint.route("/", strict_slashes=False)
     def index():
         """장중 리더보드 HTML (1초 polling 기반)."""
-        layout = current_app.config.get(
-            "SECTOR_BOARD_LAYOUT_TEMPLATE", "sector_board/standalone.html"
-        )
         runtime = _get_runtime()
         runtime_state = runtime.get_status()["state"] if runtime else "not_running"
         return render_template(
             "sector_board/intraday_live.html",
-            layout_template=layout,
+            layout_template="sector_board/standalone.html",
             runtime_state=runtime_state,
         )
 
@@ -132,13 +129,15 @@ def create_intraday_blueprint() -> Blueprint:
                 "ignored_row_count": 0,
                 "sector_count": 0,
                 "sector_views": [],
+                "rule": _build_rule_info(meta),
                 **base,
             }), 200
 
-        status = "error" if runtime_error else snap.get("status", "warming")
+        status = "error" if runtime_error else snap.get("status", "empty")
         if status == "empty" and running:
             status = "warming"
         updated_at = snap.get("generated_at")
+        rule = _build_rule_info(_get_runtime_meta())
         return jsonify({
             **snap,                                  # status, minute_key, counts, sector_views …
             **base,
@@ -146,6 +145,7 @@ def create_intraday_blueprint() -> Blueprint:
             "status": status,
             "updated_at": updated_at,
             "last_updated_at": updated_at,
+            "rule": rule,
         }), 200
 
     # ------------------------------------------------------------------ #
@@ -205,7 +205,7 @@ def create_intraday_blueprint() -> Blueprint:
         data_dir = _default_data_dir(project_root)
         codes_file = _resolve_data_file(
             _body_value(body, "codes_file", "codes-file", "codesFile"),
-            data_dir / "universe_codes_150.txt",
+            data_dir / "universe_codes_200.txt",
             project_root,
         )
         sector_map_file = _resolve_data_file(
@@ -228,7 +228,7 @@ def create_intraday_blueprint() -> Blueprint:
         # ---- Provider 별 처리 ----
         if provider == "mock":
             from src.intraday_runtime import make_mock_source
-            source_factory = make_mock_source(base_codes, exchange)
+            source_factory = make_mock_source(base_codes, exchange, sector_map=sector_map)
             kiwoom_env = None
             response_extra: dict = {}
 
@@ -274,7 +274,7 @@ def create_intraday_blueprint() -> Blueprint:
             stock_limit=5,
             name_map=_load_name_map(data_dir),
             market_cap_map=market_cap_map,
-            min_strong_riser_count=3 if market_cap_map else 0,
+            min_riser_count=3,
         )
         runtime = IntradayRuntime(
             service=service,
@@ -292,6 +292,7 @@ def create_intraday_blueprint() -> Blueprint:
             "sector_map_file": _display_path(sector_map_file, project_root, data_dir),
             "snapshot_interval": snapshot_interval,
             "max_total_realtime_codes": max_total_realtime_codes,
+            "market_cap_filter_enabled": bool(market_cap_map),
             **response_extra,
         }
         _set_runtime(runtime, metadata)
@@ -315,6 +316,18 @@ def create_intraday_blueprint() -> Blueprint:
         runtime.stop(timeout=5.0)
         _set_runtime(None)
         return jsonify({"ok": True, "message": "stopped"}), 200
+
+    @blueprint.route("/api/outbound-ip")
+    def api_outbound_ip():
+        """서버의 공인 IP 주소를 반환한다 (키움 IP 등록 안내용)."""
+        import urllib.request
+        import urllib.error
+        try:
+            with urllib.request.urlopen("https://api.ipify.org", timeout=5) as resp:
+                ip = resp.read(64).decode("utf-8").strip()
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            return jsonify({"ok": False, "error": str(exc)}), 503
+        return jsonify({"ok": True, "ip": ip}), 200
 
     return blueprint
 
@@ -345,7 +358,25 @@ def _get_runtime_meta() -> dict:
         "sector_map_file": meta.get("sector_map_file"),
         "snapshot_interval": meta.get("snapshot_interval"),
         "max_total_realtime_codes": meta.get("max_total_realtime_codes"),
+        "market_cap_filter_enabled": meta.get("market_cap_filter_enabled", False),
     }
+
+
+def _build_rule_info(meta: dict) -> dict:
+    """현재 적용 중인 v4 룰 정보를 반환한다."""
+    enabled = meta.get("market_cap_filter_enabled", False)
+    rule: dict = {
+        "version": "v4",
+        "market_cap_filter_enabled": enabled,
+        "min_market_cap": 500_000_000_000 if enabled else None,
+        "riser_threshold": 5.0,
+        "min_riser_count": 3,
+        "strong_threshold": 10.0,
+        "uses_7_percent_threshold": False,
+    }
+    if not enabled:
+        rule["warning"] = "market_cap_map.json missing. Market cap filter is disabled."
+    return rule
 
 
 # ---------------------------------------------------------------------------
@@ -385,20 +416,41 @@ def _load_sector_map(path: Path) -> dict[str, list[str]]:
 
 
 def _load_name_map(data_dir: Path) -> dict[str, str]:
-    """theme_map.csv 에서 code → name 매핑을 로드한다."""
-    path = data_dir / "theme_map.csv"
+    """code → name 매핑을 로드한다.
+
+    우선순위:
+      1. name_map.json  (KRX 전체 목록 기반, 가장 완전함)
+      2. theme_map.csv  (fallback)
+    """
     result: dict[str, str] = {}
+
+    # 1. theme_map.csv (fallback)
+    csv_path = data_dir / "theme_map.csv"
     try:
-        import csv
-        with path.open(encoding="utf-8", newline="") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
+        import csv as _csv
+        with csv_path.open(encoding="utf-8", newline="") as f:
+            for row in _csv.DictReader(f):
                 code = str(row.get("code", "")).strip().zfill(6)
                 name = str(row.get("name", "")).strip()
                 if code and name:
                     result[code] = name
     except Exception:
         pass
+
+    # 2. name_map.json 로 덮어쓰기 (더 완전한 소스)
+    json_path = data_dir / "name_map.json"
+    try:
+        import json as _json
+        data = _json.loads(json_path.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            for k, v in data.items():
+                code = str(k).strip().zfill(6)
+                name = str(v).strip()
+                if code and name:
+                    result[code] = name
+    except Exception:
+        pass
+
     return result
 
 

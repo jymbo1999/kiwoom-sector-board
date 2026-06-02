@@ -15,7 +15,7 @@ def _make_empty_snap():
 
 def _make_ready_snap():
     sm = {"000660": ["반도체"], "005930": ["반도체"], "042660": ["조선"]}
-    svc = IntradaySnapshotService(sm)
+    svc = IntradaySnapshotService(sm, min_riser_count=0)
     # ingest some rows
     from src.intraday_snapshot_service import IntradaySnapshotService as S  # noqa: F401
     rows = [
@@ -101,7 +101,7 @@ def test_empty_snapshot_generated_at_is_iso():
 
 def test_ready_snapshot_has_sector_views():
     d = snapshot_to_dict(_make_ready_snap())
-    assert d["status"] in ("ready", "warming")
+    assert d["status"] in ("ready", "no_leader")
     assert isinstance(d["sector_views"], list)
 
 

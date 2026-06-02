@@ -1,9 +1,9 @@
-"""v3 주도섹터 선정 정책 단위 테스트.
+"""v4 주도섹터 선정 정책 단위 테스트.
 
-v3 규칙:
-  - market_cap >= 500_000_000_000 종목만 후보
-  - change_rate >= 10.0 인 후보를 strong_riser 로 분류
-  - strong_riser_count >= 3 인 섹터만 주도섹터
+v4 규칙:
+  - market_cap >= 500_000_000_000 종목만 후보 (market_cap_map 제공 시)
+  - 표시 조건: riser_5_count (change_rate >= 5.0) >= 3
+  - 강도 등급: A(10%↑>=3), B(10%↑>=1), C(10%↑=0 & 5%↑>=3)
   - 섹터 내 종목 목록은 change_rate 내림차순
 """
 from __future__ import annotations
@@ -34,7 +34,6 @@ _MARKET_CAP_MAP_500B: dict[str, int] = {
     "066570": 300_000_000_000,   # 3천억 ✗ (미만)
     "012450": 700_000_000_000,   # 7천억 ✓
     "047810": 900_000_000_000,   # 9천억 ✓
-    # 저시총 종목 (map에 없음) → 자동 제외
 }
 
 
@@ -66,6 +65,7 @@ def _bucket(
 def _summary(
     sector_name: str = "반도체",
     strong_riser_count: int = 0,
+    riser_5_count: int = 3,
     total_minute_trade_value: int = 5_000_000,
     rising_stock_count: int = 3,
     leader_stocks: list[SectorLeaderStock] | None = None,
@@ -86,6 +86,7 @@ def _summary(
         max_stock_trade_value=total_minute_trade_value,
         leader_stocks=leader_stocks,
         strong_riser_count=strong_riser_count,
+        riser_5_count=riser_5_count,
         positive_stock_count=rising_stock_count,
     )
 
@@ -107,36 +108,35 @@ def test_low_market_cap_excluded_despite_high_change_rate() -> None:
         market_cap_map=_MARKET_CAP_MAP_500B,
     )
     sector = next((s for s in result if s.sector_name == "반도체"), None)
-    # 066570은 필터돼야 함
     assert sector is not None
     codes_in_sector = {ls.base_code for ls in sector.leader_stocks}
     assert "066570" not in codes_in_sector
 
 
 # ---------------------------------------------------------------------------
-# 2. strong_riser 2개 섹터는 min_strong_riser_count=3 필터에서 제외
+# 2. riser_5_count < 3 섹터는 표시 조건 미충족 → 제외
 # ---------------------------------------------------------------------------
 
 
-def test_sector_with_two_strong_risers_excluded() -> None:
-    """strong_riser_count=2 인 섹터는 min_strong_riser_count=3 조건에서 제외."""
-    s = _summary(sector_name="반도체", strong_riser_count=2)
-    result = rank_intraday_leaders([s], min_strong_riser_count=3)
+def test_sector_with_two_riser5_excluded() -> None:
+    """riser_5_count=2 인 섹터는 min_riser_count=3 조건에서 제외."""
+    s = _summary(sector_name="반도체", riser_5_count=2)
+    result = rank_intraday_leaders([s], min_riser_count=3)
     assert result == []
 
 
 # ---------------------------------------------------------------------------
-# 3. strong_riser 3개 이상 섹터는 포함
+# 3. riser_5_count >= 3 섹터는 표시 조건 통과
 # ---------------------------------------------------------------------------
 
 
-def test_sector_with_three_strong_risers_included() -> None:
-    """strong_riser_count=3 이상 섹터는 min_strong_riser_count=3 조건 통과."""
-    s = _summary(sector_name="반도체", strong_riser_count=3)
-    result = rank_intraday_leaders([s], min_strong_riser_count=3)
+def test_sector_with_three_riser5_included() -> None:
+    """riser_5_count=3 이상 섹터는 min_riser_count=3 조건 통과."""
+    s = _summary(sector_name="반도체", riser_5_count=3)
+    result = rank_intraday_leaders([s], min_riser_count=3)
     assert len(result) == 1
     assert result[0].sector_name == "반도체"
-    assert result[0].strong_riser_count == 3
+    assert result[0].riser_5_count == 3
 
 
 # ---------------------------------------------------------------------------
@@ -205,18 +205,18 @@ def test_code_not_in_market_cap_map_excluded() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 7. 거래대금이 매우 커도 strong_riser 조건 미충족 → 주도섹터 아님
+# 7. 거래대금이 커도 riser_5_count < 3 → 주도섹터 아님
 # ---------------------------------------------------------------------------
 
 
-def test_high_trade_value_without_strong_risers_not_leading() -> None:
-    """거래대금 1조이지만 strong_riser_count=0 → min_strong_riser_count=3 통과 못 함."""
+def test_high_trade_value_without_riser5_not_leading() -> None:
+    """거래대금 1조이지만 riser_5_count=2 → min_riser_count=3 통과 못 함."""
     rich_but_flat = _summary(
         sector_name="대형주",
-        strong_riser_count=0,
+        riser_5_count=2,
         total_minute_trade_value=1_000_000_000_000,
     )
-    result = rank_intraday_leaders([rich_but_flat], min_strong_riser_count=3)
+    result = rank_intraday_leaders([rich_but_flat], min_riser_count=3)
     assert result == []
 
 
@@ -239,15 +239,93 @@ def test_no_market_cap_map_backward_compat() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 9. IntradaySnapshotService: market_cap_map 없으면 min_strong_riser_count=0
+# 9. IntradaySnapshotService: 기본 min_riser_count=3
 # ---------------------------------------------------------------------------
 
 
-def test_snapshot_service_without_market_cap_map_uses_no_filter() -> None:
-    """market_cap_map 미제공 서비스는 strong_riser 필터 없이 동작한다."""
+def test_snapshot_service_default_min_riser_count() -> None:
+    """IntradaySnapshotService 기본값 min_riser_count=3."""
     service = IntradaySnapshotService(
         sector_map={"000660": ["반도체"]},
-        min_strong_riser_count=0,
     )
-    assert service.min_strong_riser_count == 0
+    assert service.min_riser_count == 3
     assert service.market_cap_map == {}
+
+
+# ---------------------------------------------------------------------------
+# 10. A/B/C 등급 부여 확인
+# ---------------------------------------------------------------------------
+
+
+def test_grade_A_when_strong_riser_count_ge_3() -> None:
+    """strong_riser_count >= 3 → A급 강한 주도섹터."""
+    s = _summary(strong_riser_count=3, riser_5_count=4)
+    result = rank_intraday_leaders([s])
+    assert result[0].leader_grade == "A"
+    assert result[0].leader_label == "강한 주도섹터"
+
+
+def test_grade_B_when_strong_riser_count_eq_1() -> None:
+    """strong_riser_count=1 → B급 주도섹터."""
+    s = _summary(strong_riser_count=1, riser_5_count=3)
+    result = rank_intraday_leaders([s])
+    assert result[0].leader_grade == "B"
+    assert result[0].leader_label == "주도섹터"
+
+
+def test_grade_C_when_strong_riser_count_eq_0() -> None:
+    """strong_riser_count=0, riser_5_count>=3 → C급 관심섹터."""
+    s = _summary(strong_riser_count=0, riser_5_count=3)
+    result = rank_intraday_leaders([s])
+    assert result[0].leader_grade == "C"
+    assert result[0].leader_label == "관심섹터"
+
+
+# ---------------------------------------------------------------------------
+# 11. 섹터 정렬: A > B > C
+# ---------------------------------------------------------------------------
+
+
+def test_sectors_sorted_grade_A_before_B_before_C() -> None:
+    """A급 > B급 > C급 순으로 정렬된다."""
+    c = _summary(sector_name="C섹터", strong_riser_count=0, riser_5_count=3)
+    b = _summary(sector_name="B섹터", strong_riser_count=2, riser_5_count=4)
+    a = _summary(sector_name="A섹터", strong_riser_count=4, riser_5_count=5)
+    result = rank_intraday_leaders([c, b, a], sector_limit=10)
+    assert result[0].sector_name == "A섹터"
+    assert result[1].sector_name == "B섹터"
+    assert result[2].sector_name == "C섹터"
+
+
+# ---------------------------------------------------------------------------
+# 12. 같은 등급 안에서 10%↑ 개수 → 5%↑ 개수 → 거래대금 순 정렬
+# ---------------------------------------------------------------------------
+
+
+def test_same_grade_sorted_by_strong10_then_riser5_then_tv() -> None:
+    """같은 C등급에서: riser_5_count 많은 순 → tv 큰 순."""
+    more5 = _summary(sector_name="more5", strong_riser_count=0, riser_5_count=5,
+                     total_minute_trade_value=1_000_000)
+    less5 = _summary(sector_name="less5", strong_riser_count=0, riser_5_count=3,
+                     total_minute_trade_value=9_000_000)
+    result = rank_intraday_leaders([less5, more5], sector_limit=10)
+    assert result[0].sector_name == "more5"
+
+
+# ---------------------------------------------------------------------------
+# 13. aggregate에서 riser_5_count 집계 확인
+# ---------------------------------------------------------------------------
+
+
+def test_aggregate_counts_riser_5() -> None:
+    """aggregate_sector_minutes가 riser_5_count를 정확히 집계한다."""
+    buckets = [
+        _bucket("000660", last_change_rate=6.0),   # >=5%
+        _bucket("005930", last_change_rate=11.0),  # >=5% and >=10%
+        _bucket("035420", last_change_rate=3.0),   # <5%
+    ]
+    sm = {"000660": ["반도체"], "005930": ["반도체"], "035420": ["반도체"]}
+    result = aggregate_sector_minutes(buckets, sm)
+    sector = result[0]
+    assert sector.riser_5_count == 2      # 6%, 11%
+    assert sector.strong_riser_count == 1  # 11%

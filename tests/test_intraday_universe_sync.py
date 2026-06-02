@@ -253,33 +253,44 @@ def test_write_universe_txt_with_comment(tmp_path: Path) -> None:
 
 
 def test_data_files_are_consistent() -> None:
-    """data/ 디렉토리의 3개 파일이 일치하는지 자동 검증한다."""
-    import csv as _csv
+    """data/ 디렉토리 파일 일관성 검증.
+
+    sector_map.json 은 theme_map.csv 외에도 직접 추가한 종목을 포함할 수 있으므로
+    단방향 체크만 수행한다:
+      - theme_map.csv 의 모든 종목이 sector_map.json 에 포함돼 있는지
+      - universe_codes_200.txt 의 모든 종목이 sector_map.json 에 포함돼 있는지
+    """
     import json as _json
     from pathlib import Path as _Path
 
     project_root = _Path(__file__).resolve().parents[1]
     theme_map_path = project_root / "data" / "theme_map.csv"
     sector_map_path = project_root / "data" / "sector_map.json"
-    universe_path = project_root / "data" / "universe_codes_150.txt"
+    universe_path = project_root / "data" / "universe_codes_200.txt"
 
     if not all(p.exists() for p in [theme_map_path, sector_map_path, universe_path]):
         pytest.skip("data 파일이 없어서 일관성 검증 생략")
 
     sm_from_csv = generate_sector_map_from_theme_map(theme_map_path)
-    codes_from_csv = generate_universe_codes(theme_map_path)
-
     sm_from_json = _json.loads(sector_map_path.read_text(encoding="utf-8"))
+    sm_keys = set(sm_from_json.keys())
+
     codes_from_txt = [
         l.strip().zfill(6)
         for l in universe_path.read_text(encoding="utf-8").splitlines()
         if l.strip() and not l.strip().startswith("#")
     ]
 
-    # sector_map.json 과 theme_map.csv(theme1_only) 일치 확인
-    ok1, issues1 = validate_universe_consistency(sm_from_csv, set(sm_from_json.keys()))
-    assert ok1, f"sector_map.json vs theme_map.csv 불일치: {issues1}"
+    # theme_map.csv 종목이 sector_map.json 에 모두 있는지 (단방향)
+    missing_from_csv = [c for c in sm_from_csv if c not in sm_keys]
+    assert not missing_from_csv, (
+        f"theme_map.csv 종목이 sector_map.json 에 없음 ({len(missing_from_csv)}개): "
+        f"{missing_from_csv[:10]}"
+    )
 
-    # universe_codes_150.txt 와 theme_map.csv 일치 확인
-    ok2, issues2 = validate_universe_consistency(sm_from_json, codes_from_txt)
-    assert ok2, f"universe_codes_150.txt vs sector_map.json 불일치: {issues2}"
+    # universe_codes_200.txt 종목이 sector_map.json 에 모두 있는지
+    missing_from_universe = [c for c in codes_from_txt if c not in sm_keys]
+    assert not missing_from_universe, (
+        f"universe_codes_200.txt 종목이 sector_map.json 에 없음 ({len(missing_from_universe)}개): "
+        f"{missing_from_universe[:10]}"
+    )

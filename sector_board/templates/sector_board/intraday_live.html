@@ -7,7 +7,7 @@
 <style>
 /* ── Intraday Live page ─────────────────────────────────── */
 .il-page {
-  width: min(1100px, calc(100% - 32px));
+  width: min(1160px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0 56px;
 }
@@ -26,6 +26,32 @@
 .il-back  { font-size: 0.8rem; color: var(--sector-muted); text-decoration: none; }
 .il-back:hover { color: var(--sector-text); }
 
+/* ── Legend ─────────────────────────────────────────────── */
+.il-legend {
+  padding: 12px 16px;
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 9px;
+  margin-bottom: 18px;
+  font-size: 0.77rem;
+}
+.il-legend-title {
+  font-size: 0.72rem; font-weight: 800;
+  color: var(--sector-muted); letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.il-legend-grades {
+  display: flex; flex-wrap: wrap; gap: 6px 20px;
+  margin-bottom: 8px;
+}
+.il-legend-item { display: flex; align-items: center; gap: 6px; }
+.il-legend-rule {
+  border-top: 1px solid var(--sector-border);
+  padding-top: 7px; margin-top: 4px;
+  color: var(--sector-muted); font-size: 0.74rem;
+}
+.il-legend-rule strong { color: var(--sector-text); }
+
 /* status badge */
 .il-badge {
   display: inline-flex; align-items: center; gap: 5px;
@@ -34,14 +60,16 @@
   letter-spacing: 0.05em; text-transform: uppercase;
 }
 .il-badge--not_running, .il-badge--empty { background:#374151; color:#9ca3af; }
-.il-badge--warming { background:#78350f; color:#fbbf24; }
-.il-badge--ready   { background:#064e3b; color:#34d399; }
-.il-badge--error   { background:#7f1d1d; color:#fca5a5; }
+.il-badge--warming   { background:#78350f; color:#fbbf24; }
+.il-badge--no_leader { background:#1e3a5f; color:#93c5fd; }
+.il-badge--ready     { background:#064e3b; color:#34d399; }
+.il-badge--error     { background:#7f1d1d; color:#fca5a5; }
 .il-badge__dot { width:6px; height:6px; border-radius:50%; }
 .il-badge--not_running .il-badge__dot, .il-badge--empty .il-badge__dot { background:#6b7280; }
-.il-badge--warming .il-badge__dot { background:#f59e0b; animation: il-pulse 1.4s ease-in-out infinite; }
-.il-badge--ready   .il-badge__dot { background:#10b981; animation: il-pulse 1.4s ease-in-out infinite; }
-.il-badge--error   .il-badge__dot { background:#ef4444; }
+.il-badge--warming .il-badge__dot   { background:#f59e0b; animation: il-pulse 1.4s ease-in-out infinite; }
+.il-badge--no_leader .il-badge__dot { background:#60a5fa; }
+.il-badge--ready   .il-badge__dot   { background:#10b981; animation: il-pulse 1.4s ease-in-out infinite; }
+.il-badge--error   .il-badge__dot   { background:#ef4444; }
 @keyframes il-pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
 /* stats bar */
@@ -87,16 +115,21 @@
 .il-poll-info { font-size: 0.75rem; color: var(--sector-muted); }
 .il-poll-info span { color: var(--sector-accent); }
 
-/* sectors grid */
-.il-sectors {
+/* ── Fixed slot grid ────────────────────────────────────── */
+.il-slot-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+  margin-bottom: 14px;
 }
+
+/* ── Sector card (filled) ───────────────────────────────── */
 .il-card {
   background: var(--sector-panel);
   border: 1px solid var(--sector-border);
+  border-left-width: 13px;  /* sector color applied via JS */
   border-radius: 11px; overflow: hidden;
+  transition: border-color 0.3s;
 }
 .il-card-head {
   display: flex; align-items: center;
@@ -104,7 +137,11 @@
   padding: 12px 14px 8px;
   border-bottom: 1px solid var(--sector-border); gap: 8px;
 }
-.il-card-rank { font-size: 0.7rem; font-weight: 800; color: var(--sector-muted); min-width: 18px; }
+.il-card-slot {
+  font-size: 0.65rem; font-weight: 800;
+  color: var(--sector-muted); min-width: 22px;
+  letter-spacing: 0.04em;
+}
 .il-card-name { flex: 1; font-size: 0.95rem; font-weight: 700; }
 .il-card-rate { font-size: 0.88rem; font-weight: 700; }
 .il-card-meta {
@@ -113,6 +150,32 @@
   font-size: 0.72rem; color: var(--sector-muted);
 }
 .il-card-meta span { color: var(--sector-text); font-weight: 600; }
+
+/* ── Empty slot card ────────────────────────────────────── */
+.il-empty-slot {
+  background: var(--sector-panel);
+  border: 1px dashed var(--sector-border);
+  border-radius: 11px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 96px; gap: 6px;
+  color: var(--sector-muted);
+}
+.il-empty-slot__num {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.il-empty-slot__label { font-size: 0.72rem; }
+
+/* ── Grade badge (stars) ────────────────────────────────── */
+.il-grade-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.il-grade--A { background:#450a0a; color:#fca5a5; }
+.il-grade--B { background:#1e3a5f; color:#93c5fd; }
+.il-grade--C { background:#1a2e1e; color:#86efac; }
 
 /* leaders */
 .il-leaders { padding: 0 6px 8px; }
@@ -152,6 +215,14 @@
   background: #450a0a; border: 1px solid #7f1d1d;
   border-radius: 8px; font-size: 0.8rem; color: #fca5a5;
 }
+
+/* ── Extension row label ────────────────────────────────── */
+.il-ext-label {
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--sector-muted); letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px; margin-top: 4px;
+}
 </style>
 {% endblock stylesheets %}
 
@@ -173,6 +244,44 @@
     </div>
   </section>
 
+  <!-- ── Legend ───────────────────────────────────────────── -->
+  <div id="il-legend" class="il-legend">
+    <div class="il-legend-title">Legend</div>
+    <div class="il-legend-grades">
+      <div class="il-legend-item">
+        <span class="il-grade-badge il-grade--A">⭐⭐⭐ A급</span>
+        <span style="color:var(--sector-muted);font-size:0.74rem">+10% 이상 상승 종목 3개 이상</span>
+      </div>
+      <div class="il-legend-item">
+        <span class="il-grade-badge il-grade--B">⭐⭐ B급</span>
+        <span style="color:var(--sector-muted);font-size:0.74rem">+10% 이상 상승 종목 1~2개</span>
+      </div>
+      <div class="il-legend-item">
+        <span class="il-grade-badge il-grade--C">⭐ C급</span>
+        <span style="color:var(--sector-muted);font-size:0.74rem">+5% 이상 상승 종목 3개 이상</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:8px;font-size:0.74rem;">
+      <span style="color:var(--sector-muted)">종목 카드 읽는 법:</span>
+      <span style="color:var(--sector-muted)">
+        <span style="color:var(--sector-text);font-weight:600">종목명</span>
+        &nbsp;|&nbsp;
+        <span style="color:var(--sector-text);font-weight:600">현재가</span>
+        &nbsp;|&nbsp;
+        <span style="color:#ef4444;font-weight:600">등락률(%)</span>
+        &nbsp;|&nbsp;
+        <span style="color:var(--sector-muted)">분봉 거래대금(억)</span>
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:4px;">
+        <span style="color:var(--sector-accent);font-weight:700">민트색</span>
+        <span style="color:var(--sector-muted)">= 섹터 내 거래대금 상위 3 종목</span>
+      </span>
+    </div>
+    <div class="il-legend-rule" id="il-legend-rule">
+      표시 조건: <strong>시총 5천억 이상 종목 중 +5% 이상 상승 종목 3개 이상</strong>
+    </div>
+  </div>
+
   <!-- ── Controls ──────────────────────────────────────────── -->
   <div class="il-controls">
     <button id="btn-start-mock" class="il-btn il-btn--start" onclick="startMockRuntime()">▶ Mock 시작</button>
@@ -183,7 +292,16 @@
 
   <!-- ── Error banner ──────────────────────────────────────── -->
   <div id="il-error" class="il-error-banner" style="display:none"></div>
-  <!-- 1000 Bye 등 정상 종료 안내 (에러가 아님) -->
+  <div id="il-ip-guide" style="display:none;padding:12px 16px;margin-bottom:12px;
+    background:#0f2a1a;border:1px solid #065f46;border-radius:8px;
+    font-size:0.8rem;color:#6ee7b7;line-height:1.7;">
+    <strong style="color:#34d399">키움 IP 등록 안내</strong><br>
+    오류코드 8050은 서버의 공인 IP가 키움 계좌에 등록되지 않아서 발생합니다.<br>
+    현재 서버 공인 IP: <code id="il-server-ip" style="color:#fbbf24;font-size:0.85rem">조회 중…</code><br>
+    <span style="color:#a7f3d0">→ <a href="https://securities.kiwoom.com" target="_blank" rel="noopener"
+      style="color:#34d399">키움증권 홈페이지</a> &gt; 마이페이지 &gt; API 서비스 &gt; KIS Developers &gt; IP 등록</span>에서
+    위 IP를 추가한 뒤 다시 시작하세요.
+  </div>
   <div id="il-close-reason" style="display:none;padding:8px 14px;margin-bottom:12px;
     background:#1e3a5f;border:1px solid #1d4ed8;border-radius:8px;
     font-size:0.78rem;color:#93c5fd;"></div>
@@ -205,7 +323,7 @@
     <div class="il-stat"><span class="il-stat-label">섹터</span><span class="il-stat-value" id="s-sectors">0</span></div>
   </div>
 
-  <!-- ── Sector cards ──────────────────────────────────────── -->
+  <!-- ── Slot body ─────────────────────────────────────────── -->
   <div id="il-body">
     <div class="il-hint">
       <h2>대기 중</h2>
@@ -241,11 +359,6 @@ function fmtRate(v) {
   return sign + v.toFixed(2) + "%";
 }
 
-function fmtRising(v) {
-  if (v == null) return "N/A";
-  return Math.round(v * 100) + "%";
-}
-
 function rateClass(v) {
   if (v == null) return "il-neu";
   return v > 0 ? "il-pos" : v < 0 ? "il-neg" : "il-neu";
@@ -263,21 +376,53 @@ function fmtPrice(v) {
   return parseInt(v).toLocaleString();
 }
 
+const GRADE_STARS = { A: "⭐⭐⭐", B: "⭐⭐", C: "⭐" };
+const GRADE_CSS   = { A: "il-grade--A", B: "il-grade--B", C: "il-grade--C" };
+
+// ── Legend 룰 업데이트 ──────────────────────────────────────
+function updateLegendRule(rule) {
+  const el = document.getElementById("il-legend-rule");
+  if (!el || !rule) return;
+  const mcap = rule.market_cap_filter_enabled
+    ? "시총 5천억 이상 종목 중 "
+    : "";
+  el.innerHTML = `표시 조건: <strong>${mcap}+${rule.riser_threshold || 5}% 이상 상승 종목 ${rule.min_riser_count || 3}개 이상</strong>`;
+}
+
 // ── DOM 업데이트 ────────────────────────────────────────────
 function setStatus(state) {
   const badge  = document.getElementById("il-status-badge");
   const text   = document.getElementById("il-status-text");
-  const states = ["not_running","empty","warming","ready","error"];
+  const states = ["not_running","empty","warming","no_leader","ready","error"];
   if (!states.includes(state)) state = "warming";
   states.forEach(s => badge.classList.remove("il-badge--" + s));
   badge.classList.add("il-badge--" + state);
-  text.textContent = state.toUpperCase().replace("_", " ");
+  const labels = { no_leader: "NO LEADER" };
+  text.textContent = labels[state] || state.toUpperCase().replace(/_/g, " ");
 }
 
 function showError(msg) {
   const el = document.getElementById("il-error");
-  if (msg) { el.textContent = "⚠ " + msg; el.style.display = ""; }
-  else      { el.style.display = "none"; }
+  const ipGuide = document.getElementById("il-ip-guide");
+  if (msg) {
+    el.textContent = "⚠ " + msg;
+    el.style.display = "";
+    if (msg.includes("8050")) {
+      ipGuide.style.display = "";
+      const ipEl = document.getElementById("il-server-ip");
+      if (ipEl.textContent === "조회 중…") {
+        fetch("/intraday/api/outbound-ip")
+          .then(r => r.json())
+          .then(d => { ipEl.textContent = d.ok ? d.ip : "조회 실패"; })
+          .catch(() => { ipEl.textContent = "조회 실패"; });
+      }
+    } else {
+      ipGuide.style.display = "none";
+    }
+  } else {
+    el.style.display = "none";
+    ipGuide.style.display = "none";
+  }
 }
 
 function renderStats(snap) {
@@ -285,11 +430,9 @@ function renderStats(snap) {
   document.getElementById("s-exchange").textContent = snap.exchange || "—";
   document.getElementById("s-running").textContent = snap.running ? "true" : "false";
 
-  // runtime 상태
   const stateEl = document.getElementById("s-state");
   if (stateEl) stateEl.textContent = snap.status || snap.runtime_state || "—";
 
-  // 시작 시각
   const startedEl = document.getElementById("s-started");
   if (startedEl) {
     startedEl.textContent = snap.started_at
@@ -317,7 +460,6 @@ function renderStats(snap) {
     unmappedEl.style.display = "none";
   }
 
-  // close_reason (정상 종료 안내 — 에러 아님)
   const crEl = document.getElementById("il-close-reason");
   if (crEl) {
     if (snap.runtime_close_reason) {
@@ -330,54 +472,91 @@ function renderStats(snap) {
   }
 }
 
-function renderSectors(sectorViews) {
+// ── 슬롯 카드 렌더링 ────────────────────────────────────────
+
+function buildEmptySlotCard(slotId) {
+  return `<div class="il-empty-slot">
+    <span class="il-empty-slot__num">slot ${slotId}</span>
+    <span class="il-empty-slot__label">새 주도섹터 대기 중</span>
+  </div>`;
+}
+
+function buildSectorCard(slot) {
+  const sv = slot.sector;
+  const grade = sv.leader_grade || "C";
+  const stars = GRADE_STARS[grade] || "★";
+  const gradeCSS = GRADE_CSS[grade] || "";
+  const color = sv.color || "#6B7280";
+
+  const gradeBadge = `<span class="il-grade-badge ${gradeCSS}">${stars} ${grade}급 ${sv.leader_label || ""}</span>`;
+  const gradeMeta  = `<span>10%↑ <span>${sv.strong_riser_count ?? 0}개</span></span>`
+                   + `<span>5%↑ <span>${sv.riser_5_count ?? 0}개</span></span>`
+                   + `<span>거래대금 <span>${fmtTV(sv.sector_total_trading_value)}</span></span>`;
+
+  const leaders = (sv.leader_stocks || []).map(ls => {
+    const badge = ls.display_badge || "";
+    const nameOrCode = ls.stock_name || ls.base_code;
+    const codeSub = ls.stock_name
+      ? `<span class="il-l-code">${ls.base_code}</span>`
+      : "";
+    const highTV = ls.is_high_trading_value
+      ? ` style="font-weight:800;color:var(--sector-accent)"`
+      : "";
+    return `<div class="il-leader">
+      <span class="il-lbadge ${badgeClass(badge)}">${badge || "#" + ls.rank}</span>
+      <span style="overflow:hidden;min-width:0">
+        <div class="il-l-name"${highTV}>${nameOrCode}</div>
+        ${codeSub}
+      </span>
+      <span class="il-l-price">${fmtPrice(ls.close_price)}</span>
+      <div class="il-l-right">
+        <div class="il-l-rate ${rateClass(ls.last_change_rate)}">${fmtRate(ls.last_change_rate)}</div>
+        <div class="il-l-tv">${fmtTV(ls.minute_trade_value_delta)}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  return `<div class="il-card" style="border-left-color:${color}">
+    <div class="il-card-head">
+      <span class="il-card-slot">S${slot.slot_id}</span>
+      <span class="il-card-name">${sv.sector_name} <span style="letter-spacing:-2px">${stars}</span></span>
+      <span class="il-card-rate ${rateClass(sv.average_change_rate)}">${fmtRate(sv.average_change_rate)}</span>
+    </div>
+    <div class="il-card-meta">${gradeMeta}</div>
+    <div class="il-leaders">${leaders}</div>
+  </div>`;
+}
+
+function renderSlotLayout(slotLayout) {
   const body = document.getElementById("il-body");
-  if (!sectorViews || sectorViews.length === 0) {
+  if (!slotLayout || slotLayout.length === 0) {
     body.innerHTML = `<div class="il-hint">
       <h2>섹터 데이터 없음</h2>
-      <p>tick 을 수신 중이지만 아직 섹터 집계가 완료되지 않았습니다. (warming)<br>
+      <p>tick 을 수신 중이지만 아직 섹터 집계가 완료되지 않았습니다.<br>
       sector_map 매핑을 확인하거나 잠시 기다려 주세요.</p>
     </div>`;
     return;
   }
 
-  const cards = sectorViews.map(sv => {
-    const leaders = (sv.leader_stocks || []).map(ls => {
-      const badge = ls.display_badge || "";
-      const nameOrCode = ls.stock_name || ls.base_code;
-      const codeSub = ls.stock_name
-        ? `<span class="il-l-code">${ls.base_code}</span>`
-        : "";
-      return `<div class="il-leader">
-        <span class="il-lbadge ${badgeClass(badge)}">${badge || "#" + ls.rank}</span>
-        <span style="overflow:hidden;min-width:0">
-          <div class="il-l-name">${nameOrCode}</div>
-          ${codeSub}
-        </span>
-        <span class="il-l-price">${fmtPrice(ls.close_price)}</span>
-        <div class="il-l-right">
-          <div class="il-l-rate ${rateClass(ls.last_change_rate)}">${fmtRate(ls.last_change_rate)}</div>
-          <div class="il-l-tv">${fmtTV(ls.minute_trade_value_delta)}</div>
-        </div>
-      </div>`;
-    }).join("");
+  // 기본 슬롯 (1~6)
+  const base = slotLayout.slice(0, 6);
+  const baseCards = base.map(slot =>
+    slot.sector_name ? buildSectorCard(slot) : buildEmptySlotCard(slot.slot_id)
+  ).join("");
 
-    return `<div class="il-card">
-      <div class="il-card-head">
-        <span class="il-card-rank">#${sv.rank}</span>
-        <span class="il-card-name">${sv.sector_name}</span>
-        <span class="il-card-rate ${rateClass(sv.average_change_rate)}">${fmtRate(sv.average_change_rate)}</span>
-      </div>
-      <div class="il-card-meta">
-        <span>1분거래대금 <span>${fmtTV(sv.total_minute_trade_value)}</span></span>
-        <span>상승비율 <span>${fmtRising(sv.rising_ratio)}</span></span>
-        <span>활성종목 <span>${sv.active_stock_count}</span></span>
-      </div>
-      <div class="il-leaders">${leaders}</div>
-    </div>`;
-  }).join("");
+  // 확장 슬롯 (7~9): 하나라도 채워져 있을 때만 표시
+  const ext = slotLayout.slice(6, 9);
+  const extHasContent = ext.some(s => s.sector_name !== null);
+  const extHtml = extHasContent
+    ? `<div class="il-ext-label">확장 슬롯</div>
+       <div class="il-slot-grid">${
+         ext.map(slot =>
+           slot.sector_name ? buildSectorCard(slot) : buildEmptySlotCard(slot.slot_id)
+         ).join("")
+       }</div>`
+    : "";
 
-  body.innerHTML = `<div class="il-sectors">${cards}</div>`;
+  body.innerHTML = `<div class="il-slot-grid">${baseCards}</div>${extHtml}`;
 }
 
 function renderEmpty(status) {
@@ -385,6 +564,7 @@ function renderEmpty(status) {
     not_running: { h: "런타임 미실행", p: "Mock 시작 또는 실전 SOR 시작 버튼을 눌러 런타임을 시작하세요." },
     empty:       { h: "데이터 없음",   p: "런타임이 실행 중이지만 아직 tick 데이터가 없습니다. 장중(08:00~18:00 KST)인지 확인하세요." },
     warming:     { h: "수집 중 (Warming)", p: "tick 을 수신 중입니다. 섹터 집계가 시작되면 화면이 갱신됩니다." },
+    no_leader:   { h: "현재 조건을 만족하는 주도섹터가 없습니다.", p: "조건: 시총 5천억 이상 종목 중 +5% 이상 상승 종목 3개 이상" },
     error:       { h: "런타임 오류", p: "상단 오류 메시지를 확인한 뒤 설정을 수정하고 다시 시작하세요." },
   };
   const m = msgs[status] || msgs.empty;
@@ -404,8 +584,11 @@ async function fetchSnapshot() {
     setStatus(state);
     renderStats(snap);
 
-    if (state === "ready" && snap.sector_views && snap.sector_views.length > 0) {
-      renderSectors(snap.sector_views);
+    if (snap.rule) updateLegendRule(snap.rule);
+
+    const hasSlots = snap.slot_layout && snap.slot_layout.some(s => s.sector_name !== null);
+    if ((state === "ready" || (state === "no_leader" && hasSlots)) && snap.slot_layout) {
+      renderSlotLayout(snap.slot_layout);
     } else {
       renderEmpty(state);
     }

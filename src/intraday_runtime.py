@@ -63,37 +63,140 @@ def make_mock_source(
     base_codes: list[str],
     exchange: str = "sor",
     tick_interval: float = 0.05,
+    sector_map: "dict[str, list[str]] | None" = None,
 ) -> Callable[[], Any]:
-    """mock REAL 메시지를 무한히 생성하는 async source factory 를 반환한다.
+    """섹터 레짐 기반 mock REAL 메시지 소스.
+
+    섹터 단위로 A/B/C/cold/bear 레짐을 부여하고 ~60초마다 전환한다.
+    각 종목은 자신의 섹터 레짐 목표 등락률로 천천히 수렴하여
+    임계값(+5%) 근처의 급격한 진입/탈락을 방지한다.
 
     Args:
-        base_codes:    종목코드 리스트.
-        exchange:      exchange 종류 (sor / nxt / krx).
-        tick_interval: 한 배치(전 종목 1회) 사이의 대기 시간(초). 기본 0.05초.
-
-    Returns:
-        호출하면 async generator 를 반환하는 callable.
+        base_codes:  종목코드 리스트.
+        exchange:    exchange 종류 (sor / nxt / krx).
+        tick_interval: 배치당 대기 시간(초). 기본 0.05초.
+        sector_map:  code → sectors 역방향 매핑.
+                     전달하면 섹터 단위 레짐을 사용하고,
+                     없으면 개별 종목 레짐으로 fallback한다.
     """
     from .kiwoom_websocket import format_kiwoom_code
 
+    # 레짐별 목표 등락률 범위 (center, half_spread)
+    # strong_riser_count(10%↑) 기준으로 A/B/C 등급이 결정되므로
+    # 각 레짐의 분포가 등급 경계(5%, 10%)로부터 충분히 떨어져야 함
+    _REGIME: dict[str, tuple[float, float]] = {
+        "A":    (13.0, 2.5),   # 10.5 ~ 15.5% → 대부분 10%↑ → A급
+        "B":    (9.0,  2.0),   # 7.0  ~ 11.0% → 1~2종목 10%↑ → B급
+        "C":    (6.2,  0.8),   # 5.4  ~  7.0% → 10%↑ 없음, 5%↑ 다수 → C급
+        "cold": (-1.5, 2.5),   # -4.0 ~  1.0% → 5%↑ 3개 미만 → threshold 미달
+        "bear": (-6.0, 2.5),   # -8.5 ~ -3.5% → 급락
+    }
+    # 레짐 전환 가중치 (from → {to: weight})
+    # A→cold/bear 직접 점프 금지: 반드시 B→C→cold 순차 경로만 허용
+    _TRANSITIONS: dict[str, dict[str, float]] = {
+        "A":    {"A": 0.50, "B": 0.50, "C": 0.00, "cold": 0.00, "bear": 0.00},
+        "B":    {"A": 0.25, "B": 0.35, "C": 0.30, "cold": 0.10, "bear": 0.00},
+        "C":    {"A": 0.05, "B": 0.20, "C": 0.30, "cold": 0.35, "bear": 0.10},
+        "cold": {"A": 0.05, "B": 0.10, "C": 0.20, "cold": 0.45, "bear": 0.20},
+        "bear": {"A": 0.00, "B": 0.05, "C": 0.10, "cold": 0.35, "bear": 0.50},
+    }
+    # 레짐 전환 간격: 데모 20초 (실전은 60초 권장)
+    _REGIME_CHANGE_BATCHES = max(1, int(20.0 / tick_interval))
+
+    def _pick_regime(from_regime: str) -> str:
+        pool = _TRANSITIONS[from_regime]
+        keys, weights = list(pool.keys()), list(pool.values())
+        return random.choices(keys, weights=weights, k=1)[0]
+
+    def _target_for_regime(regime: str) -> float:
+        c, s = _REGIME[regime]
+        return round(random.uniform(c - s, c + s), 2)
+
     def _factory() -> Any:
         async def _gen():
-            code_state: dict[str, dict] = {
-                c: {
-                    "price": random.randint(30_000, 200_000),
+            # ── 섹터별 역방향 인덱스 구성 ──────────────────────
+            code_to_sector: dict[str, str] = {}
+            sector_to_codes: dict[str, list[str]] = {}
+            if sector_map:
+                for code in base_codes:
+                    sectors_list = sector_map.get(code, [])
+                    if sectors_list:
+                        s = sectors_list[0]
+                        code_to_sector[code] = s
+                        sector_to_codes.setdefault(s, []).append(code)
+
+            # ── 초기 섹터 레짐 배정 (shuffle → 종목 수와 무관하게 분산) ──
+            qualifying = [s for s, codes in sector_to_codes.items() if len(codes) >= 3]
+            random.shuffle(qualifying)  # 종목 많은 섹터가 A를 독점하지 않도록
+            n_q = len(qualifying)
+            sector_regime: dict[str, str] = {}
+            sector_countdown: dict[str, int] = {}
+
+            for i, s in enumerate(qualifying):
+                if i < n_q * 0.13:      # ~13% A급
+                    regime = "A"
+                elif i < n_q * 0.35:    # ~22% B급
+                    regime = "B"
+                elif i < n_q * 0.57:    # ~22% C급
+                    regime = "C"
+                elif i < n_q * 0.80:    # ~23% cold
+                    regime = "cold"
+                else:                   # ~20% bear
+                    regime = "bear"
+                sector_regime[s] = regime
+                # 전환 시점을 분산
+                sector_countdown[s] = _REGIME_CHANGE_BATCHES + random.randint(
+                    -_REGIME_CHANGE_BATCHES // 3, _REGIME_CHANGE_BATCHES // 3
+                )
+
+            # sector_map 없거나 섹터 코드 <3인 종목은 개별 cold/bear 레짐
+            def _initial_regime_for_code(code: str) -> str:
+                s = code_to_sector.get(code)
+                if s and s in sector_regime:
+                    return sector_regime[s]
+                return random.choice(["cold", "cold", "bear"])
+
+            # ── 종목별 초기 상태 ───────────────────────────────
+            code_state: dict[str, dict] = {}
+            for code in base_codes:
+                regime = _initial_regime_for_code(code)
+                target = _target_for_regime(regime)
+                code_state[code] = {
+                    "price": random.randint(10_000, 200_000),
                     "acc_tv": random.randint(1_000_000_000, 10_000_000_000),
-                    "change_rate": round(random.uniform(-1.0, 1.0), 2),
+                    "change_rate": target,  # target에서 바로 시작 → 초기 threshold 진동 방지
+                    "target": target,
                 }
-                for c in base_codes
-            }
+
+            batch = 0
             while True:
+                batch += 1
                 now_str = datetime.now().strftime("%H%M%S")
+
+                # ── 섹터 레짐 전환 체크 ────────────────────────
+                for s in list(sector_countdown.keys()):
+                    sector_countdown[s] -= 1
+                    if sector_countdown[s] <= 0:
+                        new_regime = _pick_regime(sector_regime[s])
+                        sector_regime[s] = new_regime
+                        sector_countdown[s] = _REGIME_CHANGE_BATCHES + random.randint(
+                            -_REGIME_CHANGE_BATCHES // 3, _REGIME_CHANGE_BATCHES // 3
+                        )
+                        # 해당 섹터 코드의 목표 등락률 갱신
+                        for code in sector_to_codes.get(s, []):
+                            code_state[code]["target"] = _target_for_regime(new_regime)
+
+                # ── 종목별 tick 생성 ───────────────────────────
                 for code in base_codes:
                     st = code_state[code]
-                    delta = random.uniform(-0.12, 0.12)
-                    st["price"] = max(100, int(st["price"] * (1 + delta / 100)))
-                    st["change_rate"] = round(st["change_rate"] + delta * 0.5, 2)
-                    st["acc_tv"] += random.randint(50_000_000, 300_000_000)
+                    # 목표 등락률로 천천히 수렴 + 소량 노이즈
+                    gap = st["target"] - st["change_rate"]
+                    drift = gap * 0.012 + random.gauss(0, 0.12)
+                    drift = max(-0.4, min(0.4, drift))
+                    st["change_rate"] = round(st["change_rate"] + drift, 2)
+                    price_delta = drift / 10.0
+                    st["price"] = max(100, int(st["price"] * (1 + price_delta / 100)))
+                    st["acc_tv"] += random.randint(50_000_000, 500_000_000)
 
                     item = format_kiwoom_code(code, exchange)
                     p = st["price"]

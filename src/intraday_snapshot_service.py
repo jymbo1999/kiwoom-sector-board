@@ -185,7 +185,7 @@ def _json_default(value: Any) -> Any:
 # DB 저장, Flask UI, 실제 WebSocket 연결과 무관한 순수 Python 서비스 레이어.
 # ---------------------------------------------------------------------------
 
-from dataclasses import dataclass as _dataclass
+from dataclasses import dataclass as _dataclass, field as _field
 
 from .intraday_tick_aggregator import IntradayTickAggregator as _IntradayTickAggregator
 from .intraday_sector_aggregator import aggregate_sector_minutes as _aggregate_sector_minutes
@@ -193,6 +193,7 @@ from .intraday_leader_ranker import (
     IntradaySectorLeaderView as _IntradaySectorLeaderView,
     rank_intraday_leaders as _rank_intraday_leaders_v2,
 )
+from .intraday_slot_manager import SlotManager as _SlotManager
 from .kiwoom_websocket import normalize_tick_rows as _normalize_tick_rows
 
 
@@ -201,9 +202,10 @@ class IntradaySnapshot:
     """장중 집계 스냅샷.
 
     status 의미:
-      "empty"   - bucket이 하나도 없음 (아직 tick 미수신 또는 trade_time 이상)
-      "warming" - bucket은 있지만 sector_views가 없음 (sector_map 미매핑 등)
-      "ready"   - sector_views가 1개 이상 존재
+      "empty"     - bucket이 하나도 없음 (아직 tick 미수신 또는 trade_time 이상)
+      "warming"   - 런타임 실행 중이지만 아직 tick 미수신 (blueprint에서 설정)
+      "no_leader" - bucket은 있지만 조건 만족 섹터가 없음 (+5%↑ 3개 미만)
+      "ready"     - sector_views가 1개 이상 존재
     """
 
     generated_at: datetime
@@ -218,6 +220,8 @@ class IntradaySnapshot:
     unmapped_count: int = 0
     """tick 을 수신했지만 sector_map 에 없는 종목 수.
     warming 상태의 주요 원인 진단에 사용한다."""
+    slot_layout: list = _field(default_factory=list)
+    """슬롯 고정 배치 정보. 슬롯 1~9 의 섹터 카드 배치를 담는다."""
 
 
 class IntradaySnapshotService:
@@ -238,6 +242,8 @@ class IntradaySnapshotService:
         min_active_stock_count: int = 1,
         name_map: "dict[str, str] | None" = None,
         market_cap_map: "dict[str, int] | None" = None,
+        min_riser_count: int = 3,
+        # v3 호환 파라미터 (무시됨)
         min_strong_riser_count: int = 0,
     ) -> None:
         self.sector_map = sector_map
@@ -247,10 +253,12 @@ class IntradaySnapshotService:
         self.min_active_stock_count = min_active_stock_count
         self.name_map: dict[str, str] = name_map or {}
         self.market_cap_map: dict[str, int] = market_cap_map or {}
-        self.min_strong_riser_count = min_strong_riser_count
+        self.min_riser_count = min_riser_count
         self.tick_aggregator = _IntradayTickAggregator()
         self.raw_row_count: int = 0
         self.ignored_row_count: int = 0
+        self._slot_manager = _SlotManager()
+        self._cached_slot_layout: list = []
 
     # ------------------------------------------------------------------
     # Ingestion
@@ -314,10 +322,11 @@ class IntradaySnapshotService:
             minute_key=minute_key,
             market_cap_map=self.market_cap_map or None,
         )
+        market_cap_enabled = bool(self.market_cap_map)
         leadership_rule = (
-            "market_cap>=500B_and_3_stocks_up_10pct"
-            if self.market_cap_map and self.min_strong_riser_count >= 3
-            else ""
+            "v4_market_cap>=500B_riser5pct>=3_grade_ABC"
+            if market_cap_enabled
+            else "v4_riser5pct>=3_grade_ABC_no_mcap_filter"
         )
         sector_views = _rank_intraday_leaders_v2(
             summaries,
@@ -325,8 +334,8 @@ class IntradaySnapshotService:
             stock_limit=self.stock_limit,
             min_total_trade_value=self.min_total_trade_value,
             min_active_stock_count=self.min_active_stock_count,
-            min_strong_riser_count=self.min_strong_riser_count,
-            market_cap_filter_min=500_000_000_000 if self.market_cap_map else 0,
+            min_riser_count=self.min_riser_count,
+            market_cap_filter_min=500_000_000_000 if market_cap_enabled else 0,
             leadership_rule=leadership_rule,
         )
         if self.name_map:
@@ -343,13 +352,18 @@ class IntradaySnapshotService:
         if not buckets:
             status = "empty"
         elif not sector_views:
-            status = "warming"
+            status = "no_leader"
         else:
             status = "ready"
 
         unmapped_count = sum(
             1 for state in latest if state.base_code not in self.sector_map
         )
+
+        if status == "ready":
+            self._slot_manager.update(sector_views)
+            self._cached_slot_layout = self._slot_manager.get_slot_layout(sector_views)
+        slot_layout = self._cached_slot_layout
 
         return IntradaySnapshot(
             generated_at=datetime.now(),
@@ -362,6 +376,7 @@ class IntradaySnapshotService:
             sector_count=len(sector_views),
             status=status,
             unmapped_count=unmapped_count,
+            slot_layout=slot_layout,
         )
 
     # ------------------------------------------------------------------
@@ -373,3 +388,5 @@ class IntradaySnapshotService:
         self.tick_aggregator = _IntradayTickAggregator()
         self.raw_row_count = 0
         self.ignored_row_count = 0
+        self._slot_manager.reset()
+        self._cached_slot_layout = []

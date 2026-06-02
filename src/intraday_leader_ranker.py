@@ -33,6 +33,8 @@ class IntradayLeaderStockView:
     display_badge: str
     """rank에 따라 부여: 1='대장', 2='2등주', 3='3등주', 그 외=''."""
     stock_name: str = ""
+    trading_value: int | None = None
+    is_high_trading_value: bool = False
 
 
 @dataclass
@@ -50,10 +52,14 @@ class IntradaySectorLeaderView:
     total_minute_trade_value: int
     sector_score: float
     leader_stocks: list[IntradayLeaderStockView]
-    strong_riser_count: int = 0           # v3: change_rate >= 10.0 종목 수
+    strong_riser_count: int = 0           # v3/v4: change_rate >= 10.0 종목 수
+    riser_5_count: int = 0               # v4: change_rate >= 5.0 종목 수
     top3_avg_change_rate: float = 0.0    # v3: 상위 3종목 평균 상승률
+    sector_top5_avg_change_rate: float = 0.0  # v4: 상위 5종목 평균 상승률
+    leader_grade: str = ""               # v4: "A", "B", "C"
+    leader_label: str = ""               # v4: "강한 주도섹터", "주도섹터", "관심섹터"
     market_cap_filter_min: int = 0       # 적용된 시가총액 하한선(0=필터 없음)
-    leadership_rule: str = ""            # v3 선정 규칙 식별자
+    leadership_rule: str = ""            # 선정 규칙 식별자
 
 
 # ---------------------------------------------------------------------------
@@ -106,14 +112,26 @@ def _make_stock_view(stock: SectorLeaderStock, rank: int) -> IntradayLeaderStock
     )
 
 
+_GRADE_RANK = {"A": 3, "B": 2, "C": 1}
+
+
+def _compute_leader_grade(strong_riser_count: int) -> tuple[str, str]:
+    """strong_riser_count(10%↑ 종목 수)로 A/B/C 등급을 반환한다."""
+    if strong_riser_count >= 3:
+        return "A", "강한 주도섹터"
+    if strong_riser_count >= 1:
+        return "B", "주도섹터"
+    return "C", "관심섹터"
+
+
 def _sector_sort_key(v: IntradaySectorLeaderView) -> tuple:
-    """v3: strong_riser_count 내림 → top3_avg 내림 → total_tv 내림 → rising_stock_count 내림 → sector_name 오름."""
+    """v4: grade(A>B>C) → strong_10_count → riser_5_count → total_tv → top5_avg."""
     return (
+        -_GRADE_RANK.get(v.leader_grade, 0),
         -v.strong_riser_count,
-        -v.top3_avg_change_rate,
+        -v.riser_5_count,
         -v.total_minute_trade_value,
-        -v.rising_stock_count,
-        v.sector_name,
+        -v.sector_top5_avg_change_rate,
     )
 
 
@@ -128,25 +146,19 @@ def rank_intraday_leaders(
     stock_limit: int = 5,
     min_total_trade_value: int = 0,
     min_active_stock_count: int = 1,
-    min_strong_riser_count: int = 0,
+    min_riser_count: int = 3,
     market_cap_filter_min: int = 0,
     leadership_rule: str = "",
+    # v3 호환 파라미터 (무시됨)
+    min_strong_riser_count: int = 0,
 ) -> list[IntradaySectorLeaderView]:
-    """SectorMinuteSummary 리스트를 받아 주도섹터 랭킹 ViewModel을 반환한다.
+    """SectorMinuteSummary 리스트를 받아 주도섹터 랭킹 ViewModel을 반환한다 (v4).
 
-    Args:
-        summaries:              aggregate_sector_minutes() 결과.
-        sector_limit:           반환할 최대 섹터 수. 기본 5.
-        stock_limit:            섹터당 표시할 최대 대장주 수. 기본 5.
-        min_total_trade_value:  이 값 미만 total_minute_trade_value 섹터 제외.
-        min_active_stock_count: 이 값 미만 active_stock_count 섹터 제외.
-        min_strong_riser_count: v3: 이 값 미만 strong_riser_count 섹터 제외. 기본 0(비활성).
-        market_cap_filter_min:  ViewModel에 기록할 시가총액 하한선.
-        leadership_rule:        ViewModel에 기록할 선정 규칙 식별자.
+    표시 조건: riser_5_count(+5%↑ 종목 수) >= min_riser_count (기본 3)
+    강도 등급: strong_riser_count(+10%↑ 종목 수) 기준 A/B/C
 
     Returns:
-        v3 정렬 기준으로 정렬된 IntradaySectorLeaderView 리스트.
-        summaries가 비어 있거나 필터 후 남은 섹터가 없으면 빈 리스트.
+        v4 정렬 기준(grade → 10%↑ → 5%↑ → 거래대금 → top5avg)으로 정렬된 리스트.
     """
     if not summaries:
         return []
@@ -155,7 +167,7 @@ def rank_intraday_leaders(
         s for s in summaries
         if s.total_minute_trade_value >= min_total_trade_value
         and s.active_stock_count >= min_active_stock_count
-        and s.strong_riser_count >= min_strong_riser_count
+        and s.riser_5_count >= min_riser_count
     ]
     if not filtered:
         return []
@@ -167,12 +179,34 @@ def rank_intraday_leaders(
             _make_stock_view(stock, rank)
             for rank, stock in enumerate(summary.leader_stocks[:stock_limit], start=1)
         ]
+
+        # is_high_trading_value: 섹터 내 거래대금 상위 3개 종목
+        sorted_by_tv = sorted(
+            leaders,
+            key=lambda ls: ls.minute_trade_value_delta or 0,
+            reverse=True,
+        )
+        high_tv_codes = {ls.base_code for ls in sorted_by_tv[:3] if ls.minute_trade_value_delta}
+        for ls in leaders:
+            ls.trading_value = ls.minute_trade_value_delta
+            ls.is_high_trading_value = ls.base_code in high_tv_codes
+
         top3_rates = [
             ls.last_change_rate
             for ls in summary.leader_stocks[:3]
             if ls.last_change_rate is not None
         ]
         top3_avg = sum(top3_rates) / len(top3_rates) if top3_rates else 0.0
+
+        top5_rates = [
+            ls.last_change_rate
+            for ls in summary.leader_stocks[:5]
+            if ls.last_change_rate is not None
+        ]
+        top5_avg = sum(top5_rates) / len(top5_rates) if top5_rates else 0.0
+
+        grade, label = _compute_leader_grade(summary.strong_riser_count)
+
         views.append(IntradaySectorLeaderView(
             rank=0,
             minute_key=summary.minute_key,
@@ -186,7 +220,11 @@ def rank_intraday_leaders(
             sector_score=score,
             leader_stocks=leaders,
             strong_riser_count=summary.strong_riser_count,
+            riser_5_count=summary.riser_5_count,
             top3_avg_change_rate=top3_avg,
+            sector_top5_avg_change_rate=top5_avg,
+            leader_grade=grade,
+            leader_label=label,
             market_cap_filter_min=market_cap_filter_min,
             leadership_rule=leadership_rule,
         ))

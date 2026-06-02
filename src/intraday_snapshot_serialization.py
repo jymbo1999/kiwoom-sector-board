@@ -26,11 +26,18 @@ def snapshot_to_dict(snap: "IntradaySnapshot") -> dict:
         "raw_row_count": snap.raw_row_count,
         "ignored_row_count": snap.ignored_row_count,
         "sector_count": snap.sector_count,
+        "slot_layout": snap.slot_layout,
         "sector_views": [
             {
                 "rank": sv.rank,
                 "sector_name": sv.sector_name,
+                "leader_grade": sv.leader_grade,
+                "leader_label": sv.leader_label,
+                "strong_riser_count": sv.strong_riser_count,
+                "riser_5_count": sv.riser_5_count,
                 "sector_score": sv.sector_score,
+                "sector_total_trading_value": sv.total_minute_trade_value,
+                "sector_top5_avg_change_rate": sv.sector_top5_avg_change_rate,
                 "total_minute_trade_value": sv.total_minute_trade_value,
                 "average_change_rate": sv.average_change_rate,
                 "rising_ratio": sv.rising_ratio,
@@ -44,6 +51,8 @@ def snapshot_to_dict(snap: "IntradaySnapshot") -> dict:
                         "close_price": ls.close_price,
                         "last_change_rate": ls.last_change_rate,
                         "minute_trade_value_delta": ls.minute_trade_value_delta,
+                        "trading_value": ls.trading_value,
+                        "is_high_trading_value": ls.is_high_trading_value,
                         "display_badge": ls.display_badge,
                     }
                     for ls in sv.leader_stocks

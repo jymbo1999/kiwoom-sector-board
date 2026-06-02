@@ -126,7 +126,7 @@ def test_runtime_ingests_sync_messages():
 
     snap = rt.get_latest_snapshot()
     assert snap is not None
-    assert snap["status"] in ("ready", "warming", "empty")
+    assert snap["status"] in ("ready", "warming", "empty", "no_leader")
     assert isinstance(snap["sector_views"], list)
 
 
@@ -279,4 +279,4 @@ def test_runtime_with_mock_source_reaches_ready():
     rt.stop(timeout=3.0)
 
     assert snap is not None
-    assert snap["status"] in ("ready", "warming")
+    assert snap["status"] in ("ready", "warming", "no_leader")

@@ -149,6 +149,7 @@ def _real_json_values(
 
 
 def _svc(**kwargs) -> IntradaySnapshotService:
+    kwargs.setdefault("min_riser_count", 0)
     return IntradaySnapshotService(sector_map=SECTOR_MAP_V2, **kwargs)
 
 
@@ -249,7 +250,7 @@ def test_v2_sector_views_generated() -> None:
 
 def test_v2_sector_limit_applied() -> None:
     big_map = {f"00066{i}": [f"섹터{i}"] for i in range(5)}
-    svc = IntradaySnapshotService(sector_map=big_map, sector_limit=2)
+    svc = IntradaySnapshotService(sector_map=big_map, sector_limit=2, min_riser_count=0)
     for i in range(5):
         c = f"00066{i}"
         svc.ingest_rows([_row(base_code=c, trade_time="134501", accumulated_trade_value=100_000 * (5 - i))])
@@ -265,7 +266,7 @@ def test_v2_sector_limit_applied() -> None:
 def test_v2_stock_limit_applied() -> None:
     codes = [f"00066{i}" for i in range(5)]
     big_map = {c: ["반도체"] for c in codes}
-    svc = IntradaySnapshotService(sector_map=big_map, stock_limit=2)
+    svc = IntradaySnapshotService(sector_map=big_map, stock_limit=2, min_riser_count=0)
     for c in codes:
         svc.ingest_rows([_row(base_code=c, trade_time="134501", accumulated_trade_value=1_000_000)])
         svc.ingest_rows([_row(base_code=c, trade_time="134530", accumulated_trade_value=3_000_000)])
@@ -279,12 +280,12 @@ def test_v2_stock_limit_applied() -> None:
 
 
 def test_v2_min_total_trade_value_filter() -> None:
-    svc = IntradaySnapshotService(sector_map=SECTOR_MAP_V2, min_total_trade_value=999_999_999)
+    svc = IntradaySnapshotService(sector_map=SECTOR_MAP_V2, min_total_trade_value=999_999_999, min_riser_count=0)
     svc.ingest_rows([_row(base_code="000660", trade_time="134501", accumulated_trade_value=100)])
     svc.ingest_rows([_row(base_code="000660", trade_time="134530", accumulated_trade_value=200)])
     snap = svc.get_snapshot()
     assert snap.sector_count == 0
-    assert snap.status == "warming"
+    assert snap.status == "no_leader"
 
 
 # ---------------------------------------------------------------------------
@@ -293,12 +294,12 @@ def test_v2_min_total_trade_value_filter() -> None:
 
 
 def test_v2_min_active_stock_count_filter() -> None:
-    svc = IntradaySnapshotService(sector_map=SECTOR_MAP_V2, min_active_stock_count=10)
+    svc = IntradaySnapshotService(sector_map=SECTOR_MAP_V2, min_active_stock_count=10, min_riser_count=0)
     svc.ingest_rows([_row(base_code="000660", trade_time="134501", accumulated_trade_value=1_000_000)])
     svc.ingest_rows([_row(base_code="000660", trade_time="134530", accumulated_trade_value=5_000_000)])
     snap = svc.get_snapshot()
     assert snap.sector_count == 0
-    assert snap.status == "warming"
+    assert snap.status == "no_leader"
 
 
 # ---------------------------------------------------------------------------
@@ -306,13 +307,13 @@ def test_v2_min_active_stock_count_filter() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_v2_unmapped_stocks_yield_warming() -> None:
-    svc = IntradaySnapshotService(sector_map={"000660": ["반도체"]})
+def test_v2_unmapped_stocks_yield_no_leader() -> None:
+    svc = IntradaySnapshotService(sector_map={"000660": ["반도체"]}, min_riser_count=0)
     svc.ingest_rows([_row(base_code="999999", trade_time="134501", accumulated_trade_value=1_000_000)])
     svc.ingest_rows([_row(base_code="999999", trade_time="134530", accumulated_trade_value=5_000_000)])
     snap = svc.get_snapshot()
     assert snap.bucket_count > 0
-    assert snap.status == "warming"
+    assert snap.status == "no_leader"
 
 
 # ---------------------------------------------------------------------------
@@ -474,7 +475,7 @@ def test_v2_generated_at_is_datetime() -> None:
 
 
 def test_v2_snapshot_counts_accurate() -> None:
-    svc = IntradaySnapshotService(sector_map={"000660": ["반도체"], "042660": ["조선"]})
+    svc = IntradaySnapshotService(sector_map={"000660": ["반도체"], "042660": ["조선"]}, min_riser_count=0)
     svc.ingest_rows([_row(base_code="000660", trade_time="134501", accumulated_trade_value=1_000_000)])
     svc.ingest_rows([_row(base_code="000660", trade_time="134530", accumulated_trade_value=5_000_000)])
     svc.ingest_rows([_row(base_code="042660", trade_time="134501", accumulated_trade_value=500_000)])
@@ -494,11 +495,11 @@ def test_v2_status_empty() -> None:
     assert _svc().get_snapshot().status == "empty"
 
 
-def test_v2_status_warming() -> None:
-    svc = IntradaySnapshotService(sector_map={"000660": ["반도체"]})
+def test_v2_status_no_leader() -> None:
+    svc = IntradaySnapshotService(sector_map={"000660": ["반도체"]}, min_riser_count=0)
     svc.ingest_rows([_row(base_code="999999", trade_time="134501", accumulated_trade_value=1_000_000)])
     svc.ingest_rows([_row(base_code="999999", trade_time="134530", accumulated_trade_value=5_000_000)])
-    assert svc.get_snapshot().status == "warming"
+    assert svc.get_snapshot().status == "no_leader"
 
 
 def test_v2_status_ready() -> None:
@@ -514,7 +515,7 @@ def test_v2_status_ready() -> None:
 
 
 def test_v2_stock_in_multiple_sectors() -> None:
-    svc = IntradaySnapshotService(sector_map={"005930": ["반도체", "대형주"]})
+    svc = IntradaySnapshotService(sector_map={"005930": ["반도체", "대형주"]}, min_riser_count=0)
     svc.ingest_rows([_row(base_code="005930", trade_time="134501", accumulated_trade_value=1_000_000)])
     svc.ingest_rows([_row(base_code="005930", trade_time="134530", accumulated_trade_value=5_000_000)])
     snap = svc.get_snapshot()
