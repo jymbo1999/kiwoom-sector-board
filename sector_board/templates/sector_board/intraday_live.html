@@ -118,7 +118,7 @@
 .il-leaders { padding: 0 6px 8px; }
 .il-leader {
   display: grid;
-  grid-template-columns: 58px 1fr auto auto;
+  grid-template-columns: 46px minmax(0,1fr) auto auto;
   align-items: center; gap: 5px;
   padding: 6px 8px; border-radius: 6px;
   font-size: 0.78rem;
@@ -132,7 +132,8 @@
 .il-lbadge--2등주 { background:#1e3a5f; color:#93c5fd; }
 .il-lbadge--3등주 { background:#1a2e1e; color:#86efac; }
 .il-lbadge--n     { background:#1f2937; color:#6b7280; font-size:.63rem; }
-.il-l-code { color: var(--sector-muted); font-family: monospace; }
+.il-l-name { font-weight: 600; color: var(--sector-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.il-l-code { color: var(--sector-muted); font-family: monospace; font-size: 0.68rem; }
 .il-l-price { color: var(--sector-text); }
 .il-l-right { text-align: right; }
 .il-l-rate  { font-weight: 700; }
@@ -343,9 +344,16 @@ function renderSectors(sectorViews) {
   const cards = sectorViews.map(sv => {
     const leaders = (sv.leader_stocks || []).map(ls => {
       const badge = ls.display_badge || "";
+      const nameOrCode = ls.stock_name || ls.base_code;
+      const codeSub = ls.stock_name
+        ? `<span class="il-l-code">${ls.base_code}</span>`
+        : "";
       return `<div class="il-leader">
         <span class="il-lbadge ${badgeClass(badge)}">${badge || "#" + ls.rank}</span>
-        <span class="il-l-code">${ls.base_code}</span>
+        <span style="overflow:hidden;min-width:0">
+          <div class="il-l-name">${nameOrCode}</div>
+          ${codeSub}
+        </span>
         <span class="il-l-price">${fmtPrice(ls.close_price)}</span>
         <div class="il-l-right">
           <div class="il-l-rate ${rateClass(ls.last_change_rate)}">${fmtRate(ls.last_change_rate)}</div>

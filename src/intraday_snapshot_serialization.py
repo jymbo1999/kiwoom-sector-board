@@ -39,6 +39,7 @@ def snapshot_to_dict(snap: "IntradaySnapshot") -> dict:
                     {
                         "rank": ls.rank,
                         "base_code": ls.base_code,
+                        "stock_name": ls.stock_name,
                         "exchange": ls.exchange,
                         "close_price": ls.close_price,
                         "last_change_rate": ls.last_change_rate,

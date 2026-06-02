@@ -271,6 +271,7 @@ def create_intraday_blueprint() -> Blueprint:
             sector_map=sector_map,
             sector_limit=5,
             stock_limit=5,
+            name_map=_load_name_map(data_dir),
         )
         runtime = IntradayRuntime(
             service=service,
@@ -362,6 +363,24 @@ def _load_sector_map(path: Path) -> dict[str, list[str]]:
     except Exception:
         pass
     return {}
+
+
+def _load_name_map(data_dir: Path) -> dict[str, str]:
+    """theme_map.csv 에서 code → name 매핑을 로드한다."""
+    path = data_dir / "theme_map.csv"
+    result: dict[str, str] = {}
+    try:
+        import csv
+        with path.open(encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                code = str(row.get("code", "")).strip().zfill(6)
+                name = str(row.get("name", "")).strip()
+                if code and name:
+                    result[code] = name
+    except Exception:
+        pass
+    return result
 
 
 def _load_codes(path: Path) -> list[str]:

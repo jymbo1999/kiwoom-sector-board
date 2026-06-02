@@ -32,6 +32,7 @@ class IntradayLeaderStockView:
     rank_score: float
     display_badge: str
     """rank에 따라 부여: 1='대장', 2='2등주', 3='3등주', 그 외=''."""
+    stock_name: str = ""
 
 
 @dataclass

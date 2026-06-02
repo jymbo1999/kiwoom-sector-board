@@ -236,12 +236,14 @@ class IntradaySnapshotService:
         stock_limit: int = 5,
         min_total_trade_value: int = 0,
         min_active_stock_count: int = 1,
+        name_map: "dict[str, str] | None" = None,
     ) -> None:
         self.sector_map = sector_map
         self.sector_limit = sector_limit
         self.stock_limit = stock_limit
         self.min_total_trade_value = min_total_trade_value
         self.min_active_stock_count = min_active_stock_count
+        self.name_map: dict[str, str] = name_map or {}
         self.tick_aggregator = _IntradayTickAggregator()
         self.raw_row_count: int = 0
         self.ignored_row_count: int = 0
@@ -314,6 +316,10 @@ class IntradaySnapshotService:
             min_total_trade_value=self.min_total_trade_value,
             min_active_stock_count=self.min_active_stock_count,
         )
+        if self.name_map:
+            for sv in sector_views:
+                for ls in sv.leader_stocks:
+                    ls.stock_name = self.name_map.get(ls.base_code, "")
 
         actual_minute_key: "str | None" = None
         if buckets:
