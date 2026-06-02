@@ -1,3 +1,4 @@
+git+https://github.com/jymbo1999/kiwoom-sector-board.git#egg=kiwoom-sector-board
 pandas>=2.2.0
 requests>=2.32.0
 python-dotenv>=1.0.1
