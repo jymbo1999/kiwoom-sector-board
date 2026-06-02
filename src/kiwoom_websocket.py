@@ -157,7 +157,7 @@ def _normalize_one_data_entry(
     Handles both numeric-keyed entries (prod 0B format) and
     named-key entries (mock provider format).
     """
-    raw_item = str(entry.get("item") or fallback_item or "").strip() or None
+    raw_item = str(entry.get("item") or entry.get("code") or fallback_item or "").strip() or None
     tick_type = str(entry.get("type") or fallback_type or "").strip() or None
     name = str(entry.get("name") or fallback_name or "").strip() or None
 
@@ -168,10 +168,13 @@ def _normalize_one_data_entry(
         else {"raw_code": None, "base_code": None, "exchange": "krx"}
     )
 
-    # Collect numeric-keyed values (prod format: "20", "10", ...)
-    raw_values: dict[str, Any] = {
-        k: v for k, v in entry.items() if k.isdigit()
-    }
+    # Collect numeric-keyed values. Kiwoom REAL payloads can place FID values
+    # either directly on the row or under a nested "values" object.
+    raw_values: dict[str, Any] = {}
+    nested_values = entry.get("values")
+    if isinstance(nested_values, dict):
+        raw_values.update({str(k): v for k, v in nested_values.items() if str(k).isdigit()})
+    raw_values.update({str(k): v for k, v in entry.items() if str(k).isdigit()})
 
     # Map 0B field indices → named fields (prod format)
     fv: dict[str, Any] = {fname: raw_values.get(idx) for idx, fname in TYPE_0B_FIELD_MAP.items()}
@@ -180,6 +183,8 @@ def _normalize_one_data_entry(
     def _first(*keys: str) -> Any:
         for k in keys:
             v = entry.get(k)
+            if v is None and isinstance(nested_values, dict):
+                v = nested_values.get(k)
             if v is not None:
                 return v
         return None

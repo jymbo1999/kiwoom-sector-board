@@ -124,6 +124,30 @@ def _real_json(
     })
 
 
+def _real_json_values(
+    item: str = "000660_AL",
+    price: str = "+70000",
+    time: str = "090501",
+    acc_tv: str = "+1000000",
+) -> str:
+    return json.dumps({
+        "trnm": "REAL",
+        "data": [{
+            "item": item,
+            "type": "0B",
+            "name": "주식체결",
+            "values": {
+                "10": price,
+                "20": time,
+                "15": "+100",
+                "13": "+100000",
+                "14": acc_tv,
+                "12": "+0.50",
+            },
+        }],
+    })
+
+
 def _svc(**kwargs) -> IntradaySnapshotService:
     return IntradaySnapshotService(sector_map=SECTOR_MAP_V2, **kwargs)
 
@@ -166,6 +190,20 @@ def test_v2_ingest_raw_message_real_json() -> None:
     snap = svc.get_snapshot()
     assert snap.latest_count == 1
     assert snap.bucket_count == 1
+
+
+def test_v2_ingest_raw_message_nested_values_creates_minute_bucket() -> None:
+    svc = _svc()
+
+    n = svc.ingest_raw_message(_real_json_values())
+
+    assert n == 1
+    snap = svc.get_snapshot()
+    assert snap.status == "ready"
+    assert snap.latest_count == 1
+    assert snap.bucket_count == 1
+    assert snap.sector_count == 1
+    assert snap.minute_key == "0905"
 
 
 # ---------------------------------------------------------------------------

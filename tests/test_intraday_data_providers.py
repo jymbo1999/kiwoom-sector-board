@@ -418,6 +418,37 @@ def test_normalize_tick_rows_sor_item_splits_correctly() -> None:
     assert r["current_price"] == 71900
 
 
+def test_normalize_tick_rows_accepts_nested_values_prod_shape() -> None:
+    payload = json.dumps({
+        "trnm": "REAL",
+        "data": [{
+            "item": "000660_AL",
+            "type": "0B",
+            "name": "주식체결",
+            "values": {
+                "20": "090501",
+                "10": "+72100",
+                "11": "+600",
+                "12": "+0.84",
+                "15": "+250",
+                "13": "3100000",
+                "14": "223510000000",
+            },
+        }],
+    })
+
+    rows = normalize_tick_rows(payload)
+
+    assert len(rows) == 1
+    r = rows[0]
+    assert r["base_code"] == "000660"
+    assert r["exchange"] == "sor"
+    assert r["trade_time"] == "090501"
+    assert r["current_price"] == 72100
+    assert r["change_rate"] == pytest.approx(0.84)
+    assert r["accumulated_trade_value"] == 223510000000
+
+
 def test_normalize_tick_rows_multi_row_returns_separate_entries() -> None:
     """Multi-row payloads produce one dict per row — no duplication."""
     payload = json.dumps({
