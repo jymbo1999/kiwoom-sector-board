@@ -360,9 +360,28 @@ class IntradaySnapshotService:
             1 for state in latest if state.base_code not in self.sector_map
         )
 
+        # 자격 미달 섹터도 포함한 전체 뷰 (grace 기간 중 live 데이터 공급용)
+        extended_views = _rank_intraday_leaders_v2(
+            summaries,
+            sector_limit=self.sector_limit,
+            stock_limit=self.stock_limit,
+            min_total_trade_value=self.min_total_trade_value,
+            min_active_stock_count=self.min_active_stock_count,
+            min_riser_count=0,
+            market_cap_filter_min=500_000_000_000 if market_cap_enabled else 0,
+            leadership_rule=leadership_rule,
+        )
+        if self.name_map:
+            for sv in extended_views:
+                for ls in sv.leader_stocks:
+                    ls.stock_name = self.name_map.get(ls.base_code, "")
+
         if status == "ready":
             self._slot_manager.update(sector_views)
-            self._cached_slot_layout = self._slot_manager.get_slot_layout(sector_views)
+            self._cached_slot_layout = self._slot_manager.get_slot_layout(sector_views, extended_views)
+        elif self._cached_slot_layout:
+            # no_leader 상태에서도 grace 슬롯에 live 데이터 공급
+            self._cached_slot_layout = self._slot_manager.get_slot_layout(sector_views, extended_views)
         slot_layout = self._cached_slot_layout
 
         return IntradaySnapshot(

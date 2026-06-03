@@ -85,6 +85,8 @@ class SlotManager:
         self._dynamic_colors: dict[str, str] = {}
         self._absent: dict[int, int] = {i: 0 for i in range(1, _TOTAL_SLOTS + 1)}
         """슬롯별 threshold 미달 연속 횟수. _GRACE_SNAPSHOTS 초과 시에만 제거."""
+        self._sv_cache: dict[str, dict] = {}
+        """마지막으로 보인 섹터 데이터 (퇴출 grace 기간 동안 카드 렌더링에 사용)."""
 
     # ------------------------------------------------------------------
     # Public API
@@ -132,53 +134,70 @@ class SlotManager:
     def get_slot_layout(
         self,
         sector_views: list[IntradaySectorLeaderView],
+        extended_views: list[IntradaySectorLeaderView] | None = None,
     ) -> list[dict]:
         """API 응답용 slot_layout 리스트를 반환한다.
 
         슬롯 1~9 를 순서대로 반환한다.
         빈 슬롯은 sector_name=None, sector=None 으로 반환한다.
+        extended_views: 자격 미달 섹터 포함 전체 뷰 — grace 기간 evicting 카드에 live 데이터 공급.
         """
         sv_map = {sv.sector_name: sv for sv in sector_views}
+        ext_map = {sv.sector_name: sv for sv in (extended_views or [])}
+
         layout = []
         for slot_id in sorted(self._slots):
             name = self._slots[slot_id]
-            sv = sv_map.get(name) if name else None
 
-            if name is None or sv is None:
-                layout.append({"slot_id": slot_id, "sector_name": None, "sector": None})
-            else:
-                color = get_sector_color(name, self._dynamic_colors)
-                layout.append({
-                    "slot_id": slot_id,
-                    "sector_name": name,
-                    "sector": {
-                        "sector_name": sv.sector_name,
-                        "leader_grade": sv.leader_grade,
-                        "leader_label": sv.leader_label,
-                        "strong_riser_count": sv.strong_riser_count,
-                        "riser_5_count": sv.riser_5_count,
-                        "sector_total_trading_value": sv.total_minute_trade_value,
-                        "sector_top5_avg_change_rate": sv.sector_top5_avg_change_rate,
-                        "average_change_rate": sv.average_change_rate,
-                        "color": color,
-                        "rank": sv.rank,
-                        "leader_stocks": [
-                            {
-                                "rank": ls.rank,
-                                "base_code": ls.base_code,
-                                "stock_name": ls.stock_name,
-                                "exchange": ls.exchange,
-                                "close_price": ls.close_price,
-                                "last_change_rate": ls.last_change_rate,
-                                "minute_trade_value_delta": ls.minute_trade_value_delta,
-                                "trading_value": ls.trading_value,
-                                "is_high_trading_value": ls.is_high_trading_value,
-                                "display_badge": ls.display_badge,
-                            }
-                            for ls in sv.leader_stocks
-                        ],
-                    },
-                })
+            if name is None:
+                layout.append({"slot_id": slot_id, "sector_name": None, "sector": None, "evicting": False})
+                continue
+
+            sv = sv_map.get(name)
+            evicting = sv is None
+
+            # evicting 슬롯: extended_views에서 live 데이터 우선, 없으면 캐시 fallback
+            if evicting:
+                sv = ext_map.get(name)
+                if sv is None:
+                    cached = self._sv_cache.get(name)
+                    if cached:
+                        layout.append({"slot_id": slot_id, "sector_name": name, "evicting": True, "sector": cached})
+                    else:
+                        layout.append({"slot_id": slot_id, "sector_name": None, "sector": None, "evicting": False})
+                    continue
+
+            color = get_sector_color(name, self._dynamic_colors)
+            sector_dict = {
+                "sector_name": sv.sector_name,
+                "leader_grade": sv.leader_grade,
+                "leader_label": sv.leader_label,
+                "strong_riser_count": sv.strong_riser_count,
+                "riser_5_count": sv.riser_5_count,
+                "sector_total_trading_value": sv.total_minute_trade_value,
+                "sector_top5_avg_change_rate": sv.sector_top5_avg_change_rate,
+                "average_change_rate": sv.average_change_rate,
+                "color": color,
+                "rank": sv.rank,
+                "leader_stocks": [
+                    {
+                        "rank": ls.rank,
+                        "base_code": ls.base_code,
+                        "stock_name": ls.stock_name,
+                        "exchange": ls.exchange,
+                        "close_price": ls.close_price,
+                        "last_change_rate": ls.last_change_rate,
+                        "minute_trade_value_delta": ls.minute_trade_value_delta,
+                        "trading_value": ls.trading_value,
+                        "is_high_trading_value": ls.is_high_trading_value,
+                        "display_badge": ls.display_badge,
+                    }
+                    for ls in sv.leader_stocks
+                ],
+            }
+            if not evicting:
+                self._sv_cache[name] = sector_dict  # 정상 표시 중인 것만 캐시 갱신
+            layout.append({"slot_id": slot_id, "sector_name": name, "evicting": evicting, "sector": sector_dict})
         return layout
 
     def reset(self) -> None:
@@ -187,6 +206,7 @@ class SlotManager:
         self._initialized = False
         self._dynamic_colors = {}
         self._absent = {i: 0 for i in range(1, _TOTAL_SLOTS + 1)}
+        self._sv_cache = {}
 
     def slot_state_snapshot(self) -> dict[int, str | None]:
         """현재 슬롯 상태의 복사본을 반환한다 (디버깅/테스트용)."""

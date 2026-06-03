@@ -95,7 +95,7 @@ def make_mock_source(
     # A→cold/bear 직접 점프 금지: 반드시 B→C→cold 순차 경로만 허용
     _TRANSITIONS: dict[str, dict[str, float]] = {
         "A":    {"A": 0.50, "B": 0.50, "C": 0.00, "cold": 0.00, "bear": 0.00},
-        "B":    {"A": 0.25, "B": 0.35, "C": 0.30, "cold": 0.10, "bear": 0.00},
+        "B":    {"A": 0.25, "B": 0.35, "C": 0.40, "cold": 0.00, "bear": 0.00},
         "C":    {"A": 0.05, "B": 0.20, "C": 0.30, "cold": 0.35, "bear": 0.10},
         "cold": {"A": 0.05, "B": 0.10, "C": 0.20, "cold": 0.45, "bear": 0.20},
         "bear": {"A": 0.00, "B": 0.05, "C": 0.10, "cold": 0.35, "bear": 0.50},

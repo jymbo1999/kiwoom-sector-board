@@ -270,11 +270,11 @@ def create_intraday_blueprint() -> Blueprint:
         market_cap_map = _load_market_cap_map(data_dir)
         service = IntradaySnapshotService(
             sector_map=sector_map,
-            sector_limit=5,
+            sector_limit=30,
             stock_limit=5,
             name_map=_load_name_map(data_dir),
             market_cap_map=market_cap_map,
-            min_riser_count=3,
+            min_riser_count=2,
         )
         runtime = IntradayRuntime(
             service=service,
@@ -370,7 +370,7 @@ def _build_rule_info(meta: dict) -> dict:
         "market_cap_filter_enabled": enabled,
         "min_market_cap": 500_000_000_000 if enabled else None,
         "riser_threshold": 5.0,
-        "min_riser_count": 3,
+        "min_riser_count": 2,
         "strong_threshold": 10.0,
         "uses_7_percent_threshold": False,
     }

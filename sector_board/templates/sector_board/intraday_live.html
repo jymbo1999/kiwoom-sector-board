@@ -216,6 +216,13 @@
   border-radius: 8px; font-size: 0.8rem; color: #fca5a5;
 }
 
+/* ── Evicting card (grace period) ──────────────────────── */
+.il-card--evicting {
+  opacity: 0.42;
+  filter: grayscale(35%);
+  transition: opacity 0.6s ease, filter 0.6s ease;
+}
+
 /* ── Extension row label ────────────────────────────────── */
 .il-ext-label {
   font-size: 0.7rem; font-weight: 700;
@@ -247,20 +254,45 @@
   <!-- ── Legend ───────────────────────────────────────────── -->
   <div id="il-legend" class="il-legend">
     <div class="il-legend-title">Legend</div>
+
+    <!-- 섹터 등급 (별 기준) -->
     <div class="il-legend-grades">
       <div class="il-legend-item">
-        <span class="il-grade-badge il-grade--A">⭐⭐⭐ A급</span>
-        <span style="color:var(--sector-muted);font-size:0.74rem">+10% 이상 상승 종목 3개 이상</span>
+        <span style="font-size:0.88rem;letter-spacing:-2px">⭐⭐⭐</span>
+        <span style="color:var(--sector-muted);font-size:0.74rem">+10% 이상 종목 3개↑ &mdash; 최강 주도</span>
       </div>
       <div class="il-legend-item">
-        <span class="il-grade-badge il-grade--B">⭐⭐ B급</span>
-        <span style="color:var(--sector-muted);font-size:0.74rem">+10% 이상 상승 종목 1~2개</span>
+        <span style="font-size:0.88rem;letter-spacing:-2px">⭐⭐</span>
+        <span style="color:var(--sector-muted);font-size:0.74rem">+10% 이상 종목 1~2개 &mdash; 강한 주도</span>
       </div>
       <div class="il-legend-item">
-        <span class="il-grade-badge il-grade--C">⭐ C급</span>
-        <span style="color:var(--sector-muted);font-size:0.74rem">+5% 이상 상승 종목 3개 이상</span>
+        <span style="font-size:0.88rem;letter-spacing:-2px">⭐</span>
+        <span style="color:var(--sector-muted);font-size:0.74rem">+5% 이상 종목 3개↑ &mdash; 약한 주도</span>
       </div>
     </div>
+
+    <!-- 상승률 하이라이터 -->
+    <div style="display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:8px;align-items:center;font-size:0.74rem;">
+      <span style="color:var(--sector-muted);font-weight:700;font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;min-width:fit-content">상승률 표시</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;">
+        <span style="background:#ca8a04;color:#fff;padding:1px 8px;border-radius:4px;font-weight:800;font-size:0.74rem">+12.5%</span>
+        <span style="color:var(--sector-muted)">+10% 이상</span>
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:6px;">
+        <span style="background:#92400e;color:#fff;padding:1px 8px;border-radius:4px;font-weight:800;font-size:0.74rem">+7.3%</span>
+        <span style="color:var(--sector-muted)">+5%~+10%</span>
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:6px;">
+        <span style="color:#ef4444;font-weight:700;font-size:0.74rem">+3.1%</span>
+        <span style="color:var(--sector-muted)">+5% 미만</span>
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:6px;">
+        <span style="color:#3b82f6;font-weight:700;font-size:0.74rem">-2.3%</span>
+        <span style="color:var(--sector-muted)">하락</span>
+      </span>
+    </div>
+
+    <!-- 카드 읽는 법 -->
     <div style="display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:8px;font-size:0.74rem;">
       <span style="color:var(--sector-muted)">종목 카드 읽는 법:</span>
       <span style="color:var(--sector-muted)">
@@ -278,7 +310,7 @@
       </span>
     </div>
     <div class="il-legend-rule" id="il-legend-rule">
-      표시 조건: <strong>시총 5천억 이상 종목 중 +5% 이상 상승 종목 3개 이상</strong>
+      표시 조건: <strong>시총 5천억 이상 종목 중 +5% 이상 상승 종목 2개 이상</strong>
     </div>
   </div>
 
@@ -386,7 +418,7 @@ function updateLegendRule(rule) {
   const mcap = rule.market_cap_filter_enabled
     ? "시총 5천억 이상 종목 중 "
     : "";
-  el.innerHTML = `표시 조건: <strong>${mcap}+${rule.riser_threshold || 5}% 이상 상승 종목 ${rule.min_riser_count || 3}개 이상</strong>`;
+  el.innerHTML = `표시 조건: <strong>${mcap}+${rule.riser_threshold || 5}% 이상 상승 종목 ${rule.min_riser_count || 2}개 이상</strong>`;
 }
 
 // ── DOM 업데이트 ────────────────────────────────────────────
@@ -487,6 +519,7 @@ function buildSectorCard(slot) {
   const stars = GRADE_STARS[grade] || "★";
   const gradeCSS = GRADE_CSS[grade] || "";
   const color = sv.color || "#6B7280";
+  const evictingClass = slot.evicting ? " il-card--evicting" : "";
 
   const gradeBadge = `<span class="il-grade-badge ${gradeCSS}">${stars} ${grade}급 ${sv.leader_label || ""}</span>`;
   const gradeMeta  = `<span>10%↑ <span>${sv.strong_riser_count ?? 0}개</span></span>`
@@ -502,6 +535,12 @@ function buildSectorCard(slot) {
     const highTV = ls.is_high_trading_value
       ? ` style="font-weight:800;color:var(--sector-accent)"`
       : "";
+    const r = ls.last_change_rate;
+    const rateStyle = r >= 10
+      ? ' style="background:#ca8a04;color:#fff;padding:1px 8px;border-radius:4px;font-weight:800"'
+      : r >= 5
+      ? ' style="background:#92400e;color:#fff;padding:1px 8px;border-radius:4px;font-weight:800"'
+      : '';
     return `<div class="il-leader">
       <span class="il-lbadge ${badgeClass(badge)}">${badge || "#" + ls.rank}</span>
       <span style="overflow:hidden;min-width:0">
@@ -510,15 +549,15 @@ function buildSectorCard(slot) {
       </span>
       <span class="il-l-price">${fmtPrice(ls.close_price)}</span>
       <div class="il-l-right">
-        <div class="il-l-rate ${rateClass(ls.last_change_rate)}">${fmtRate(ls.last_change_rate)}</div>
+        <div class="il-l-rate ${rateClass(ls.last_change_rate)}"${rateStyle}>${fmtRate(ls.last_change_rate)}</div>
         <div class="il-l-tv">${fmtTV(ls.minute_trade_value_delta)}</div>
       </div>
     </div>`;
   }).join("");
 
-  return `<div class="il-card" style="border-left-color:${color}">
+  return `<div class="il-card${evictingClass}" style="border-left-color:${color}">
     <div class="il-card-head">
-      <span class="il-card-slot">S${slot.slot_id}</span>
+      <span class="il-card-slot">${sv.rank != null ? sv.rank + "위" : "—"}</span>
       <span class="il-card-name">${sv.sector_name} <span style="letter-spacing:-2px">${stars}</span></span>
       <span class="il-card-rate ${rateClass(sv.average_change_rate)}">${fmtRate(sv.average_change_rate)}</span>
     </div>
