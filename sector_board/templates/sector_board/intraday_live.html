@@ -181,47 +181,48 @@
 .il-leaders { padding: 0 6px 8px; }
 .il-leader {
   display: grid;
-  grid-template-columns: 38px minmax(0,1fr) auto auto;
+  grid-template-columns: 46px minmax(0,1fr) auto auto;
   align-items: center; gap: 5px;
   padding: 6px 8px; border-radius: 6px;
   font-size: 0.78rem;
 }
 .il-leader:hover { background: rgba(255,255,255,.04); }
+.il-lbadge {
+  display: inline-block; padding: 1px 6px; border-radius: 4px;
+  font-size: 0.67rem; font-weight: 700; white-space: nowrap; text-align: center;
+}
+.il-lbadge--대장  { background:#78350f; color:#fbbf24; }
+.il-lbadge--2등주 { background:#1e3a5f; color:#93c5fd; }
+.il-lbadge--3등주 { background:#1a2e1e; color:#86efac; }
+.il-lbadge--n     { background:#1f2937; color:#6b7280; font-size:.63rem; }
 
-/* ── Medal rank badge ───────────────────────────────────── */
-.il-medal {
-  position: relative;
-  width: 26px; height: 26px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 0.72rem; font-weight: 900; color: #111;
-  flex-shrink: 0;
-}
-/* 리본: 1~3등 */
-.il-medal--top::before {
-  content: "";
-  position: absolute;
-  top: -7px; left: 50%; transform: translateX(-50%);
-  width: 5px; height: 9px;
-  background: #dc2626;
-  border-radius: 2px 2px 0 0;
-}
-.il-medal--1 { background: linear-gradient(145deg,#ffe066,#f59e0b); box-shadow:0 0 0 2px #f59e0b44; }
-.il-medal--2 { background: linear-gradient(145deg,#f1f5f9,#94a3b8); box-shadow:0 0 0 2px #94a3b844; }
-.il-medal--3 { background: linear-gradient(145deg,#e4a97a,#92400e); box-shadow:0 0 0 2px #92400e44; }
-.il-medal--n { background:#fff; color:#374151; border:1.5px solid #4b5563; font-size:0.68rem; }
+/* ── 섹터 순위 메달 (카드 좌상단) ───────────────────────── */
+.il-card-slot { line-height: 1; }
 
 /* ── Rate bubble ────────────────────────────────────────── */
 .il-rate-bubble {
   display: inline-block;
   padding: 1px 7px; border-radius: 10px;
-  background: #fff; color: #ef4444;
+  color: #ef4444;
   font-weight: 800; font-size: 0.78rem;
   border: 2px solid;
   white-space: nowrap;
 }
-.il-rate-bubble--gold   { border-color: #f59e0b; }
-.il-rate-bubble--silver { border-color: #94a3b8; }
-.il-rate-bubble--bronze { border-color: #a16207; }
+.il-rate-bubble--gold {
+  border-color: #fbbf24;
+  background: #fef3c7;
+  box-shadow: 0 0 7px rgba(251,191,36,0.45);
+}
+.il-rate-bubble--silver {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  box-shadow: 0 0 7px rgba(203,213,225,0.40);
+}
+.il-rate-bubble--bronze {
+  border-color: #fb923c;
+  background: #fff0e6;
+  box-shadow: 0 0 7px rgba(251,146,60,0.40);
+}
 
 .il-l-name { font-weight: 600; color: var(--sector-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .il-l-code { color: var(--sector-muted); font-family: monospace; font-size: 0.68rem; }
@@ -549,6 +550,7 @@ function buildSectorCard(slot) {
                    + `<span>거래대금 <span>${fmtTV(sv.sector_total_trading_value)}</span></span>`;
 
   const leaders = (sv.leader_stocks || []).map(ls => {
+    const badge = ls.display_badge || "";
     const nameOrCode = ls.stock_name || ls.base_code;
     const codeSub = ls.stock_name
       ? `<span class="il-l-code">${ls.base_code}</span>`
@@ -558,14 +560,10 @@ function buildSectorCard(slot) {
       : "";
     const r = ls.last_change_rate;
 
-    // 메달 뱃지
-    const rank = ls.rank;
-    const medalTier = rank === 1 ? "1 il-medal--top"
-                    : rank === 2 ? "2 il-medal--top"
-                    : rank === 3 ? "3 il-medal--top"
-                    : "n";
-    const medalLabel = rank <= 3 ? rank : rank;
-    const medalHTML = `<span class="il-medal il-medal--${medalTier}">${medalLabel}</span>`;
+    const badgeCls = badge === "대장"  ? "il-lbadge--대장"
+                   : badge === "2등주" ? "il-lbadge--2등주"
+                   : badge === "3등주" ? "il-lbadge--3등주"
+                   : "il-lbadge--n";
 
     // 등락률 버블
     const rateHTML = r == null
@@ -579,7 +577,7 @@ function buildSectorCard(slot) {
       : `<span class="il-neg">${fmtRate(r)}</span>`;
 
     return `<div class="il-leader">
-      ${medalHTML}
+      <span class="il-lbadge ${badgeCls}">${badge || "#" + ls.rank}</span>
       <span style="overflow:hidden;min-width:0">
         <div class="il-l-name"${highTV}>${nameOrCode}</div>
         ${codeSub}
@@ -592,9 +590,41 @@ function buildSectorCard(slot) {
     </div>`;
   }).join("");
 
+  // 섹터 순위 메달 SVG (카드 좌상단)
+  function rankBadge(rank) {
+    if (rank === 1) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
+      <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
+      <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
+      <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
+      <circle cx="15" cy="32" r="12" fill="#b8860b"/>
+      <circle cx="15" cy="32" r="10" fill="#ffd700"/>
+      <circle cx="15" cy="32" r="8" fill="#ffe566"/>
+      <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#7d5a00">1</text>
+    </svg>`;
+    if (rank === 2) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
+      <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
+      <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
+      <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
+      <circle cx="15" cy="32" r="12" fill="#6b7280"/>
+      <circle cx="15" cy="32" r="10" fill="#d1d5db"/>
+      <circle cx="15" cy="32" r="8" fill="#f1f5f9"/>
+      <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#374151">2</text>
+    </svg>`;
+    if (rank === 3) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
+      <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
+      <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
+      <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
+      <circle cx="15" cy="32" r="12" fill="#78350f"/>
+      <circle cx="15" cy="32" r="10" fill="#b45309"/>
+      <circle cx="15" cy="32" r="8" fill="#d97706"/>
+      <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#451a03">3</text>
+    </svg>`;
+    return `<span style="font-size:0.65rem;font-weight:800;color:var(--sector-muted);letter-spacing:0.04em">${rank}위</span>`;
+  }
+
   return `<div class="il-card${evictingClass}" style="border-left-color:${color}">
     <div class="il-card-head">
-      <span class="il-card-slot">${sv.rank != null ? sv.rank + "위" : "—"}</span>
+      <span class="il-card-slot">${rankBadge(sv.rank)}</span>
       <span class="il-card-name">${sv.sector_name} <span style="letter-spacing:-2px">${stars}</span></span>
       <span class="il-card-rate ${rateClass(sv.average_change_rate)}">${fmtRate(sv.average_change_rate)}</span>
     </div>

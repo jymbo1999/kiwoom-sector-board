@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+body { background: #111827; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+/* ── card ── */
+.il-card {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-left-width: 13px;
+  border-left-color: #7C3AED;
+  border-radius: 11px; overflow: hidden;
+  width: 360px;
+}
+.il-card-head {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 8px;
+  border-bottom: 1px solid #374151; gap: 8px;
+}
+.il-card-slot { line-height:1; }
+.il-card-name { flex:1; font-size:0.95rem; font-weight:700; color:#f9fafb; }
+.il-card-rate { font-size:0.88rem; font-weight:700; color:#ef4444; }
+.il-card-meta {
+  padding: 5px 14px 8px;
+  display: flex; gap: 12px; flex-wrap: wrap;
+  font-size: 0.72rem; color: #9ca3af;
+}
+.il-card-meta span { color: #f9fafb; font-weight: 600; }
+
+/* ── grade badge ── */
+.il-grade-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.il-grade--A { background:#450a0a; color:#fca5a5; }
+
+/* ── leaders ── */
+.il-leaders { padding: 0 6px 8px; }
+.il-leader {
+  display: grid;
+  grid-template-columns: 46px minmax(0,1fr) auto auto;
+  align-items: center; gap: 5px;
+  padding: 6px 8px; border-radius: 6px;
+  font-size: 0.78rem;
+}
+.il-leader:hover { background: rgba(255,255,255,.04); }
+
+/* 종목 뱃지 */
+.il-lbadge {
+  display: inline-block; padding: 1px 6px; border-radius: 4px;
+  font-size: 0.67rem; font-weight: 700; white-space: nowrap; text-align: center;
+}
+.il-lbadge--대장  { background:#78350f; color:#fbbf24; }
+.il-lbadge--2등주 { background:#1e3a5f; color:#93c5fd; }
+.il-lbadge--3등주 { background:#1a2e1e; color:#86efac; }
+.il-lbadge--n     { background:#1f2937; color:#6b7280; font-size:.63rem; border:1px solid #374151; }
+
+.il-l-name { font-weight:600; color:#f9fafb; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.il-l-code { color:#6b7280; font-family:monospace; font-size:0.68rem; }
+.il-l-price { color:#f9fafb; white-space:nowrap; }
+.il-l-right { text-align:right; }
+.il-l-rate  { font-weight:700; }
+.il-l-tv    { font-size:0.7rem; color:#6b7280; }
+.il-neg     { color:#3b82f6; }
+.il-accent  { font-weight:800; color:#34d399; }
+
+/* 등락률 버블 */
+.il-rate-bubble {
+  display: inline-block;
+  padding: 1px 7px; border-radius: 10px;
+  color: #ef4444;
+  font-weight: 800; font-size: 0.78rem;
+  border: 2px solid; white-space: nowrap;
+}
+.il-rate-bubble--gold {
+  border-color: #fbbf24;
+  background: #fef3c7;
+  box-shadow: 0 0 7px rgba(251,191,36,0.45);
+}
+.il-rate-bubble--silver {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  box-shadow: 0 0 7px rgba(203,213,225,0.40);
+}
+.il-rate-bubble--bronze {
+  border-color: #fb923c;
+  background: #fff0e6;
+  box-shadow: 0 0 7px rgba(251,146,60,0.40);
+}
+</style>
+</head>
+<body>
+
+<div class="il-card">
+  <!-- 헤더 -->
+  <div class="il-card-head">
+    <!-- 1위 메달 SVG -->
+    <span class="il-card-slot">
+      <svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
+        <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
+        <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
+        <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
+        <circle cx="15" cy="32" r="12" fill="#b8860b"/>
+        <circle cx="15" cy="32" r="10" fill="#ffd700"/>
+        <circle cx="15" cy="32" r="8"  fill="#ffe566"/>
+        <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#7d5a00">1</text>
+      </svg>
+    </span>
+    <span class="il-card-name">로봇 <span style="letter-spacing:-2px">⭐⭐⭐</span></span>
+    <span class="il-card-rate">+13.42%</span>
+  </div>
+
+  <!-- 메타 -->
+  <div class="il-card-meta">
+    <span>10%↑ <span>5개</span></span>
+    <span>5%↑ <span>8개</span></span>
+    <span>거래대금 <span>2.1천억</span></span>
+  </div>
+
+  <!-- 종목 리스트 -->
+  <div class="il-leaders">
+
+    <!-- 대장주 -->
+    <div class="il-leader">
+      <span class="il-lbadge il-lbadge--대장">대장</span>
+      <span style="overflow:hidden;min-width:0">
+        <div class="il-l-name il-accent">레인보우로보틱스</div>
+        <span class="il-l-code">277810</span>
+      </span>
+      <span class="il-l-price">183,400</span>
+      <div class="il-l-right">
+        <div class="il-l-rate"><span class="il-rate-bubble il-rate-bubble--gold">+15.23%</span></div>
+        <div class="il-l-tv">318.4억</div>
+      </div>
+    </div>
+
+    <!-- 2등주 -->
+    <div class="il-leader">
+      <span class="il-lbadge il-lbadge--2등주">2등주</span>
+      <span style="overflow:hidden;min-width:0">
+        <div class="il-l-name">HD현대로보틱스</div>
+        <span class="il-l-code">267270</span>
+      </span>
+      <span class="il-l-price">94,200</span>
+      <div class="il-l-right">
+        <div class="il-l-rate"><span class="il-rate-bubble il-rate-bubble--gold">+12.38%</span></div>
+        <div class="il-l-tv">274.1억</div>
+      </div>
+    </div>
+
+    <!-- 3등주 -->
+    <div class="il-leader">
+      <span class="il-lbadge il-lbadge--3등주">3등주</span>
+      <span style="overflow:hidden;min-width:0">
+        <div class="il-l-name">두산로보틱스</div>
+        <span class="il-l-code">454910</span>
+      </span>
+      <span class="il-l-price">62,100</span>
+      <div class="il-l-right">
+        <div class="il-l-rate"><span class="il-rate-bubble il-rate-bubble--gold">+11.61%</span></div>
+        <div class="il-l-tv">241.8억</div>
+      </div>
+    </div>
+
+    <!-- #4 -->
+    <div class="il-leader">
+      <span class="il-lbadge il-lbadge--n">#4</span>
+      <span style="overflow:hidden;min-width:0">
+        <div class="il-l-name">유진로봇</div>
+        <span class="il-l-code">056080</span>
+      </span>
+      <span class="il-l-price">18,650</span>
+      <div class="il-l-right">
+        <div class="il-l-rate"><span class="il-rate-bubble il-rate-bubble--silver">+7.84%</span></div>
+        <div class="il-l-tv">98.2억</div>
+      </div>
+    </div>
+
+    <!-- #5 하락 -->
+    <div class="il-leader">
+      <span class="il-lbadge il-lbadge--n">#5</span>
+      <span style="overflow:hidden;min-width:0">
+        <div class="il-l-name">에스피지</div>
+        <span class="il-l-code">058820</span>
+      </span>
+      <span class="il-l-price">31,750</span>
+      <div class="il-l-right">
+        <div class="il-l-rate"><span class="il-neg">-1.24%</span></div>
+        <div class="il-l-tv">42.7억</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
