@@ -269,7 +269,7 @@
   <section class="il-header">
     <div>
       <p class="il-kicker">Intraday Live</p>
-      <h1>장중 주도섹터</h1>
+      <h1><span id="il-date-prefix" style="font-weight:500;color:var(--sector-muted);font-size:1.2rem;margin-right:6px;"></span>장중 주도섹터</h1>
     </div>
     <div class="il-header-right">
       <span id="il-status-badge" class="il-badge il-badge--{{ runtime_state }}">
@@ -345,8 +345,7 @@
 
   <!-- ── Controls ──────────────────────────────────────────── -->
   <div class="il-controls">
-    <button id="btn-start-mock" class="il-btn il-btn--start" onclick="startMockRuntime()">▶ Mock 시작</button>
-    <button id="btn-start-prod" class="il-btn il-btn--start" onclick="startProdSorRuntime()">▶ 실전 SOR 시작</button>
+    <button id="btn-start-prod" class="il-btn il-btn--start" onclick="startProdSorRuntime()">▶ 데이터 수신 시작</button>
     <button id="btn-stop"  class="il-btn il-btn--stop"  onclick="stopRuntime()">■ 중지</button>
     <span class="il-poll-info">폴링 간격 <span id="poll-interval">1s</span> &middot; 마지막 갱신 <span id="last-updated">—</span></span>
   </div>
@@ -396,22 +395,47 @@
   <p class="il-footer">
     <a href="{{ url_for('intraday.index') }}">새로고침</a>
     &nbsp;·&nbsp;
-    prod: 실전 SOR 시작 버튼은 확인 후 <code>websocket/prod/sor</code> 런타임을 직접 연결
+    <button id="btn-start-mock" class="il-btn il-btn--start"
+      onclick="startMockRuntime()"
+      style="font-size:0.68rem;padding:3px 10px;opacity:0.6;">▶ Mock 시작</button>
   </p>
 
 </main>
+
+<!-- ── Sector popup overlay ──────────────────────────────── -->
+<div id="il-popup-overlay"
+  onclick="closePopup()"
+  style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);
+         z-index:1000;align-items:flex-start;justify-content:center;padding-top:60px;">
+  <div id="il-popup"
+    onclick="event.stopPropagation()"
+    style="background:#1f2937;border:1px solid #374151;border-radius:14px;
+           overflow:hidden;max-width:500px;width:92vw;max-height:80vh;
+           display:flex;flex-direction:column;">
+    <div style="padding:14px 18px 10px;border-bottom:1px solid #374151;
+                display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <div>
+        <span id="il-popup-title" style="font-weight:800;font-size:1rem;color:#f9fafb;"></span>
+        <span id="il-popup-meta" style="font-size:0.72rem;color:#9ca3af;margin-left:10px;"></span>
+      </div>
+      <button onclick="closePopup()"
+        style="background:none;border:none;color:#6b7280;font-size:1.1rem;
+               cursor:pointer;padding:2px 6px;line-height:1;">✕</button>
+    </div>
+    <div id="il-popup-body" style="overflow-y:auto;padding:4px 0 12px;"></div>
+  </div>
+</div>
 
 <script>
 "use strict";
 
 // ── 포맷 헬퍼 ──────────────────────────────────────────────
 function fmtTV(v) {
+  // 값은 억 단위로 수신됨 — 항상 "N,NNN억" 형태로 표시
   if (v == null) return "N/A";
-  v = parseInt(v);
-  if (v >= 100_000_000_000) return (v / 100_000_000_000).toFixed(1) + "천억";
-  if (v >= 100_000_000)     return (v / 100_000_000).toFixed(1) + "억";
-  if (v >= 10_000)          return Math.floor(v / 10_000) + "만";
-  return v.toString();
+  const n = Math.round(parseFloat(v));
+  if (isNaN(n)) return "N/A";
+  return n.toLocaleString("ko-KR") + "억";
 }
 
 function fmtRate(v) {
@@ -425,10 +449,36 @@ function rateClass(v) {
   return v > 0 ? "il-pos" : v < 0 ? "il-neg" : "il-neu";
 }
 
-
 function fmtPrice(v) {
   if (v == null) return "N/A";
-  return parseInt(v).toLocaleString();
+  return parseInt(v).toLocaleString("ko-KR") + "원";
+}
+
+// ── 날짜 헬퍼 ──────────────────────────────────────────────
+function formatKoreanDate() {
+  const days = ["일","월","화","수","목","금","토"];
+  const now = new Date();
+  return `${now.getMonth()+1}월${now.getDate()}일 (${days[now.getDay()]})`;
+}
+(function() {
+  const el = document.getElementById("il-date-prefix");
+  if (el) el.textContent = formatKoreanDate();
+})();
+
+// ── 버튼 상태 토글 ──────────────────────────────────────────
+function updateButtonState(running) {
+  const startBtn = document.getElementById("btn-start-prod");
+  const stopBtn  = document.getElementById("btn-stop");
+  const mockBtn  = document.getElementById("btn-start-mock");
+  if (running) {
+    startBtn.disabled = true;  startBtn.style.opacity = "0.35";
+    stopBtn.disabled  = false; stopBtn.style.opacity  = "";
+    if (mockBtn) { mockBtn.disabled = true; mockBtn.style.opacity = "0.25"; }
+  } else {
+    startBtn.disabled = false; startBtn.style.opacity = "";
+    stopBtn.disabled  = true;  stopBtn.style.opacity  = "0.35";
+    if (mockBtn) { mockBtn.disabled = false; mockBtn.style.opacity = "0.6"; }
+  }
 }
 
 const GRADE_STARS = { A: "⭐⭐⭐", B: "⭐⭐", C: "⭐" };
@@ -536,48 +586,34 @@ function buildEmptySlotCard(slotId) {
   </div>`;
 }
 
-function buildSectorCard(slot) {
-  const sv = slot.sector;
-  const grade = sv.leader_grade || "C";
-  const stars = GRADE_STARS[grade] || "★";
-  const gradeCSS = GRADE_CSS[grade] || "";
-  const color = sv.color || "#6B7280";
-  const evictingClass = slot.evicting ? " il-card--evicting" : "";
-
-  const gradeBadge = `<span class="il-grade-badge ${gradeCSS}">${stars} ${grade}급 ${sv.leader_label || ""}</span>`;
-  const gradeMeta  = `<span>10%↑ <span>${sv.strong_riser_count ?? 0}개</span></span>`
-                   + `<span>5%↑ <span>${sv.riser_5_count ?? 0}개</span></span>`
-                   + `<span>거래대금 <span>${fmtTV(sv.sector_total_trading_value)}</span></span>`;
-
-  const leaders = (sv.leader_stocks || []).map(ls => {
+// ── 종목 행 빌더 (카드·팝업 공용) ──────────────────────────
+function buildLeaderRows(stocks, limit) {
+  const list = limit ? stocks.slice(0, limit) : stocks;
+  return list.map(ls => {
     const badge = ls.display_badge || "";
     const nameOrCode = ls.stock_name || ls.base_code;
-    const codeSub = ls.stock_name
-      ? `<span class="il-l-code">${ls.base_code}</span>`
-      : "";
-    const highTV = ls.is_high_trading_value
-      ? ` style="font-weight:800;color:var(--sector-accent)"`
-      : "";
+    const codeSub = ls.stock_name ? `<span class="il-l-code">${ls.base_code}</span>` : "";
+    const highTV  = ls.is_high_trading_value ? ` style="font-weight:800;color:var(--sector-accent)"` : "";
     const r = ls.last_change_rate;
 
-    const badgeCls = badge === "대장"  ? "il-lbadge--대장"
-                   : badge === "2등주" ? "il-lbadge--2등주"
-                   : badge === "3등주" ? "il-lbadge--3등주"
+    // 하락 종목은 대장/2등주/3등주 뱃지 대신 일반 #N 뱃지
+    const isNeg = r != null && r < 0;
+    const showNamedBadge = !isNeg && (badge === "대장" || badge === "2등주" || badge === "3등주");
+    const badgeCls = badge === "대장"  && showNamedBadge ? "il-lbadge--대장"
+                   : badge === "2등주" && showNamedBadge ? "il-lbadge--2등주"
+                   : badge === "3등주" && showNamedBadge ? "il-lbadge--3등주"
                    : "il-lbadge--n";
+    const badgeLabel = showNamedBadge ? badge : "#" + ls.rank;
 
-    // 등락률 버블
     const rateHTML = r == null
       ? `<span class="il-neu">N/A</span>`
-      : r >= 10
-      ? `<span class="il-rate-bubble il-rate-bubble--gold">${fmtRate(r)}</span>`
-      : r >= 5
-      ? `<span class="il-rate-bubble il-rate-bubble--silver">${fmtRate(r)}</span>`
-      : r >= 0
-      ? `<span class="il-rate-bubble il-rate-bubble--bronze">${fmtRate(r)}</span>`
+      : r >= 10 ? `<span class="il-rate-bubble il-rate-bubble--gold">${fmtRate(r)}</span>`
+      : r >= 5  ? `<span class="il-rate-bubble il-rate-bubble--silver">${fmtRate(r)}</span>`
+      : r >= 0  ? `<span class="il-rate-bubble il-rate-bubble--bronze">${fmtRate(r)}</span>`
       : `<span class="il-neg">${fmtRate(r)}</span>`;
 
     return `<div class="il-leader">
-      <span class="il-lbadge ${badgeCls}">${badge || "#" + ls.rank}</span>
+      <span class="il-lbadge ${badgeCls}">${badgeLabel}</span>
       <span style="overflow:hidden;min-width:0">
         <div class="il-l-name"${highTV}>${nameOrCode}</div>
         ${codeSub}
@@ -589,8 +625,41 @@ function buildSectorCard(slot) {
       </div>
     </div>`;
   }).join("");
+}
 
-  // 섹터 순위 메달 SVG (카드 좌상단)
+// ── 섹터 팝업 ───────────────────────────────────────────────
+function openSectorPopup(slot) {
+  const sv = slot.sector;
+  if (!sv) return;
+  document.getElementById("il-popup-title").textContent = sv.sector_name;
+  document.getElementById("il-popup-meta").textContent =
+    `10%↑ ${sv.strong_riser_count ?? 0}개  5%↑ ${sv.riser_5_count ?? 0}개  거래대금 ${fmtTV(sv.sector_total_trading_value)}`;
+  document.getElementById("il-popup-body").innerHTML =
+    `<div class="il-leaders">${buildLeaderRows(sv.leader_stocks || [])}</div>`;
+  const overlay = document.getElementById("il-popup-overlay");
+  overlay.style.display = "flex";
+}
+
+function closePopup() {
+  document.getElementById("il-popup-overlay").style.display = "none";
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closePopup(); });
+
+function buildSectorCard(slot) {
+  const sv = slot.sector;
+  const grade = sv.leader_grade || "C";
+  const stars = GRADE_STARS[grade] || "★";
+  const gradeCSS = GRADE_CSS[grade] || "";
+  const color = sv.color || "#6B7280";
+  const evictingClass = slot.evicting ? " il-card--evicting" : "";
+
+  const gradeMeta = `<span>10%↑ <span>${sv.strong_riser_count ?? 0}개</span></span>`
+                  + `<span>5%↑ <span>${sv.riser_5_count ?? 0}개</span></span>`
+                  + `<span>거래대금 <span>${fmtTV(sv.sector_total_trading_value)}</span></span>`;
+
+  const leaders = buildLeaderRows(sv.leader_stocks || [], 5);
+
   function rankBadge(rank) {
     if (rank === 1) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
       <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
@@ -622,7 +691,8 @@ function buildSectorCard(slot) {
     return `<span style="font-size:0.65rem;font-weight:800;color:var(--sector-muted);letter-spacing:0.04em">${rank}위</span>`;
   }
 
-  return `<div class="il-card${evictingClass}" style="border-left-color:${color}">
+  return `<div class="il-card${evictingClass}" style="border-left-color:${color};cursor:pointer"
+    onclick="openSectorPopup(${JSON.stringify(slot).replace(/</g,'\\u003c')})">
     <div class="il-card-head">
       <span class="il-card-slot">${rankBadge(sv.rank)}</span>
       <span class="il-card-name">${sv.sector_name} <span style="letter-spacing:-2px">${stars}</span></span>
@@ -691,6 +761,7 @@ async function fetchSnapshot() {
     renderStats(snap);
 
     if (snap.rule) updateLegendRule(snap.rule);
+    updateButtonState(!!snap.running);
 
     const hasSlots = snap.slot_layout && snap.slot_layout.some(s => s.sector_name !== null);
     if ((state === "ready" || (state === "no_leader" && hasSlots)) && snap.slot_layout) {
@@ -710,10 +781,6 @@ async function fetchSnapshot() {
 
 // ── 런타임 제어 ─────────────────────────────────────────────
 async function postStart(payload) {
-  const mockBtn = document.getElementById("btn-start-mock");
-  const prodBtn = document.getElementById("btn-start-prod");
-  mockBtn.disabled = true;
-  prodBtn.disabled = true;
   try {
     const res = await fetch("/intraday/api/start", {method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -723,8 +790,6 @@ async function postStart(payload) {
     if (!data.ok) showError(data.error || "시작 실패");
     else { showError(null); await fetchSnapshot(); }
   } catch(e) { showError("시작 오류: " + e.message); }
-  mockBtn.disabled = false;
-  prodBtn.disabled = false;
 }
 
 async function startMockRuntime() {
@@ -740,21 +805,20 @@ async function startProdSorRuntime() {
     exchange: "sor",
     codes_file: "data/universe_codes_150.txt",
     sector_map_file: "data/sector_map.json",
-    max_codes: 150,
+    max_codes: 200,
     max_total_realtime_codes: 200,
     snapshot_interval: 1.0,
-    listen_seconds: 7200
+    listen_seconds: 28800
   });
 }
 
 async function stopRuntime() {
-  document.getElementById("btn-stop").disabled = true;
   try {
     await fetch("/intraday/api/stop", {method: "POST"});
     setStatus("not_running");
     renderEmpty("not_running");
+    updateButtonState(false);
   } catch(e) { showError("중지 오류: " + e.message); }
-  document.getElementById("btn-stop").disabled = false;
 }
 
 // ── 1초 폴링 시작 ────────────────────────────────────────────

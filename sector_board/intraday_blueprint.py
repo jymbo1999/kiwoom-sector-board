@@ -29,7 +29,7 @@ _RUNTIME_META_KEY = "INTRADAY_RUNTIME_META"
 _MAX_WEBSOCKET_CODES = 200          # Kiwoom WebSocket 세션 총 등록 상한
 _DEFAULT_SNAPSHOT_INTERVAL = 1.0
 _DEFAULT_MAX_CODES = 200
-_DEFAULT_LISTEN_SECONDS = 7200      # 2시간
+_DEFAULT_LISTEN_SECONDS = 28800     # 8시간 (장 전체 커버)
 _SENSITIVE_ENV_PARTS = ("SECRET", "APP_KEY", "TOKEN", "PASSWORD")
 
 
@@ -271,7 +271,7 @@ def create_intraday_blueprint() -> Blueprint:
         service = IntradaySnapshotService(
             sector_map=sector_map,
             sector_limit=30,
-            stock_limit=5,
+            stock_limit=20,
             name_map=_load_name_map(data_dir),
             market_cap_map=market_cap_map,
             min_riser_count=2,
