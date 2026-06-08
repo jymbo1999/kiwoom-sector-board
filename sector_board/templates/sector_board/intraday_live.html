@@ -123,6 +123,26 @@
   margin-bottom: 14px;
 }
 
+/* ── Mobile: 1-column layout ────────────────────────────── */
+@media (max-width: 640px) {
+  .il-slot-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .il-all-sectors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .il-card {
+    border-left-width: 6px;
+  }
+  .il-leader {
+    grid-template-columns: 20px minmax(0,1fr) auto auto;
+    font-size: 0.82rem;
+  }
+  .il-card-name { font-size: 1rem; }
+  .il-card-rate { font-size: 0.92rem; }
+}
+
 /* ── Sector card (filled) ───────────────────────────────── */
 .il-card {
   background: var(--sector-panel);
@@ -191,10 +211,7 @@
   display: inline-block; padding: 1px 6px; border-radius: 4px;
   font-size: 0.67rem; font-weight: 700; white-space: nowrap; text-align: center;
 }
-.il-lbadge--대장  { background:#78350f; color:#fbbf24; }
-.il-lbadge--2등주 { background:#1e3a5f; color:#93c5fd; }
-.il-lbadge--3등주 { background:#1a2e1e; color:#86efac; }
-.il-lbadge--n     { background:#1f2937; color:#6b7280; font-size:.63rem; }
+.il-lbadge--n     { background:transparent; color:#4b5563; font-size:.68rem; padding:0 2px; }
 
 /* ── 섹터 순위 메달 (카드 좌상단) ───────────────────────── */
 .il-card-slot { line-height: 1; }
@@ -651,14 +668,8 @@ function buildLeaderRows(stocks, limit) {
     const highTV  = ls.is_high_trading_value ? ` style="font-weight:800;color:var(--sector-accent)"` : "";
     const r = ls.last_change_rate;
 
-    // 하락 종목은 대장/2등주/3등주 뱃지 대신 일반 #N 뱃지
-    const isNeg = r != null && r < 0;
-    const showNamedBadge = !isNeg && (badge === "대장" || badge === "2등주" || badge === "3등주");
-    const badgeCls = badge === "대장"  && showNamedBadge ? "il-lbadge--대장"
-                   : badge === "2등주" && showNamedBadge ? "il-lbadge--2등주"
-                   : badge === "3등주" && showNamedBadge ? "il-lbadge--3등주"
-                   : "il-lbadge--n";
-    const badgeLabel = showNamedBadge ? badge : "#" + ls.rank;
+    const badgeCls = "il-lbadge--n";
+    const badgeLabel = ls.rank;
 
     const rateHTML = r == null
       ? `<span class="il-neu">N/A</span>`
