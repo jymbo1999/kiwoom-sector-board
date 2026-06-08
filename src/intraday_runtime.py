@@ -37,7 +37,8 @@ import random
 import threading
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, time as dtime
+from zoneinfo import ZoneInfo
 from typing import Any, Callable
 
 from .intraday_snapshot_service import IntradaySnapshotService
@@ -52,6 +53,10 @@ RUNTIME_IDLE = "idle"
 RUNTIME_RUNNING = "running"
 RUNTIME_STOPPED = "stopped"
 RUNTIME_ERROR = "error"
+
+# 장 마감 자동 종료 시각 (KST)
+_MARKET_CLOSE = dtime(15, 30)
+_KST = ZoneInfo("Asia/Seoul")
 
 
 # ---------------------------------------------------------------------------
@@ -410,6 +415,29 @@ class IntradayRuntime:
     async def _async_loop(self) -> None:
         """메시지를 ingest 하고 주기적으로 snapshot 을 갱신한다."""
         last_snap = time.monotonic()
+        loop_task = asyncio.current_task()
+
+        async def _market_close_watchdog() -> None:
+            """15:30 KST 가 되면 루프 태스크를 취소해 자동 종료한다."""
+            while True:
+                now = datetime.now(_KST)
+                close_dt = now.replace(
+                    hour=_MARKET_CLOSE.hour,
+                    minute=_MARKET_CLOSE.minute,
+                    second=0,
+                    microsecond=0,
+                )
+                if now >= close_dt:
+                    with self._lock:
+                        self._close_reason = "장 마감 자동 종료 (15:30)"
+                    self._stop_requested.set()
+                    if loop_task:
+                        loop_task.cancel()
+                    return
+                wait_sec = (close_dt - now).total_seconds()
+                await asyncio.sleep(min(wait_sec, 30))
+
+        watchdog = asyncio.create_task(_market_close_watchdog())
 
         try:
             source = self._message_source_factory()
@@ -428,6 +456,9 @@ class IntradayRuntime:
                     self._refresh_snapshot()
                     last_snap = now
 
+        except asyncio.CancelledError:
+            pass  # 장 마감 워치독에 의한 정상 종료
+
         except Exception as exc:
             cause = str(exc)
             with self._lock:
@@ -438,6 +469,7 @@ class IntradayRuntime:
                     self._error = cause
 
         finally:
+            watchdog.cancel()
             self._refresh_snapshot()
             with self._lock:
                 if self._state == RUNTIME_RUNNING:
