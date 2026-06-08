@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"/Users/haesungjun/VSCODE Library/kiwoom-sector-board\\\" && python3 -c \\\"\\nfrom src.intraday_snapshot_service import IntradaySnapshot\\nfrom src.intraday_snapshot_serialization import sn...",
+  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 2, in <module>\n  File \"/Users/haesungjun/VSCODE Library/kiwoom-sector-board/src/intraday_snapshot_service.py\", line 7, in <module>\n    import pandas as pd\nModuleNotFoundError: No module named 'pandas'",
+  "timestamp": "2026-06-08T05:14:27.181Z",
+  "retry_count": 1
+}

@@ -259,6 +259,61 @@
   text-transform: uppercase;
   margin-bottom: 8px; margin-top: 4px;
 }
+
+/* ── All sectors section ────────────────────────────────── */
+.il-all-sectors {
+  margin-top: 28px;
+  border-top: 1px solid var(--sector-border);
+  padding-top: 16px;
+}
+.il-all-sectors-label {
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--sector-muted); letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.il-all-sectors-label:hover { color: var(--sector-text); }
+.il-toggle-icon { font-size: 0.6rem; transition: transform 0.2s; display: inline-block; }
+.il-all-sectors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.il-compact-card {
+  background: var(--sector-panel);
+  border: 1px solid var(--sector-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.il-compact-card:hover { background: rgba(255,255,255,.04); }
+.il-compact-head {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 6px;
+  margin-bottom: 4px;
+}
+.il-compact-name {
+  font-size: 0.82rem; font-weight: 700;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.il-compact-rate { font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+.il-compact-meta {
+  display: flex; gap: 8px;
+  font-size: 0.68rem; color: var(--sector-muted);
+}
+.il-compact-stocks {
+  margin-top: 5px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.il-compact-stock {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.7rem; color: var(--sector-muted);
+  padding: 1px 0;
+}
+.il-compact-stock-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
 {% endblock stylesheets %}
 
@@ -304,19 +359,19 @@
     <div style="display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:8px;align-items:center;font-size:0.74rem;">
       <span style="color:var(--sector-muted);font-weight:700;font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;min-width:fit-content">상승률 표시</span>
       <span style="display:inline-flex;align-items:center;gap:6px;">
-        <span style="background:#ca8a04;color:#fff;padding:1px 8px;border-radius:4px;font-weight:800;font-size:0.74rem">+12.5%</span>
+        <span class="il-rate-bubble il-rate-bubble--gold">+12.5%</span>
         <span style="color:var(--sector-muted)">+10% 이상</span>
       </span>
       <span style="display:inline-flex;align-items:center;gap:6px;">
-        <span style="background:#92400e;color:#fff;padding:1px 8px;border-radius:4px;font-weight:800;font-size:0.74rem">+7.3%</span>
+        <span class="il-rate-bubble il-rate-bubble--silver">+7.3%</span>
         <span style="color:var(--sector-muted)">+5%~+10%</span>
       </span>
       <span style="display:inline-flex;align-items:center;gap:6px;">
-        <span style="color:#ef4444;font-weight:700;font-size:0.74rem">+3.1%</span>
-        <span style="color:var(--sector-muted)">+5% 미만</span>
+        <span class="il-rate-bubble il-rate-bubble--bronze">+3.1%</span>
+        <span style="color:var(--sector-muted)">+5% 미만 상승</span>
       </span>
       <span style="display:inline-flex;align-items:center;gap:6px;">
-        <span style="color:#3b82f6;font-weight:700;font-size:0.74rem">-2.3%</span>
+        <span style="color:#3b82f6;font-weight:700;font-size:0.78rem">-2.3%</span>
         <span style="color:var(--sector-muted)">하락</span>
       </span>
     </div>
@@ -646,6 +701,8 @@ function closePopup() {
 
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePopup(); });
 
+let _allSectorsExpanded = false;
+
 function buildSectorCard(slot) {
   const sv = slot.sector;
   const grade = sv.leader_grade || "C";
@@ -703,49 +760,102 @@ function buildSectorCard(slot) {
   </div>`;
 }
 
-function renderSlotLayout(slotLayout) {
+function buildCompactCard(sv) {
+  const slotFake = {sector: sv};
+  const topStocks = (sv.leader_stocks || []).slice(0, 3);
+  const stockRows = topStocks.map(ls =>
+    `<div class="il-compact-stock">
+      <span class="il-compact-stock-name">${ls.stock_name || ls.base_code}</span>
+      <span class="${rateClass(ls.last_change_rate)}" style="font-size:0.7rem;font-weight:700">${fmtRate(ls.last_change_rate)}</span>
+    </div>`
+  ).join("");
+  return `<div class="il-compact-card" onclick="openSectorPopup(${JSON.stringify(slotFake).replace(/</g,'\\u003c')})">
+    <div class="il-compact-head">
+      <span class="il-compact-name">${sv.sector_name}</span>
+      <span class="il-compact-rate ${rateClass(sv.average_change_rate)}">${fmtRate(sv.average_change_rate)}</span>
+    </div>
+    <div class="il-compact-meta">
+      <span>5%↑ ${sv.riser_5_count ?? 0}</span>
+      <span>10%↑ ${sv.strong_riser_count ?? 0}</span>
+    </div>
+    <div class="il-compact-stocks">${stockRows}</div>
+  </div>`;
+}
+
+function toggleAllSectors() {
+  _allSectorsExpanded = !_allSectorsExpanded;
+  const grid = document.getElementById("il-all-sectors-grid");
+  const icon = document.getElementById("il-all-sectors-icon");
+  if (grid) grid.style.display = _allSectorsExpanded ? "grid" : "none";
+  if (icon) icon.style.transform = _allSectorsExpanded ? "rotate(90deg)" : "";
+}
+
+function buildAllSectorsSection(allSectorViews, slotLayout) {
+  const activeNames = new Set((slotLayout || []).map(s => s.sector_name).filter(Boolean));
+  const others = (allSectorViews || [])
+    .filter(sv => !activeNames.has(sv.sector_name))
+    .slice()
+    .sort((a, b) => (b.average_change_rate ?? -Infinity) - (a.average_change_rate ?? -Infinity));
+  if (!others.length) return "";
+  const cards = others.map(sv => buildCompactCard(sv)).join("");
+  const display = _allSectorsExpanded ? "grid" : "none";
+  const iconTransform = _allSectorsExpanded ? 'style="transform:rotate(90deg)"' : '';
+  return `<div class="il-all-sectors">
+    <div class="il-all-sectors-label" onclick="toggleAllSectors()">
+      <span class="il-toggle-icon" id="il-all-sectors-icon" ${iconTransform}>▶</span>전체 섹터 현황
+      <span style="font-weight:400;font-size:0.65rem">(${others.length}개)</span>
+    </div>
+    <div class="il-all-sectors-grid" id="il-all-sectors-grid" style="display:${display}">${cards}</div>
+  </div>`;
+}
+
+function renderSlotLayout(slotLayout, allSectorViews) {
   const body = document.getElementById("il-body");
+
+  let newHtml;
   if (!slotLayout || slotLayout.length === 0) {
-    body.innerHTML = `<div class="il-hint">
+    newHtml = `<div class="il-hint">
       <h2>섹터 데이터 없음</h2>
       <p>tick 을 수신 중이지만 아직 섹터 집계가 완료되지 않았습니다.<br>
       sector_map 매핑을 확인하거나 잠시 기다려 주세요.</p>
     </div>`;
-    return;
+  } else {
+    // 기본 슬롯 (1~6)
+    const base = slotLayout.slice(0, 6);
+    const baseCards = base.map(slot =>
+      slot.sector_name ? buildSectorCard(slot) : buildEmptySlotCard(slot.slot_id)
+    ).join("");
+
+    // 확장 슬롯 (7~9): 하나라도 채워져 있을 때만 표시
+    const ext = slotLayout.slice(6, 9);
+    const extHasContent = ext.some(s => s.sector_name !== null);
+    const extHtml = extHasContent
+      ? `<div class="il-ext-label">확장 슬롯</div>
+         <div class="il-slot-grid">${
+           ext.map(slot =>
+             slot.sector_name ? buildSectorCard(slot) : buildEmptySlotCard(slot.slot_id)
+           ).join("")
+         }</div>`
+      : "";
+
+    newHtml = `<div class="il-slot-grid">${baseCards}</div>${extHtml}${buildAllSectorsSection(allSectorViews, slotLayout)}`;
   }
 
-  // 기본 슬롯 (1~6)
-  const base = slotLayout.slice(0, 6);
-  const baseCards = base.map(slot =>
-    slot.sector_name ? buildSectorCard(slot) : buildEmptySlotCard(slot.slot_id)
-  ).join("");
-
-  // 확장 슬롯 (7~9): 하나라도 채워져 있을 때만 표시
-  const ext = slotLayout.slice(6, 9);
-  const extHasContent = ext.some(s => s.sector_name !== null);
-  const extHtml = extHasContent
-    ? `<div class="il-ext-label">확장 슬롯</div>
-       <div class="il-slot-grid">${
-         ext.map(slot =>
-           slot.sector_name ? buildSectorCard(slot) : buildEmptySlotCard(slot.slot_id)
-         ).join("")
-       }</div>`
-    : "";
-
-  body.innerHTML = `<div class="il-slot-grid">${baseCards}</div>${extHtml}`;
+  body.innerHTML = newHtml;
 }
 
-function renderEmpty(status) {
+function renderEmpty(status, allSectorViews) {
   const msgs = {
     not_running: { h: "런타임 미실행", p: "Mock 시작 또는 실전 SOR 시작 버튼을 눌러 런타임을 시작하세요." },
     empty:       { h: "데이터 없음",   p: "런타임이 실행 중이지만 아직 tick 데이터가 없습니다. 장중(08:00~18:00 KST)인지 확인하세요." },
     warming:     { h: "수집 중 (Warming)", p: "tick 을 수신 중입니다. 섹터 집계가 시작되면 화면이 갱신됩니다." },
-    no_leader:   { h: "현재 조건을 만족하는 주도섹터가 없습니다.", p: "조건: 시총 5천억 이상 종목 중 +5% 이상 상승 종목 3개 이상" },
+    no_leader:   { h: "현재 조건을 만족하는 주도섹터가 없습니다.", p: "조건: 시총 5천억 이상 종목 중 +5% 이상 상승 종목 2개 이상" },
     error:       { h: "런타임 오류", p: "상단 오류 메시지를 확인한 뒤 설정을 수정하고 다시 시작하세요." },
   };
   const m = msgs[status] || msgs.empty;
-  document.getElementById("il-body").innerHTML =
-    `<div class="il-hint"><h2>${m.h}</h2><p>${m.p}</p></div>`;
+  const newHtml = `<div class="il-hint"><h2>${m.h}</h2><p>${m.p}</p></div>`
+    + buildAllSectorsSection(allSectorViews, []);
+  document.getElementById("il-body").innerHTML = newHtml;
 }
 
 // ── 폴링 ────────────────────────────────────────────────────
@@ -765,9 +875,9 @@ async function fetchSnapshot() {
 
     const hasSlots = snap.slot_layout && snap.slot_layout.some(s => s.sector_name !== null);
     if ((state === "ready" || (state === "no_leader" && hasSlots)) && snap.slot_layout) {
-      renderSlotLayout(snap.slot_layout);
+      renderSlotLayout(snap.slot_layout, snap.all_sector_views);
     } else {
-      renderEmpty(state);
+      renderEmpty(state, snap.all_sector_views);
     }
 
     const ts = snap.last_updated_at || snap.updated_at || snap.generated_at;

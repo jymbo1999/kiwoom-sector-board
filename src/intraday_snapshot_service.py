@@ -222,6 +222,8 @@ class IntradaySnapshot:
     warming 상태의 주요 원인 진단에 사용한다."""
     slot_layout: list = _field(default_factory=list)
     """슬롯 고정 배치 정보. 슬롯 1~9 의 섹터 카드 배치를 담는다."""
+    extended_views: list = _field(default_factory=list)
+    """min_riser_count=0 으로 산출한 전체 섹터 뷰. 조건 미달 섹터 포함."""
 
 
 class IntradaySnapshotService:
@@ -396,6 +398,7 @@ class IntradaySnapshotService:
             status=status,
             unmapped_count=unmapped_count,
             slot_layout=slot_layout,
+            extended_views=extended_views,
         )
 
     # ------------------------------------------------------------------

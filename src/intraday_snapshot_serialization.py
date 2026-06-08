@@ -27,6 +27,32 @@ def snapshot_to_dict(snap: "IntradaySnapshot") -> dict:
         "ignored_row_count": snap.ignored_row_count,
         "sector_count": snap.sector_count,
         "slot_layout": snap.slot_layout,
+        "all_sector_views": [
+            {
+                "rank": sv.rank,
+                "sector_name": sv.sector_name,
+                "leader_grade": sv.leader_grade,
+                "strong_riser_count": sv.strong_riser_count,
+                "riser_5_count": sv.riser_5_count,
+                "sector_total_trading_value": sv.total_minute_trade_value,
+                "average_change_rate": sv.average_change_rate,
+                "rising_ratio": sv.rising_ratio,
+                "active_stock_count": sv.active_stock_count,
+                "leader_stocks": [
+                    {
+                        "rank": ls.rank,
+                        "base_code": ls.base_code,
+                        "stock_name": ls.stock_name,
+                        "last_change_rate": ls.last_change_rate,
+                        "minute_trade_value_delta": ls.minute_trade_value_delta,
+                        "is_high_trading_value": ls.is_high_trading_value,
+                        "display_badge": ls.display_badge,
+                    }
+                    for ls in sv.leader_stocks
+                ],
+            }
+            for sv in snap.extended_views
+        ],
         "sector_views": [
             {
                 "rank": sv.rank,
