@@ -201,7 +201,7 @@
 .il-leaders { padding: 0 6px 8px; }
 .il-leader {
   display: grid;
-  grid-template-columns: 46px minmax(0,1fr) auto auto;
+  grid-template-columns: minmax(0,1fr) auto auto;
   align-items: center; gap: 5px;
   padding: 6px 8px; border-radius: 6px;
   font-size: 0.78rem;
@@ -295,7 +295,7 @@
 .il-toggle-icon { font-size: 0.6rem; transition: transform 0.2s; display: inline-block; }
 .il-all-sectors-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
   gap: 8px;
 }
 .il-compact-card {
@@ -523,7 +523,7 @@ function rateClass(v) {
 
 function fmtPrice(v) {
   if (v == null) return "N/A";
-  return parseInt(v).toLocaleString("ko-KR") + "원";
+  return parseInt(v).toLocaleString("ko-KR");
 }
 
 // ── 날짜 헬퍼 ──────────────────────────────────────────────
@@ -679,7 +679,6 @@ function buildLeaderRows(stocks, limit) {
       : `<span class="il-neg">${fmtRate(r)}</span>`;
 
     return `<div class="il-leader">
-      <span class="il-lbadge ${badgeCls}">${badgeLabel}</span>
       <span style="overflow:hidden;min-width:0">
         <div class="il-l-name"${highTV}>${nameOrCode}</div>
         ${codeSub}
