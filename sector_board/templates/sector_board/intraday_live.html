@@ -201,7 +201,7 @@
 .il-leaders { padding: 0 6px 8px; }
 .il-leader {
   display: grid;
-  grid-template-columns: minmax(0,1fr) auto auto;
+  grid-template-columns: minmax(0,1fr) auto;
   align-items: center; gap: 5px;
   padding: 6px 8px; border-radius: 6px;
   font-size: 0.78rem;
@@ -214,14 +214,14 @@
 .il-lbadge--n     { background:transparent; color:#4b5563; font-size:.68rem; padding:0 2px; }
 
 /* ── 섹터 순위 메달 (카드 좌상단) ───────────────────────── */
-.il-card-slot { line-height: 1; }
+.il-card-slot { line-height: 1; height: 32px; display: inline-flex; align-items: center; justify-content: center; }
 
 /* ── Rate bubble ────────────────────────────────────────── */
 .il-rate-bubble {
   display: inline-block;
-  padding: 1px 7px; border-radius: 10px;
+  padding: 1px 6px; border-radius: 10px;
   color: #ef4444;
-  font-weight: 800; font-size: 0.78rem;
+  font-weight: 800; font-size: 0.72rem;
   border: 2px solid;
   white-space: nowrap;
 }
@@ -241,12 +241,25 @@
   box-shadow: 0 0 7px rgba(251,146,60,0.40);
 }
 
+#il-popup-body::-webkit-scrollbar { width: 5px; }
+#il-popup-body::-webkit-scrollbar-track { background: #1f2937; }
+#il-popup-body::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+#il-popup-body::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
 .il-l-name { font-weight: 600; color: var(--sector-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .il-l-code { color: var(--sector-muted); font-family: monospace; font-size: 0.68rem; }
-.il-l-price { color: var(--sector-text); }
+.il-l-price { color: var(--sector-text); font-size: 0.92rem; font-weight: 700; }
+.il-l-chg   { font-size: 0.72rem; font-weight: 700; }
 .il-l-right { text-align: right; }
 .il-l-rate  { font-weight: 700; }
 .il-l-tv    { font-size: 0.7rem; color: var(--sector-muted); }
+.il-l-nums {
+  display: grid;
+  grid-template-columns: minmax(3.5rem, auto) minmax(3.0rem, auto) minmax(3.6rem, auto);
+  column-gap: 5px;
+  justify-items: end;
+  align-items: center;
+}
 .il-pos { color: #ef4444; }
 .il-neg { color: #3b82f6; }
 .il-neu { color: var(--sector-muted); }
@@ -400,6 +413,8 @@
         <span style="color:var(--sector-text);font-weight:600">종목명</span>
         &nbsp;|&nbsp;
         <span style="color:var(--sector-text);font-weight:600">현재가</span>
+        &nbsp;|&nbsp;
+        <span style="color:#ef4444;font-weight:600">▲상승금액</span>
         &nbsp;|&nbsp;
         <span style="color:#ef4444;font-weight:600">등락률(%)</span>
         &nbsp;|&nbsp;
@@ -671,6 +686,15 @@ function buildLeaderRows(stocks, limit) {
     const badgeCls = "il-lbadge--n";
     const badgeLabel = ls.rank;
 
+    const amt = (r != null && ls.close_price != null)
+      ? Math.round(ls.close_price - ls.close_price / (1 + r / 100))
+      : null;
+    const tri = r > 0 ? "▲" : r < 0 ? "▼" : "";
+    const chgClass = r > 0 ? "il-pos" : r < 0 ? "il-neg" : "il-neu";
+    const chgHTML = amt != null
+      ? `<span class="il-l-chg ${chgClass}">${tri}${Math.abs(amt).toLocaleString("ko-KR")}</span>`
+      : "";
+
     const rateHTML = r == null
       ? `<span class="il-neu">N/A</span>`
       : r >= 10 ? `<span class="il-rate-bubble il-rate-bubble--gold">${fmtRate(r)}</span>`
@@ -683,9 +707,12 @@ function buildLeaderRows(stocks, limit) {
         <div class="il-l-name"${highTV}>${nameOrCode}</div>
         ${codeSub}
       </span>
-      <span class="il-l-price">${fmtPrice(ls.close_price)}</span>
       <div class="il-l-right">
-        <div class="il-l-rate">${rateHTML}</div>
+        <div class="il-l-nums">
+          <span class="il-l-price">${fmtPrice(ls.close_price)}</span>
+          ${chgHTML || `<span></span>`}
+          <div class="il-l-rate">${rateHTML}</div>
+        </div>
         <div class="il-l-tv">${fmtTV(ls.minute_trade_value_delta)}</div>
       </div>
     </div>`;
@@ -693,25 +720,40 @@ function buildLeaderRows(stocks, limit) {
 }
 
 // ── 섹터 팝업 ───────────────────────────────────────────────
+let _openPopupSectorName = null;
+
+function _renderPopupContent(sectorName) {
+  const sv = _allSectorViews.find(v => v.sector_name === sectorName);
+  if (!sv) return;
+  const stocks = sv.leader_stocks || [];
+  const stars = GRADE_STARS[sv.leader_grade] || "";
+  document.getElementById("il-popup-title").innerHTML =
+    `${sectorName} <span style="letter-spacing:-2px;font-size:0.9em">${stars}</span>`;
+  document.getElementById("il-popup-meta").textContent =
+    `10%↑ ${sv.strong_riser_count ?? 0}개  5%↑ ${sv.riser_5_count ?? 0}개  거래대금 ${fmtTV(sv.sector_total_trading_value)}  전체 ${stocks.length}종목`;
+  const body = document.getElementById("il-popup-body");
+  const scrollY = body.scrollTop;
+  body.innerHTML = `<div class="il-leaders">${buildLeaderRows(stocks)}</div>`;
+  body.scrollTop = scrollY;
+}
+
 function openSectorPopup(slot) {
   const sv = slot.sector;
   if (!sv) return;
-  document.getElementById("il-popup-title").textContent = sv.sector_name;
-  document.getElementById("il-popup-meta").textContent =
-    `10%↑ ${sv.strong_riser_count ?? 0}개  5%↑ ${sv.riser_5_count ?? 0}개  거래대금 ${fmtTV(sv.sector_total_trading_value)}`;
-  document.getElementById("il-popup-body").innerHTML =
-    `<div class="il-leaders">${buildLeaderRows(sv.leader_stocks || [])}</div>`;
-  const overlay = document.getElementById("il-popup-overlay");
-  overlay.style.display = "flex";
+  _openPopupSectorName = sv.sector_name;
+  _renderPopupContent(sv.sector_name);
+  document.getElementById("il-popup-overlay").style.display = "flex";
 }
 
 function closePopup() {
+  _openPopupSectorName = null;
   document.getElementById("il-popup-overlay").style.display = "none";
 }
 
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePopup(); });
 
 let _allSectorsExpanded = false;
+let _allSectorViews = [];
 
 function buildSectorCard(slot) {
   const sv = slot.sector;
@@ -728,38 +770,38 @@ function buildSectorCard(slot) {
   const leaders = buildLeaderRows(sv.leader_stocks || [], 5);
 
   function rankBadge(rank) {
-    if (rank === 1) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
-      <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
-      <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
-      <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
-      <circle cx="15" cy="32" r="12" fill="#b8860b"/>
-      <circle cx="15" cy="32" r="10" fill="#ffd700"/>
-      <circle cx="15" cy="32" r="8" fill="#ffe566"/>
-      <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#7d5a00">1</text>
+    if (rank === 1) return `<svg width="28" height="32" viewBox="0 0 28 32" style="display:block">
+      <rect x="10" y="0" width="3" height="8" fill="#1d4ed8"/>
+      <rect x="13" y="0" width="3" height="8" fill="#f1f5f9"/>
+      <rect x="16" y="0" width="3" height="8" fill="#dc2626"/>
+      <circle cx="14" cy="22" r="10" fill="#b8860b"/>
+      <circle cx="14" cy="22" r="8.5" fill="#ffd700"/>
+      <circle cx="14" cy="22" r="6.5" fill="#ffe566"/>
+      <text x="14" y="26" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" font-weight="900" fill="#7d5a00">1</text>
     </svg>`;
-    if (rank === 2) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
-      <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
-      <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
-      <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
-      <circle cx="15" cy="32" r="12" fill="#6b7280"/>
-      <circle cx="15" cy="32" r="10" fill="#d1d5db"/>
-      <circle cx="15" cy="32" r="8" fill="#f1f5f9"/>
-      <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#374151">2</text>
+    if (rank === 2) return `<svg width="28" height="32" viewBox="0 0 28 32" style="display:block">
+      <rect x="10" y="0" width="3" height="8" fill="#1d4ed8"/>
+      <rect x="13" y="0" width="3" height="8" fill="#f1f5f9"/>
+      <rect x="16" y="0" width="3" height="8" fill="#dc2626"/>
+      <circle cx="14" cy="22" r="10" fill="#6b7280"/>
+      <circle cx="14" cy="22" r="8.5" fill="#d1d5db"/>
+      <circle cx="14" cy="22" r="6.5" fill="#f1f5f9"/>
+      <text x="14" y="26" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" font-weight="900" fill="#374151">2</text>
     </svg>`;
-    if (rank === 3) return `<svg width="30" height="44" viewBox="0 0 30 44" style="display:block">
-      <rect x="11" y="0" width="3" height="18" fill="#1d4ed8"/>
-      <rect x="14" y="0" width="3" height="18" fill="#f1f5f9"/>
-      <rect x="17" y="0" width="3" height="18" fill="#dc2626"/>
-      <circle cx="15" cy="32" r="12" fill="#78350f"/>
-      <circle cx="15" cy="32" r="10" fill="#b45309"/>
-      <circle cx="15" cy="32" r="8" fill="#d97706"/>
-      <text x="15" y="37" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#451a03">3</text>
+    if (rank === 3) return `<svg width="28" height="32" viewBox="0 0 28 32" style="display:block">
+      <rect x="10" y="0" width="3" height="8" fill="#1d4ed8"/>
+      <rect x="13" y="0" width="3" height="8" fill="#f1f5f9"/>
+      <rect x="16" y="0" width="3" height="8" fill="#dc2626"/>
+      <circle cx="14" cy="22" r="10" fill="#78350f"/>
+      <circle cx="14" cy="22" r="8.5" fill="#b45309"/>
+      <circle cx="14" cy="22" r="6.5" fill="#d97706"/>
+      <text x="14" y="26" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" font-weight="900" fill="#451a03">3</text>
     </svg>`;
     return `<span style="font-size:0.65rem;font-weight:800;color:var(--sector-muted);letter-spacing:0.04em">${rank}위</span>`;
   }
 
   return `<div class="il-card${evictingClass}" style="border-left-color:${color};cursor:pointer"
-    onclick="openSectorPopup(${JSON.stringify(slot).replace(/</g,'\\u003c')})">
+    onclick="openSectorPopup(${JSON.stringify(slot).replace(/</g,'\\u003c').replace(/"/g,'&quot;')})">
     <div class="il-card-head">
       <span class="il-card-slot">${rankBadge(sv.rank)}</span>
       <span class="il-card-name">${sv.sector_name} <span style="letter-spacing:-2px">${stars}</span></span>
@@ -779,7 +821,7 @@ function buildCompactCard(sv) {
       <span class="${rateClass(ls.last_change_rate)}" style="font-size:0.7rem;font-weight:700">${fmtRate(ls.last_change_rate)}</span>
     </div>`
   ).join("");
-  return `<div class="il-compact-card" onclick="openSectorPopup(${JSON.stringify(slotFake).replace(/</g,'\\u003c')})">
+  return `<div class="il-compact-card" onclick="openSectorPopup(${JSON.stringify(slotFake).replace(/</g,'\\u003c').replace(/"/g,'&quot;')})">
     <div class="il-compact-head">
       <span class="il-compact-name">${sv.sector_name}</span>
       <span class="il-compact-rate ${rateClass(sv.average_change_rate)}">${fmtRate(sv.average_change_rate)}</span>
@@ -882,6 +924,8 @@ async function fetchSnapshot() {
 
     if (snap.rule) updateLegendRule(snap.rule);
     updateButtonState(!!snap.running);
+    _allSectorViews = snap.all_sector_views || [];
+    if (_openPopupSectorName) _renderPopupContent(_openPopupSectorName);
 
     const hasSlots = snap.slot_layout && snap.slot_layout.some(s => s.sector_name !== null);
     if ((state === "ready" || (state === "no_leader" && hasSlots)) && snap.slot_layout) {
