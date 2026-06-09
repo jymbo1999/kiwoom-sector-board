@@ -329,6 +329,8 @@ class IntradayRuntime:
         self._stopped_at: datetime | None = None
 
         # 스레딩
+        self._close_debug: dict | None = None
+
         self._stop_requested = threading.Event()
         self._thread: threading.Thread | None = None
 
@@ -344,6 +346,7 @@ class IntradayRuntime:
             self._state = RUNTIME_RUNNING
             self._error = None
             self._close_reason = None
+            self._close_debug = None
             self._started_at = datetime.now()
             self._stopped_at = None
 
@@ -390,6 +393,7 @@ class IntradayRuntime:
                 "state": self._state,
                 "error": self._error,
                 "close_reason": self._close_reason,
+                "close_debug": self._close_debug,
                 "started_at": self._started_at.isoformat() if self._started_at else None,
                 "stopped_at": self._stopped_at.isoformat() if self._stopped_at else None,
             }
@@ -465,6 +469,26 @@ class IntradayRuntime:
                 # 1000 OK Bye 는 정상 종료 → close_reason 에 기록
                 if "1000" in cause and ("Bye" in cause or "OK" in cause):
                     self._close_reason = cause
+                    # 15:30 ±2분 이외 시각이면 예상치 못한 종료 → 디버그 정보 기록
+                    now_kst = datetime.now(_KST)
+                    close_dt = now_kst.replace(
+                        hour=_MARKET_CLOSE.hour,
+                        minute=_MARKET_CLOSE.minute,
+                        second=0,
+                        microsecond=0,
+                    )
+                    delta_min = (close_dt - now_kst).total_seconds() / 60
+                    if abs(delta_min) > 2:
+                        dur_sec = (
+                            round((datetime.now() - self._started_at).total_seconds())
+                            if self._started_at else None
+                        )
+                        self._close_debug = {
+                            "disconnect_at_kst": now_kst.strftime("%H:%M:%S"),
+                            "minutes_to_market_close": round(delta_min, 1),
+                            "runtime_duration_sec": dur_sec,
+                            "raw_cause": cause,
+                        }
                 else:
                     self._error = cause
 

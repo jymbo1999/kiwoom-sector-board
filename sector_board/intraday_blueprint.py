@@ -106,6 +106,11 @@ def create_intraday_blueprint() -> Blueprint:
         runtime_error = _redact_sensitive_text(rt.get("error"))
         runtime_close_reason = _redact_sensitive_text(rt.get("close_reason"))
         running = rt["state"] == "running"
+        raw_debug = rt.get("close_debug")
+        runtime_close_debug = (
+            {**raw_debug, "raw_cause": _redact_sensitive_text(raw_debug.get("raw_cause"))}
+            if raw_debug else None
+        )
 
         base = {
             **meta,
@@ -113,6 +118,7 @@ def create_intraday_blueprint() -> Blueprint:
             "runtime_state": rt["state"],
             "runtime_error": runtime_error,
             "runtime_close_reason": runtime_close_reason,
+            "runtime_close_debug": runtime_close_debug,
             "started_at": rt.get("started_at"),
         }
 

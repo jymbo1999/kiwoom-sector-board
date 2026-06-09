@@ -655,8 +655,17 @@ function renderStats(snap) {
   const crEl = document.getElementById("il-close-reason");
   if (crEl) {
     if (snap.runtime_close_reason) {
-      crEl.textContent = "ℹ close_reason — " + snap.runtime_close_reason
-        + " — 재시작하려면 시작 버튼을 누르세요.";
+      const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      let html = `<div>ℹ close_reason — ${esc(snap.runtime_close_reason)} — 재시작하려면 시작 버튼을 누르세요.</div>`;
+      const d = snap.runtime_close_debug;
+      if (d) {
+        const dur = d.runtime_duration_sec != null ? `${d.runtime_duration_sec}초` : "?";
+        const dtc = d.minutes_to_market_close != null ? `${d.minutes_to_market_close}분` : "?";
+        html += `<div style="margin-top:6px;font-size:0.72rem;color:#60a5fa;font-family:monospace;white-space:pre-wrap;">`
+          + `[DEBUG] 연결해제 ${esc(d.disconnect_at_kst)} KST | 장마감까지 ${esc(dtc)} | 연결유지 ${esc(dur)}\n`
+          + `원인: ${esc(d.raw_cause)}</div>`;
+      }
+      crEl.innerHTML = html;
       crEl.style.display = "";
     } else {
       crEl.style.display = "none";

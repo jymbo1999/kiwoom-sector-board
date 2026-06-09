@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"find \\\"/Users/haesungjun/VSCODE Library/kiwoom-sector-board\\\" -name \\\"*.py\\\" | xargs grep -l \\\"mock\\\\|Mock\\\\|fake\\\\|Fake\\\" 2>/dev/null\"}",
-  "error": "Exit code 1",
-  "timestamp": "2026-06-09T05:09:37.028Z",
+  "tool_input_preview": "{\"command\":\"cd \\\"/Users/haesungjun/VSCODE Library/kiwoom-sector-board\\\" && python -c \\\"\\nimport ast, sys\\nfor f in ['src/kiwoom_websocket.py','src/intraday_runtime.py','sector_board/intraday_blueprint...",
+  "error": "Exit code 127\npyenv: python: command not found\n\nThe `python' command exists in these Python versions:\n  3.10.13\n  3.12.7\n  3.12.9\n\nNote: See 'pyenv help global' for tips on allowing multiple\n      Python versions to be found at the same time.",
+  "timestamp": "2026-06-09T06:05:28.213Z",
   "retry_count": 1
 }

@@ -381,7 +381,11 @@ class KiwoomWebSocketClient:
             ) from exc
         try:
             self.websocket = await asyncio.wait_for(
-                websockets.connect(self.ws_url),
+                websockets.connect(
+                    self.ws_url,
+                    ping_interval=30,   # keepalive: 30초마다 ping
+                    ping_timeout=10,    # pong 미수신 시 10초 후 연결 끊음
+                ),
                 timeout=self.connect_timeout,
             )
         except Exception as exc:
