@@ -913,6 +913,9 @@ function renderEmpty(status, allSectorViews) {
     no_leader:   { h: "현재 조건을 만족하는 주도섹터가 없습니다.", p: "조건: 시총 5천억 이상 종목 중 +5% 이상 상승 종목 2개 이상" },
     error:       { h: "런타임 오류", p: "상단 오류 메시지를 확인한 뒤 설정을 수정하고 다시 시작하세요." },
   };
+  if (status === "no_leader" && (allSectorViews || []).length > 0) {
+    _allSectorsExpanded = true;
+  }
   const m = msgs[status] || msgs.empty;
   const newHtml = `<div class="il-hint"><h2>${m.h}</h2><p>${m.p}</p></div>`
     + buildAllSectorsSection(allSectorViews, []);
