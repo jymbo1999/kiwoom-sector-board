@@ -365,6 +365,53 @@
     </div>
   </section>
 
+  <!-- ── Tabs (price / news / daily-log) + bookmark ─────────── -->
+  <div class="news-tabbar" style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+    <a href="?tab=price"     class="btn {% if news.tab == 'price' %}btn-primary{% else %}btn-secondary{% endif %}">실시간 가격</a>
+    <a href="?tab=news"      class="btn {% if news.tab == 'news' %}btn-primary{% else %}btn-secondary{% endif %}">
+      뉴스 이벤트{% if news.unread and news.unread > 0 %} <span style="color:#ef4444;font-weight:800;">! {{ news.unread }}</span>{% endif %}
+    </a>
+    <a href="?tab=daily-log" class="btn {% if news.tab == 'daily-log' %}btn-primary{% else %}btn-secondary{% endif %}">일일 로그</a>
+    <a href="?tab=news" style="margin-left:auto;" class="btn btn-secondary" title="뉴스 이벤트 바로가기">
+      🔖 뉴스 이벤트{% if news.unread and news.unread > 0 %} <strong style="color:#ef4444;">!</strong>{% endif %}
+    </a>
+  </div>
+
+  {% if news.tab == 'news' %}
+  <div class="card"><div class="card-body">
+    <h2>오늘의 뉴스 이벤트</h2>
+    {% if not news.events %}<p>아직 감지된 이벤트가 없습니다.</p>{% endif %}
+    {% for ev in news.events %}
+      <div class="card mb-4"><div class="card-body">
+        <strong>{{ ev.detected_at }} · {{ '급등' if ev.event_type == 'rise' else '급락' }}</strong>
+        · {{ ev.sector_name or ev.stock_name or '' }}
+        {% if ev.stock_name %}<span>({{ ev.stock_name }})</span>{% endif %}
+        <div>감지 사유: {{ ev.trigger_reason }} · 등락률 {{ '%.1f'|format(ev.change_rate * 100) }}%</div>
+        <div>수집 기사: {{ ev.articles|length }}개 · 상태: {{ ev.status }}</div>
+        <ul>
+          {% for a in ev.articles %}
+            <li><a href="{{ a.url }}" target="_blank" rel="noopener">{{ a.title }}</a> <small>{{ a.published_at }}</small></li>
+          {% endfor %}
+        </ul>
+      </div></div>
+    {% endfor %}
+  </div></div>
+
+  {% elif news.tab == 'daily-log' %}
+  <div class="card"><div class="card-body">
+    <h2>일일 로그</h2>
+    {% if news.stats %}
+      <p>총 이벤트 {{ news.stats.total_events }}건 · 총 기사 {{ news.stats.total_articles }}개 · 전체 용량 {{ news.stats.total_human }}</p>
+    {% endif %}
+    <table class="table table-sm">
+      <thead><tr><th>날짜</th><th>이벤트 수</th></tr></thead>
+      <tbody>
+        {% for row in news.dates %}<tr><td>{{ row.trade_date }}</td><td>{{ row.event_count }}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div></div>
+
+  {% else %}
   <!-- ── Legend ───────────────────────────────────────────── -->
   <div id="il-legend" class="il-legend">
     <div class="il-legend-title">Legend</div>
@@ -486,9 +533,11 @@
       onclick="startMockRuntime()"
       style="font-size:0.68rem;padding:3px 10px;opacity:0.6;">▶ Mock 시작</button>
   </p>
+  {% endif %}
 
 </main>
 
+{% if news.tab == 'price' %}
 <!-- ── Sector popup overlay ──────────────────────────────── -->
 <div id="il-popup-overlay"
   onclick="closePopup()"
@@ -1001,4 +1050,5 @@ async function stopRuntime() {
 fetchSnapshot();  // 초기 1회 즉시 실행
 setInterval(fetchSnapshot, 1000);
 </script>
+{% endif %}
 {% endblock content %}
