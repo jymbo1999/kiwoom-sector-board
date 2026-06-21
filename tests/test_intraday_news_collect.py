@@ -66,3 +66,27 @@ def test_process_snapshot_once_creates_event_and_collects(tmp_path):
     assert len(events) >= 1
     stock_ev = [e for e in events if e["stock_code"] == "277810"][0]
     assert len(nr.list_articles_for_event(eng, stock_ev["id"])) == 1
+
+
+import os
+from sector_board.intraday_news import news_enabled, NewsSidecar
+
+
+def test_news_enabled_env(monkeypatch):
+    monkeypatch.delenv("SECTOR_BOARD_INTRADAY_NEWS_ENABLED", raising=False)
+    assert news_enabled() is False
+    monkeypatch.setenv("SECTOR_BOARD_INTRADAY_NEWS_ENABLED", "1")
+    assert news_enabled() is True
+
+
+def test_sidecar_run_once(tmp_path):
+    eng = _engine(tmp_path)
+
+    class FakeRuntime:
+        def get_latest_snapshot(self):
+            return _snap()
+
+    sc = NewsSidecar(engine=eng, runtime=FakeRuntime(),
+                     trade_date=date(2026, 6, 21), search_fn=_fake_search)
+    sc.run_once(now=datetime(2026, 6, 21, 9, 18))
+    assert len(nr.list_events_for_date(eng, date(2026, 6, 21))) >= 1

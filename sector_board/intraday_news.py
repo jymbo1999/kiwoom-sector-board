@@ -221,3 +221,52 @@ def _process_due_stages(engine, *, trade_date: date, now: datetime, search_fn) -
                 continue
             if now >= due_at + timedelta(minutes=offset):
                 collect_news_for_event(engine, ev, stage, now=now, search_fn=search_fn)
+
+
+import os
+import threading
+import time
+from datetime import date as _date, datetime as _datetime
+
+POLL_SECONDS = 30
+
+
+def news_enabled() -> bool:
+    return str(os.getenv("SECTOR_BOARD_INTRADAY_NEWS_ENABLED", "")).strip().lower() in {"1", "true", "yes", "on"}
+
+
+class NewsSidecar:
+    def __init__(self, *, engine, runtime, trade_date, search_fn=None, poll_seconds: int = POLL_SECONDS):
+        self._engine = engine
+        self._runtime = runtime
+        self._trade_date = trade_date
+        self._search_fn = search_fn
+        self._poll = poll_seconds
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def run_once(self, *, now: _datetime | None = None) -> None:
+        now = now or _datetime.now()
+        try:
+            snapshot = self._runtime.get_latest_snapshot()
+        except Exception:  # noqa: BLE001
+            snapshot = None
+        process_snapshot_once(self._engine, snapshot, trade_date=self._trade_date,
+                              now=now, top5_sectors=[], search_fn=self._search_fn)
+
+    def _loop(self) -> None:
+        while not self._stop.is_set():
+            self.run_once()
+            self._stop.wait(self._poll)
+
+    def start(self) -> None:
+        if self._thread and self._thread.is_alive():
+            return
+        self._stop.clear()
+        self._thread = threading.Thread(target=self._loop, daemon=True, name="news-sidecar")
+        self._thread.start()
+
+    def stop(self, timeout: float = 3.0) -> None:
+        self._stop.set()
+        if self._thread:
+            self._thread.join(timeout=timeout)
