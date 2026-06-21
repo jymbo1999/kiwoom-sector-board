@@ -48,3 +48,24 @@ def test_insert_article_dedupes(tmp_path):
     assert nr.insert_article(eng, ev, a, now=t0) is True
     assert nr.insert_article(eng, ev, a, now=t0) is False  # 중복
     assert len(nr.list_articles_for_event(eng, ev)) == 1
+
+
+def test_unread_and_mark_read(tmp_path):
+    eng = _engine(tmp_path)
+    t0 = datetime(2026, 6, 21, 9, 18)
+    nr.upsert_event(eng, _cand(), trade_date=date(2026, 6, 21), now=t0)
+    assert nr.count_unread(eng, date(2026, 6, 21)) == 1
+    nr.mark_read(eng, date(2026, 6, 21), now=t0)
+    assert nr.count_unread(eng, date(2026, 6, 21)) == 0
+
+
+def test_storage_stats(tmp_path):
+    eng = _engine(tmp_path)
+    t0 = datetime(2026, 6, 21, 9, 18)
+    ev = nr.upsert_event(eng, _cand(), trade_date=date(2026, 6, 21), now=t0)
+    nr.insert_article(eng, ev, {"title": "t", "url": "http://x/1", "dedupe_key": "url:http://x/1", "stage": "T0"}, now=t0)
+    stats = nr.get_storage_stats(eng)
+    assert stats["total_events"] == 1
+    assert stats["total_articles"] == 1
+    assert stats["total_bytes"] > 0
+    assert isinstance(stats["total_human"], str)

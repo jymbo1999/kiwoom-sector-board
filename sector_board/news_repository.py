@@ -118,3 +118,60 @@ def mark_stage_done(engine: Engine, event_id: int, stage: str, *, now: datetime)
         payload["done_stages"] = sorted(done)
         conn.execute(update(news_events).where(news_events.c.id == event_id)
                      .values(payload_json=json.dumps(payload), updated_at=now))
+
+
+EVENT_ROW_EST = 512
+ARTICLE_ROW_EST = 1024
+
+
+def count_unread(engine: Engine, trade_date: date) -> int:
+    with engine.begin() as conn:
+        return int(conn.execute(
+            select(func.count()).select_from(news_events).where(and_(
+                news_events.c.trade_date == trade_date, news_events.c.is_read == False,  # noqa: E712
+            ))
+        ).scalar_one())
+
+
+def mark_read(engine: Engine, trade_date: date, *, now: datetime) -> None:
+    with engine.begin() as conn:
+        conn.execute(update(news_events).where(news_events.c.trade_date == trade_date)
+                     .values(is_read=True, updated_at=now))
+
+
+def list_event_dates(engine: Engine) -> list[dict[str, Any]]:
+    with engine.begin() as conn:
+        rows = conn.execute(
+            select(news_events.c.trade_date, func.count().label("event_count"))
+            .group_by(news_events.c.trade_date).order_by(news_events.c.trade_date.desc())
+        ).all()
+    return [{"trade_date": r[0], "event_count": int(r[1])} for r in rows]
+
+
+def _human_bytes(n: int) -> str:
+    for unit in ("B", "KB", "MB", "GB"):
+        if n < 1024 or unit == "GB":
+            return f"{n:.0f}{unit}" if unit == "B" else f"{n/1.0:.1f}{unit}"
+        n /= 1024
+    return f"{n:.1f}GB"
+
+
+def get_storage_stats(engine: Engine) -> dict[str, Any]:
+    with engine.begin() as conn:
+        n_events = int(conn.execute(select(func.count()).select_from(news_events)).scalar_one())
+        n_articles = int(conn.execute(select(func.count()).select_from(news_articles)).scalar_one())
+        dialect = conn.dialect.name
+        total_bytes = 0
+        if dialect == "postgresql":
+            try:
+                total_bytes = int(conn.execute(text(
+                    "SELECT pg_total_relation_size('intraday_news_events') "
+                    "+ pg_total_relation_size('intraday_news_articles')"
+                )).scalar_one())
+            except Exception:  # noqa: BLE001
+                total_bytes = n_events * EVENT_ROW_EST + n_articles * ARTICLE_ROW_EST
+        else:
+            total_bytes = n_events * EVENT_ROW_EST + n_articles * ARTICLE_ROW_EST
+    human = _human_bytes(float(total_bytes))
+    return {"total_events": n_events, "total_articles": n_articles,
+            "total_bytes": total_bytes, "total_human": human}
