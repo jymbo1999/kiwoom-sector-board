@@ -115,3 +115,63 @@ def detect_intraday_news_events(
                 "trigger_reason": reason,
             })
     return candidates
+
+
+from . import news_repository as _nr
+from .news_schema import news_events as _events_tbl  # noqa: F401  (참조 명시용)
+
+try:
+    from src.news_service import build_news_queries_for_mover, search_naver_news
+except Exception:  # noqa: BLE001  (src 미가용 환경 대비)
+    build_news_queries_for_mover = None
+    search_naver_news = None
+
+
+def _queries_for_event(event: dict[str, Any]) -> list[str]:
+    if event.get("scope") == "sector":
+        name = event.get("sector_name") or ""
+        return [f"{name} 섹터 급등 이유", f"{name} 테마 강세"] if name else []
+    if build_news_queries_for_mover is not None:
+        return build_news_queries_for_mover({"name": event.get("stock_name"), "ticker": event.get("stock_code")})[:3]
+    name = event.get("stock_name") or ""
+    return [f"{name} 주가 상승 이유", f"{name} 급등 이유"] if name else []
+
+
+def collect_news_for_event(
+    engine,
+    event: dict[str, Any],
+    stage: str,
+    *,
+    now: datetime,
+    search_fn: Callable[..., list[dict]] | None = None,
+) -> int:
+    """이벤트 1건에 대해 뉴스 수집 → 기사 영속(dedupe). 추가된 기사 수 반환. 실패해도 예외 안 냄."""
+    search = search_fn or search_naver_news
+    if search is None:
+        return 0
+    event_id = int(event["id"])
+    added = 0
+    try:
+        _nr.set_event_status(engine, event_id, "collecting", now=now)
+        for query in _queries_for_event(event):
+            try:
+                items = search(query, display=20, stock_name=event.get("stock_name"))
+            except Exception:  # noqa: BLE001
+                continue
+            for item in items or []:
+                article = {
+                    "title": item.get("title"), "url": item.get("url"),
+                    "provider": item.get("provider"), "published_at": item.get("published_at"),
+                    "excerpt": item.get("excerpt"), "query": query, "stage": stage,
+                    "dedupe_key": article_dedupe_key(item),
+                }
+                if _nr.insert_article(engine, event_id, article, now=now):
+                    added += 1
+        _nr.mark_stage_done(engine, event_id, stage, now=now)
+        _nr.set_event_status(engine, event_id, "collected", now=now)
+    except Exception:  # noqa: BLE001
+        try:
+            _nr.set_event_status(engine, event_id, "failed", now=now)
+        except Exception:  # noqa: BLE001
+            pass
+    return added
