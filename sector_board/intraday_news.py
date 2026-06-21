@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+from datetime import date, datetime, timedelta
 from typing import Any, Callable
 
 RISE_PCT = 0.08
@@ -175,3 +176,48 @@ def collect_news_for_event(
         except Exception:  # noqa: BLE001
             pass
     return added
+
+
+def process_snapshot_once(
+    engine,
+    snapshot: dict[str, Any] | None,
+    *,
+    trade_date: date,
+    now: datetime,
+    top5_sectors: list[str] | None = None,
+    search_fn: Callable[..., list[dict]] | None = None,
+) -> None:
+    """스냅샷 1장 처리: 감지 → 이벤트 upsert → T0 수집 + 도래한 T+10/T+30 보강. 예외 삼킴."""
+    try:
+        candidates = detect_intraday_news_events(snapshot, top5_sectors=top5_sectors)
+    except Exception:  # noqa: BLE001
+        candidates = []
+    for cand in candidates:
+        try:
+            event_id = _nr.upsert_event(engine, cand, trade_date=trade_date, now=now)
+            event = {"id": event_id, **cand}
+            payload_done = _event_done_stages(engine, event_id)
+            if "T0" not in payload_done:
+                collect_news_for_event(engine, event, "T0", now=now, search_fn=search_fn)
+        except Exception:  # noqa: BLE001
+            continue
+    _process_due_stages(engine, trade_date=trade_date, now=now, search_fn=search_fn)
+
+
+def _event_done_stages(engine, event_id: int) -> set[str]:
+    for ev in _nr.list_events_for_date_any(engine, event_id):
+        return set(ev.get("payload", {}).get("done_stages", []))
+    return set()
+
+
+def _process_due_stages(engine, *, trade_date: date, now: datetime, search_fn) -> None:
+    for ev in _nr.list_events_for_date(engine, trade_date):
+        done = set(ev.get("payload", {}).get("done_stages", []))
+        for stage, offset in STAGE_OFFSETS.items():
+            if stage in done or offset == 0:
+                continue
+            due_at = ev["detected_at"]
+            if isinstance(due_at, str):
+                continue
+            if now >= due_at + timedelta(minutes=offset):
+                collect_news_for_event(engine, ev, stage, now=now, search_fn=search_fn)

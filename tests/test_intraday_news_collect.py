@@ -46,3 +46,23 @@ def test_collect_handles_search_failure(tmp_path):
         raise RuntimeError("naver down")
 
     assert collect_news_for_event(eng, event, "T0", now=t0, search_fn=boom) == 0  # 예외 삼킴
+
+
+from sector_board.intraday_news import process_snapshot_once
+
+
+def _snap():
+    return {"leaders": [{"base_code": "277810", "name": "레인보우로보틱스",
+                         "sector_name": "로봇", "last_change_rate": 0.12}],
+            "sectors": [{"sector_name": "로봇", "average_change_rate": 0.12}]}
+
+
+def test_process_snapshot_once_creates_event_and_collects(tmp_path):
+    eng = _engine(tmp_path)
+    t0 = datetime(2026, 6, 21, 9, 18)
+    process_snapshot_once(eng, _snap(), trade_date=date(2026, 6, 21), now=t0,
+                          top5_sectors=[], search_fn=_fake_search)
+    events = nr.list_events_for_date(eng, date(2026, 6, 21))
+    assert len(events) >= 1
+    stock_ev = [e for e in events if e["stock_code"] == "277810"][0]
+    assert len(nr.list_articles_for_event(eng, stock_ev["id"])) == 1

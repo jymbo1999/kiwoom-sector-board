@@ -70,6 +70,13 @@ def list_events_for_date(engine: Engine, trade_date: date) -> list[dict[str, Any
     return [_row_to_dict(r) for r in rows]
 
 
+def list_events_for_date_any(engine: Engine, event_id: int) -> list[dict[str, Any]]:
+    """단일 이벤트를 payload 포함 dict 리스트(0/1개)로 반환."""
+    with engine.begin() as conn:
+        rows = conn.execute(select(news_events).where(news_events.c.id == event_id)).all()
+    return [_row_to_dict(r) for r in rows]
+
+
 from sqlalchemy.exc import IntegrityError
 
 
