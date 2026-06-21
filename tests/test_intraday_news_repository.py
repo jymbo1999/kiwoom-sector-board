@@ -36,3 +36,15 @@ def test_upsert_event_new_after_cooldown(tmp_path):
     nr.upsert_event(eng, _cand(), trade_date=date(2026, 6, 21), now=t0)
     nr.upsert_event(eng, _cand(), trade_date=date(2026, 6, 21), now=t0 + timedelta(minutes=31))
     assert len(nr.list_events_for_date(eng, date(2026, 6, 21))) == 2
+
+
+def test_insert_article_dedupes(tmp_path):
+    eng = _engine(tmp_path)
+    t0 = datetime(2026, 6, 21, 9, 18)
+    ev = nr.upsert_event(eng, _cand(), trade_date=date(2026, 6, 21), now=t0)
+    a = {"title": "로봇주 급등", "url": "http://x/1", "source": "Naver",
+         "published_at": "2026-06-21", "description": "", "query": "q", "stage": "T0",
+         "dedupe_key": "url:http://x/1"}
+    assert nr.insert_article(eng, ev, a, now=t0) is True
+    assert nr.insert_article(eng, ev, a, now=t0) is False  # 중복
+    assert len(nr.list_articles_for_event(eng, ev)) == 1

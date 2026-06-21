@@ -68,3 +68,53 @@ def list_events_for_date(engine: Engine, trade_date: date) -> list[dict[str, Any
             .order_by(news_events.c.detected_at.desc())
         ).all()
     return [_row_to_dict(r) for r in rows]
+
+
+from sqlalchemy.exc import IntegrityError
+
+
+def insert_article(engine: Engine, event_id: int, article: dict[str, Any], *, now: datetime) -> bool:
+    """삽입 성공 True, (event_id,dedupe_key) 중복이면 False."""
+    try:
+        with engine.begin() as conn:
+            conn.execute(news_articles.insert().values(
+                event_id=event_id, title=article.get("title"), url=article.get("url"),
+                source=article.get("source") or article.get("provider"),
+                published_at=article.get("published_at"), description=article.get("description") or article.get("excerpt"),
+                query=article.get("query"), stage=article.get("stage"),
+                dedupe_key=article["dedupe_key"], collected_at=now, created_at=now,
+            ))
+        return True
+    except IntegrityError:
+        return False
+
+
+def list_articles_for_event(engine: Engine, event_id: int) -> list[dict[str, Any]]:
+    with engine.begin() as conn:
+        rows = conn.execute(
+            select(news_articles).where(news_articles.c.event_id == event_id)
+            .order_by(news_articles.c.collected_at.desc())
+        ).all()
+    return [dict(r._mapping) for r in rows]
+
+
+def set_event_status(engine: Engine, event_id: int, status: str, *, now: datetime) -> None:
+    with engine.begin() as conn:
+        conn.execute(update(news_events).where(news_events.c.id == event_id)
+                     .values(status=status, updated_at=now))
+
+
+def mark_stage_done(engine: Engine, event_id: int, stage: str, *, now: datetime) -> None:
+    with engine.begin() as conn:
+        row = conn.execute(select(news_events.c.payload_json).where(news_events.c.id == event_id)).scalar_one_or_none()
+        payload = {}
+        if row:
+            try:
+                payload = json.loads(row)
+            except (TypeError, ValueError):
+                payload = {}
+        done = set(payload.get("done_stages", []))
+        done.add(stage)
+        payload["done_stages"] = sorted(done)
+        conn.execute(update(news_events).where(news_events.c.id == event_id)
+                     .values(payload_json=json.dumps(payload), updated_at=now))
