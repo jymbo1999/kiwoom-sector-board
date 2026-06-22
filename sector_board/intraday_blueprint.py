@@ -14,11 +14,16 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import date as _date, datetime as _datetime
 from pathlib import Path
 
 from flask import Blueprint, current_app, jsonify, render_template, request
 
 from .auth import auth_gate
+from . import news_repository as _news_repo
+from .news_schema import ensure_news_schema as _ensure_news_schema
+from .intraday_news import news_enabled as _news_enabled
+from .repository import create_snapshot_engine, resolve_database_url
 
 # ---------------------------------------------------------------------------
 # 상수
@@ -57,13 +62,36 @@ def create_intraday_blueprint() -> Blueprint:
 
     @blueprint.route("/", strict_slashes=False)
     def index():
-        """장중 리더보드 HTML (1초 polling 기반)."""
+        """장중 리더보드 HTML (1초 polling 기반) + 뉴스/일일로그 탭."""
         runtime = _get_runtime()
         runtime_state = runtime.get_status()["state"] if runtime else "not_running"
+        tab = (request.args.get("tab") or "price").strip()
+
+        news_ctx = {"events": [], "stats": None, "dates": [], "unread": 0, "tab": tab}
+        try:
+            db_url = resolve_database_url(current_app)
+            if db_url:
+                engine = create_snapshot_engine(db_url)
+                _ensure_news_schema(engine)
+                today = _date.today()
+                news_ctx["unread"] = _news_repo.count_unread(engine, today)
+                if tab == "news":
+                    news_ctx["events"] = _news_repo.list_events_for_date(engine, today)
+                    for ev in news_ctx["events"]:
+                        ev["articles"] = _news_repo.list_articles_for_event(engine, ev["id"])
+                    _news_repo.mark_read(engine, today, now=_datetime.now())
+                    news_ctx["unread"] = 0
+                elif tab == "daily-log":
+                    news_ctx["stats"] = _news_repo.get_storage_stats(engine)
+                    news_ctx["dates"] = _news_repo.list_event_dates(engine)
+        except Exception:  # noqa: BLE001  (뉴스 실패가 가격판을 막지 않게)
+            pass
+
         return render_template(
             "sector_board/intraday_live.html",
             layout_template="sector_board/standalone.html",
             runtime_state=runtime_state,
+            news=news_ctx,
         )
 
     # ------------------------------------------------------------------ #
@@ -303,6 +331,20 @@ def create_intraday_blueprint() -> Blueprint:
         }
         _set_runtime(runtime, metadata)
 
+        # 뉴스 사이드카 (게이팅; 실패해도 인트라데이 시작은 정상)
+        try:
+            if _news_enabled():
+                from sector_board.intraday_news import NewsSidecar
+                db_url = resolve_database_url(current_app)
+                if db_url:
+                    engine = create_snapshot_engine(db_url)
+                    _ensure_news_schema(engine)
+                    sidecar = NewsSidecar(engine=engine, runtime=runtime, trade_date=_date.today())
+                    sidecar.start()
+                    current_app.config["_NEWS_SIDECAR"] = sidecar
+        except Exception:  # noqa: BLE001
+            pass
+
         return jsonify({
             "ok": True,
             **metadata,
@@ -315,6 +357,13 @@ def create_intraday_blueprint() -> Blueprint:
     @blueprint.route("/api/stop", methods=["POST"])
     def api_stop():
         """runtime 을 중지한다."""
+        sidecar = current_app.config.pop("_NEWS_SIDECAR", None)
+        if sidecar is not None:
+            try:
+                sidecar.stop()
+            except Exception:  # noqa: BLE001
+                pass
+
         runtime = _get_runtime()
         if runtime is None:
             return jsonify({"ok": True, "message": "not running"}), 200
